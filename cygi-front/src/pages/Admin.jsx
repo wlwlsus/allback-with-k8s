@@ -11,7 +11,7 @@ export default function Admin() {
   return (
     <div className={style.container}>
       <SideNav />
-      <div>
+      <div className={style.right_div}>
         <Routes>
           <Route path="total" element={<Total />} />
           <Route path="user-list" element={<UserList />} />

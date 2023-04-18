@@ -1,0 +1,44 @@
+.background {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  z-index: 1;
+}
+
+.background::after {
+  width: 1920px;
+  height: 1080px;
+  background-image: url(../img/nologin_main.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  content: "";
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+}
+
+.title {
+  padding-top: 400px;
+  color: white;
+  font-size: 4.5em;
+  font-weight: bold;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.content {
+  color: white;
+  font-size: 2em;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.login_btn {
+  width: 250px;
+  position: absolute;
+  top: 65%;
+  left: 43%;
+  cursor: pointer;
+}

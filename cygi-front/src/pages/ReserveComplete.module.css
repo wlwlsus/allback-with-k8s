@@ -1,0 +1,68 @@
+/* 나중에 styled components로 대체*/
+.background {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  z-index: 1;
+}
+
+.background::after {
+  width: 1920px;
+  height: 1080px;
+  background-image: url(../img/poster.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  content: "";
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.3;
+}
+
+.complete_text {
+  text-align: center;
+  margin-top: 5%;
+  font-size: 4em;
+  font-weight: 500;
+}
+
+.ticket_information {
+  text-align: center;
+  background-image: url(../img/ticket.png);
+  background-repeat: no-repeat;
+  position: relative;
+  top: 5%;
+  left: 32%;
+  width: 1100px;
+  height: 700px;
+}
+
+.name {
+  font-size: 3em;
+  font-weight: 600;
+}
+
+.contents {
+  position: absolute;
+  top: 5%;
+  left: 20%;
+  text-align: left;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 5%;
+}
+
+.title {
+  width: 150px;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.content {
+  width: 300px;
+  font-size: 1.3em;
+  font-weight: 500;
+}

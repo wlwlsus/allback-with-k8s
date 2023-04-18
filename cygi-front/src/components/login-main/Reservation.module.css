@@ -1,0 +1,19 @@
+.total {
+  display: flex;
+}
+
+.poster_img {
+  width: 400px;
+  height: 600px;
+}
+
+.left_div {
+}
+
+.right_div {
+  background-image: url(/src/img/receipt.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 450px;
+  height: 700px;
+}
