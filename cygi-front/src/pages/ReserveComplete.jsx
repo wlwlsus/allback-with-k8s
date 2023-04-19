@@ -1,12 +1,15 @@
 import React from "react";
 import SubHeader from "../components/common/SubHeader";
 import style from "./ReserveComplete.module.css";
-import Ticket from "img/ticket.png";
+import Poster from "img/poster.png";
 
 export default function ReserveComplete() {
   return (
     <div className={style.background}>
       <SubHeader />
+      <div className={style.background_img}>
+        <img src={Poster} alt="" />
+      </div>
       <div className={style.complete_text}>예매가 완료되었습니다.</div>
       <div className={style.ticket_information}>
         <div className={style.contents}>
