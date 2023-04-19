@@ -51,6 +51,14 @@ export default function SubHeader() {
         >
           관리자페이지
         </div>
+        <div
+          className={style.loading}
+          onClick={() => {
+            navigate("loading");
+          }}
+        >
+          로딩스피너 확인용
+        </div>
       </div>
     </div>
   );

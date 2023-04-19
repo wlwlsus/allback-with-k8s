@@ -49,3 +49,7 @@
 .admin {
   cursor: pointer;
 }
+
+.loading {
+  cursor: pointer;
+}
