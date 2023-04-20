@@ -54,7 +54,7 @@ export default function SubHeader() {
         <div
           className={style.loading}
           onClick={() => {
-            navigate("loading");
+            navigate("../loading");
           }}
         >
           로딩스피너 확인용
