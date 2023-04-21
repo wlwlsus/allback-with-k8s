@@ -19,27 +19,28 @@ import java.time.LocalDateTime;
 public class Concert extends BaseTimeEntity {
 
     @Id
+    @Column(name = "concert_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long concertId; // 공연 ID
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;    // 주최자 ID
 
-    @Column(nullable = false)
+    @Column(name = "stage_id",nullable = false)
     private Long stageId;   // 공연장 ID
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;   // 공연 이름
 
-    @Column(nullable = false, length = 1000)
+    @Column(name = "content", nullable = false, length = 1000)
     private String content; // 공연 설명
 
-    @Column(nullable = false, length = 1000)
+    @Column(name = "image", nullable = false, length = 1000)
     private String image;   // 공연 이미지 URL
 
-    @Column(nullable = false)
+    @Column(name = "start_date",nullable = false)
     private LocalDateTime startDate;    // 예매 시작 시각
 
-    @Column(nullable = false)
+    @Column(name = "end_date",nullable = false)
     private LocalDateTime endDate;  // 공연 시작 시각
 }

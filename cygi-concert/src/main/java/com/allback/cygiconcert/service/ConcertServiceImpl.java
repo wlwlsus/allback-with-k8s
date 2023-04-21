@@ -1,14 +1,19 @@
 package com.allback.cygiconcert.service;
 
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
+import com.allback.cygiconcert.dto.response.ConcertPageResDto;
+import com.allback.cygiconcert.dto.response.ConcertResDto;
 import com.allback.cygiconcert.entity.Concert;
 import com.allback.cygiconcert.repository.ConcertRepository;
 import com.allback.cygiconcert.util.S3Upload;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
@@ -17,12 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConcertServiceImpl implements ConcertService {
     private final ConcertRepository concertRepository;
     private final S3Upload s3Upload;
+//    private final RestTemplate restTemplate;
     @Override
     public void registConcert(ConcertReqDto concertReqDto, MultipartFile image) throws Exception {
         //주최자 id 있는지 확인
 
+        log.info("[registConcert] : 주최자id 조회 성공, userId : {}", concertReqDto.getStageId());
         //공연장 id 있는지 확인
 
+        log.info("[registConcert] : 공연장id 조회 성공, stageId : {}", concertReqDto.getStageId());
         //이미지 링크 생성
         String imgLink = getImgLink(image);
         log.info("[registConcert] : 이미지 링크생성, imgLink : {}", imgLink);
@@ -43,11 +51,36 @@ public class ConcertServiceImpl implements ConcertService {
 
     }
 
+    @Override
+    public Page<ConcertResDto.CustomConcertResDto> getConcertPage(int page) {
+        PageRequest pageRequest = PageRequest.of(page-1, 10);
+//        Page<ConcertResDto.CustomConcertResDto> concertPage = concertRepository.getConcertPage(pageRequest);
+        Object concertPage = concertRepository.getConcertPage(pageRequest);
+        log.info("[getConcertPage] : 공연장 목록 조회 성공 : {}", concertPage);
+//        return concertPage;
+        return null;
+    }
+
+    @Override
+    public ConcertResDto.CustomConcertResDto getConcert(Long id) {
+        Concert concert = concertRepository.findById(id).get();
+        ConcertResDto.CustomConcertResDto concertResDto = ConcertResDto.CustomConcertResDto.builder()
+//            .concertId(concert.getConcertId())
+//            .userId(concert.getUserId())
+//            .stageId(concert.getStageId())
+            .title(concert.getTitle())
+//            .content(concert.getContent())
+            .image(concert.getImage())
+//            .startDate(concert.getStartDate())
+//            .endDate(concert.getEndDate())
+            .build();
+//        log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concertResDto.getConcertId());
+        return concertResDto;
+    }
+
     private String getImgLink(MultipartFile image) throws Exception {
-        //랜덤식별자 생성
-        UUID uuid = UUID.randomUUID();
         //파일이름 설정
-        String fileName = uuid + "_" + image.getOriginalFilename();
+        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
         //aws s3 저장
         String imgLink = s3Upload.uploadFileV1(fileName, image);
         return imgLink;
