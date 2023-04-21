@@ -5,7 +5,7 @@ node{
     try{
         stage('Clone Repo'){
             git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                credentialsId: 'wnsdk',
+                credentialsId: 'jn307742',
                 branch: 'deploy-back-admin'
         }
 
