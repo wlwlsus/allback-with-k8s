@@ -1,12 +1,14 @@
 package com.allback.cygiuser.config.oauth.info;
 
+import com.allback.cygiuser.entity.Users;
+import com.allback.cygiuser.enums.RoleType;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
 
 @Getter
-public abstract class OAuth2UserInfo {
+public class OAuth2UserInfo {
     private Map<String, Object> attributes;
     private String nameAttributeKey;
     private String name;
@@ -29,7 +31,7 @@ public abstract class OAuth2UserInfo {
     }
 
     private static OAuth2UserInfo ofKakao(String userNameAttributeName, Map<String, Object> attributes){
-        Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account"));
+        Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>)kakaoAccount.get("profile");
 
         return OAuth2UserInfo.builder()
@@ -40,11 +42,12 @@ public abstract class OAuth2UserInfo {
                 .build();
     }
 
-    public User toEntity(){
-        return  User.builder()
-                .name(name)
+    public Users toEntity(){
+        return  Users.builder()
+//                .name(name)
+                .nickname(name)
                 .email(email)
-                .role(Role.USER)
+                .role(RoleType.USER)
                 .build();
     }
 }

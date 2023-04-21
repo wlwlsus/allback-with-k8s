@@ -1,4 +1,4 @@
 package com.allback.cygiuser.config.oauth.handler;
 
-public class OAuth2AuthenticationFailureHandler {
+public class OAuth2AuthenticationFailureHandler{
 }
