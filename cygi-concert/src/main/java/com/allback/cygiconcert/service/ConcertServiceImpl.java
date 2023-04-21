@@ -54,8 +54,7 @@ public class ConcertServiceImpl implements ConcertService {
     @Override
     public Page<ConcertResDto.CustomConcertResDto> getConcertPage(int page) {
         PageRequest pageRequest = PageRequest.of(page-1, 10);
-//        Page<ConcertResDto.CustomConcertResDto> concertPage = concertRepository.getConcertPage(pageRequest);
-        Object concertPage = concertRepository.getConcertPage(pageRequest);
+        Page<ConcertResDto.CustomConcertResDto> concertPage = concertRepository.getConcertPage(pageRequest);
         log.info("[getConcertPage] : 공연장 목록 조회 성공 : {}", concertPage);
 //        return concertPage;
         return null;
@@ -70,7 +69,7 @@ public class ConcertServiceImpl implements ConcertService {
 //            .stageId(concert.getStageId())
             .title(concert.getTitle())
 //            .content(concert.getContent())
-            .image(concert.getImage())
+//            .image(concert.getImage())
 //            .startDate(concert.getStartDate())
 //            .endDate(concert.getEndDate())
             .build();

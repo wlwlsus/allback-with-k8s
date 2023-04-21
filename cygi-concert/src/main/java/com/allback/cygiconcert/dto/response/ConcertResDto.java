@@ -19,7 +19,7 @@ public class ConcertResDto {
     @ToString
     public static class CustomConcertResDto {
 
-        private Long concertId;  //  공연 ID
+//        private Long concertId;  //  공연 ID
 //        private Long userId;    // 주최자 ID
 //
 //        private Long stageId;   // 공연장 ID
@@ -28,11 +28,11 @@ public class ConcertResDto {
 
 //        private String content; // 공연 설명
 
-        private String image;   // 공연 이미지 URL
+//        private String image;   // 공연 이미지 URL
 
 //        private LocalDateTime startDate;    // 예매 시작 시각
 
-        private LocalDateTime endDate;  // 공연 시작 시각
+//        private LocalDateTime endDate;  // 공연 시작 시각
     }
 
 }
