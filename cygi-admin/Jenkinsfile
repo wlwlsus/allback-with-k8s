@@ -1,0 +1,38 @@
+node{
+    def WORKSPACE = "/var/jenkins_home/workspace/spring-deploy/backend/"
+    def dockerImageTag = "springboot-deploy${env.BUILD_NUMBER}"
+
+    try{
+        stage('Clone Repo'){
+            git url: 'https://lab.ssafy.com/s08-blockchain-contract-sub2/S08P22A207.git',
+                credentialsId: 'wnsdk',
+                branch: 'deploy-back-admin'
+        }
+
+        stage('Gradle Build'){
+            dir('backend/'){
+                sh 'ls'
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build'
+            }
+        }
+        // stage('Copy application.properties'){
+        //     sh '''
+        //         cp /home/env/application.properties ./BE/Spring/src/main/resources
+        //     '''
+        // }
+
+        stage('Build docker'){
+            dockerImage = docker.build("springboot-deploy:${env.BUILD_NUMBER}", "./backend/")
+        }
+
+        stage('Deploy docker'){
+            echo "Docker Image Tag Name: ${dockerImageTag}"
+            sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
+            sh "docker run --name springboot-deploy -d -p 3000:8080 springboot-deploy:${env.BUILD_NUMBER}"
+            sh "docker image prune -a -f || true"
+        }
+    }catch(e){
+        throw e
+    }
+}
