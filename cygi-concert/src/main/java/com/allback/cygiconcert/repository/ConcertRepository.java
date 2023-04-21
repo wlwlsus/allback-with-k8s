@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ConcertRepository extends JpaRepository<Concert, Long> {
 
-  @Query("SELECT new com.allback.cygiconcert.dto.response.ConcertResDto.CustomConcertResDto(c.title) FROM Concert c")
+  @Query("SELECT c.title FROM Concert c")
   Page<ConcertResDto.CustomConcertResDto> getConcertPage(Pageable pageable);
 
 
