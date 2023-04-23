@@ -54,4 +54,8 @@ public class Users extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
 
+  public void update(String name){
+    this.nickname = name;
+  }
+
 }

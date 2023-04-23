@@ -31,9 +31,6 @@ public class WebSecurityConfig {
 
 
 
-
-
-
         httpSecurity.csrf().disable()
                 .authorizeRequests()
                 .anyRequest().permitAll()
@@ -45,9 +42,9 @@ public class WebSecurityConfig {
                 .oauth2Login()
                 .permitAll()
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler);
+                .userService(customOAuth2UserService);
+//                .and()
+//                .successHandler(oAuth2AuthenticationSuccessHandler);
 //                .failureHandler(OAuth2AuthenticationFailureHandler);
 
 

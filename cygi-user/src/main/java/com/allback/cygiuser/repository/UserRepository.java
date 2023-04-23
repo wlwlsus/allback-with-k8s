@@ -1,4 +1,11 @@
 package com.allback.cygiuser.repository;
 
-public interface UserRepository {
+import com.allback.cygiuser.entity.Users;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository<T extends Users> extends JpaRepository<T, Long> {
+//    유저 정보 저장
+    Users save(Users users);
+
+    Users findOneByuuid(String id);
 }
