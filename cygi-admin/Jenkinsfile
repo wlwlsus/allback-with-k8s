@@ -1,6 +1,6 @@
 node{
-    def WORKSPACE = "/var/jenkins_home/workspace/spring-deploy/cygi-admin/"
-    def dockerImageTag = "springboot-deploy-${env.BUILD_NUMBER}"
+    def WORKSPACE = "/var/jenkins_home/workspace/back-admin/cygi-admin/"
+    def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
 
     try{
         stage('Clone Repo'){
@@ -18,13 +18,13 @@ node{
         }
 
         stage('Build docker'){
-            sh 'dockerImage = docker.build("springboot-deploy:${env.BUILD_NUMBER}", "./cygi-admin/")'
+            sh 'dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", "./cygi-admin/")'
         }
 
         stage('Deploy docker'){
             echo "Docker Image Tag Name: ${dockerImageTag}"
-            // sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
-            sh "docker run --name springboot-deploy -d -p 3000:8080 springboot-deploy:${env.BUILD_NUMBER}"
+            // sh "docker stop back-admin || true && docker rm back-admin || true"
+            sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
             sh "docker image prune -a -f || true"
         }
     }catch(e){
