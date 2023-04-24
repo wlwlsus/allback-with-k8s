@@ -36,7 +36,7 @@ node{
                             color: "#2A42EE", 
                             message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
                             endpoint: "https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na",
-                            channel: "CAN YOU GET IT"
+                            channel: "#CAN YOU GET IT"
                         )                   
                         sh 'mvn -B -DskipTests clean package'
                     } catch(e) {
@@ -47,14 +47,14 @@ node{
                                 color: "danger", 
                                 message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
                                 endpoint: "https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na",
-                                channel: "CAN YOU GET IT"
+                                channel: "#CAN YOU GET IT"
                             )
                         } else {
                             mattermostSend (
                                 color: "good", 
                                 message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
                                 endpoint: "https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na",
-                                channel: "CAN YOU GET IT"
+                                channel: "#CAN YOU GET IT"
                             )
                         }                            
                     }           
