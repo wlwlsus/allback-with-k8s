@@ -3,8 +3,7 @@ node{
     def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
 
     try{
-        stages {
-            stage('Clone Repo'){
+        stage('Clone Repo'){
                 git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
                     credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
                     branch: 'deploy-back-admin'
@@ -60,7 +59,6 @@ node{
                     }    
                 }
             }
-        }
     }catch(e){
         throw e
     }
