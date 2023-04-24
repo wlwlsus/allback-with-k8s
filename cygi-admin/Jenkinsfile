@@ -31,7 +31,7 @@ node{
 
             post {
                 success {
-                    mattermostSend channel: color: "good", 
+                    mattermostSend color: "good", 
                                         message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
                                         endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
                                         channel: "all_back_jenkins"
