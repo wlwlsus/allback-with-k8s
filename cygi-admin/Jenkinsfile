@@ -18,7 +18,7 @@ node{
         }
 
         stage('Build docker'){
-            dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", "./cygi-admin/")
+            dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", ".")
         }
 
         stage('Deploy docker'){
