@@ -5,7 +5,7 @@ node{
     try{
         stage('Clone Repo'){
             git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                credentialsId: 'wnsdk',
+                credentialsId: 'wnsdk', // Jenkins에서 설정한 credentail의 ID
                 branch: 'deploy-back-admin'
         }
 
@@ -28,7 +28,7 @@ node{
 
         stage('Deploy docker'){
             echo "Docker Image Tag Name: ${dockerImageTag}"
-            sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
+            // sh "docker stop springboot-deploy || true && docker rm springboot-deploy || true"
             sh "docker run --name springboot-deploy -d -p 3000:8080 springboot-deploy:${env.BUILD_NUMBER}"
             sh "docker image prune -a -f || true"
         }
