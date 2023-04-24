@@ -48,10 +48,10 @@ pipeline {
     }
     post {
         success {
-            mattermostSend channelId: 'CAN YOU GET IT', color: 'good', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: '전체 파이프라인 실행 성공'
+            mattermostSend channel: 'CAN YOU GET IT', color: 'good', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: '전체 파이프라인 실행 성공'
         }
         failure {
-            mattermostSend channelId: 'CAN YOU GET IT', color: 'danger', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: '전체 파이프라인 실행 실패'
+            mattermostSend channel: 'CAN YOU GET IT', color: 'danger', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: '전체 파이프라인 실행 실패'
         }
     }
 }
