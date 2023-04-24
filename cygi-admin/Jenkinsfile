@@ -1,9 +1,8 @@
-node{
+pipeline {
     def WORKSPACE = "/var/jenkins_home/workspace/back-admin/cygi-admin/"
     def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
 
-    try{
-        stages {
+    stages {
             stage('Clone Repo'){
                 git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
                     credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
@@ -38,7 +37,4 @@ node{
                 mattermostSend channel: 'CAN_YOU_GET_IT', color: 'danger', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: 'admin 서버 ${env.BUILD_NUMBER} 빌드 실패'
             }
         }
-    }catch(e){
-        throw e
-    }
 }
