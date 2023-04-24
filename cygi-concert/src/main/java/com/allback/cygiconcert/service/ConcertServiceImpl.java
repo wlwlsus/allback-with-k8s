@@ -7,16 +7,16 @@ import com.allback.cygiconcert.entity.Concert;
 import com.allback.cygiconcert.repository.ConcertRepository;
 import com.allback.cygiconcert.util.S3Upload;
 
+import com.allback.cygiconcert.util.exception.BaseException;
+import com.allback.cygiconcert.util.exception.ErrorMessage;
 import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -57,27 +57,32 @@ public class ConcertServiceImpl implements ConcertService {
 	}
 
 	@Override
-	public List<ConcertResDto> getConcertPage(int page) {
+	public List<ConcertPageResDto> getConcertPage(int page) {
 		PageRequest pageRequest = PageRequest.of(page - 1, 10);
-		List<ConcertResDto> concertPage = concertRepository.getConcertPage(pageRequest).getContent();
+		List<ConcertPageResDto> concertPage = concertRepository.getConcertPage(pageRequest).getContent();
+
 		log.info("[getConcertPage] : 공연장 목록 조회 성공 : {}", concertPage);
+
 		return concertPage;
 	}
 
 	@Override
 	public ConcertResDto getConcert(Long id) {
-		Concert concert = concertRepository.findById(id).get();
+		Concert concert = concertRepository.findById(id)
+			.orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
+
 		ConcertResDto concertResDto = ConcertResDto.builder()
-//            .concertId(concert.getConcertId())
-//            .userId(concert.getUserId())
-//            .stageId(concert.getStageId())
+            .concertId(concert.getConcertId())
+            .userId(concert.getUserId())
+            .stageId(concert.getStageId())
 				.title(concert.getTitle())
-//            .content(concert.getContent())
-//            .image(concert.getImage())
-//            .startDate(concert.getStartDate())
-//            .endDate(concert.getEndDate())
+            .content(concert.getContent())
+            .image(concert.getImage())
+            .startDate(concert.getStartDate())
+            .endDate(concert.getEndDate())
 				.build();
-//        log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concertResDto.getConcertId());
+
+        log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concertResDto.getConcertId());
 		return concertResDto;
 	}
 
@@ -86,6 +91,7 @@ public class ConcertServiceImpl implements ConcertService {
 		String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
 		//aws s3 저장
 		String imgLink = s3Upload.uploadFileV1(fileName, image);
+
 		return imgLink;
 	}
 }
