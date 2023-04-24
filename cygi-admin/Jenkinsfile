@@ -30,33 +30,31 @@ node{
             }
 
             stage('Mattermost') {
-                steps {  
-                    script {
-                        try {
+                script {
+                    try {
+                        mattermostSend (
+                            color: "#2A42EE", 
+                            message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                            endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na'
+                        )                   
+                        sh 'mvn -B -DskipTests clean package'
+                    } catch(e) {
+                        currentBuild.result = "FAILURE"
+                    } finally {
+                        if(currentBuild.result != "FAILURE") {
                             mattermostSend (
-                                color: "#2A42EE", 
-                                message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                                color: "danger", 
+                                message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
                                 endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na'
-                            )                   
-                            sh 'mvn -B -DskipTests clean package'
-                        } catch(e) {
-                            currentBuild.result = "FAILURE"
-                        } finally {
-                            if(currentBuild.result != "FAILURE") {
-                                mattermostSend (
-                                    color: "danger", 
-                                    message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
-                                    endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na'
-                                )
-                            } else {
-                                mattermostSend (
-                                    color: "good", 
-                                    message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
-                                    endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na'
-                                )
-                            }                            
-                        }           
-                    }    
+                            )
+                        } else {
+                            mattermostSend (
+                                color: "good", 
+                                message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                                endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na'
+                            )
+                        }                            
+                    }           
                 }
             }
     }catch(e){
