@@ -29,42 +29,33 @@ node{
             sh "docker image prune -a -f || true"
         }
 
-        stage('Send Mattermost'){
-            sh ```
-                "curl -i \
-                -X POST \
-                -H 'Content-Type: application/json' \
-                -d '{ \
-                        \"channel\": \"$CHANNEL\", \
-                        \"icon_url\": \"https://www.mattermost.org/wp-content/uploads/2016/04/icon.png\", \
-                        \"attachments\": [{ \
-                                \"fallback\": \"Nouvelle construction Jenkins\", \
-                                \"color\": \"#FF8000\", \
-                                \"text\": \"Informations sur la construction :\", \
-                                \"author_name\": \"Jenkins\", \
-                                \"author_icon\": \"https://myjenkins .com/url/vers/photo/jenkins.png\", \
-                                \"author_link\": \"https://myjenkins.com/\", \
-                                \"title\": \"Nouvelle version déployée\", \
-                                \"title_link\": \"$BUILD_URL\", \
-                                \"fields\": [{ \
-                                        \"short\":true, \
-                                        \"title\":\"Branche\", \
-                                        \"value\":\"$_BRANCH_NAME\" \
-                                }, \
-                                { \
-                                        \"short\":true, \
-                                        \"title\":\"Version\", \
-                                        \"value\":\"$_PROJECT_VERSION\" \
-                                }, \
-                                { \
-                                        \"short\":false, \
-                                        \"title\":\"Détails\", \
-                                        \"value\":\"$BUILD_URL\" \
-                                }] \
-                }] \
-                }'\
-                https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na"
-            ```
+        //https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na
+        stage('Send Mattermost') {
+           steps {  
+                script {
+                    try {
+                        mattermostSend (
+                            color: "#2A42EE", 
+                            message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+                        )                   
+                        sh 'mvn -B -DskipTests clean package'
+                    } catch(e) {
+                        currentBuild.result = "FAILURE"
+                    } finally {
+                        if(currentBuild.result != "FAILURE") {
+                            mattermostSend (
+                                color: "danger", 
+                                message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+                            )
+                        } else {
+                            mattermostSend (
+                                color: "good", 
+                                message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+                            )
+                        }                            
+                    }           
+                }
+            }      
         }
     }catch(e){
         throw e
