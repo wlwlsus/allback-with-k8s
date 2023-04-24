@@ -2,7 +2,7 @@
 FROM openjdk:17-jdk-slim-buster
 
 # gradle 빌드 시 jar 파일 생성 경로
-ARG JAR_FILE=./cygi-admin/build/libs/*.jar
+ARG JAR_FILE=./build/libs/*.jar
 
 # JAR_FILE을 메인 디렉토리에 복사
 COPY ${JAR_FILE} app.jar

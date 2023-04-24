@@ -19,7 +19,7 @@ node{
         }
 
         stage('Build Docker'){
-            docker.build("back-admin:${env.BUILD_NUMBER}", ".")
+            dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", ".")
         }
 
         stage('Deploy Docker'){
