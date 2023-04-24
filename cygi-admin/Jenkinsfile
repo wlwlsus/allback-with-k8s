@@ -18,7 +18,7 @@ node{
         }
 
         stage('Build docker'){
-            dockerImage = docker.build("springboot-deploy:${env.BUILD_NUMBER}", "./cygi-admin/")
+            sh 'dockerImage = docker.build("springboot-deploy:${env.BUILD_NUMBER}", "./cygi-admin/")'
         }
 
         stage('Deploy docker'){
