@@ -1,48 +1,63 @@
-node{
-    def WORKSPACE = "/var/jenkins_home/workspace/back-admin/cygi-admin/"
-    def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
-
+pipeline{
+    //def WORKSPACE = "/var/jenkins_home/workspace/back-admin/cygi-admin/"
+    //def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
+    agent any
+    
     try{
-        stage('Clone Repo'){
-                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
-                    branch: 'deploy-back-admin'
+        stages{
+            stage('Clone Repo'){
+                steps{
+                    git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                        credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                        branch: 'deploy-back-admin'
+                }
             }
 
             stage('Gradle Build'){
-                dir('cygi-admin/'){
-                    sh 'ls'
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew clean build'
-                    echo "Docker Image Tag Name: ${dockerImageTag}"
+                steps{
+                    dir('cygi-admin/'){
+                        sh 'ls'
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew clean build'
+                        //echo "Docker Image Tag Name: ${dockerImageTag}"
+                    }
                 }
             }
 
             stage('Build Docker'){
-                sh "docker build -t back-admin:${env.BUILD_NUMBER} cygi-admin/"
+                steps{
+                    script{
+                        sh "docker build -t back-admin:${env.BUILD_NUMBER} cygi-admin/"
+                    }
+                }
             }
 
             stage('Deploy Docker'){
-                echo "Docker Image Tag Name: ${dockerImageTag}"
-                sh "docker stop back-admin || true && docker rm back-admin || true"
-                sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
-                sh "docker image prune -a -f || true"
+                steps{
+                    script{
+                        //echo "Docker Image Tag Name: ${dockerImageTag}"
+                        sh "docker stop back-admin || true && docker rm back-admin || true"
+                        sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
+                        sh "docker image prune -a -f || true"
+                    }
+                }
             }
+        }
 
-            post {
-                success {
-                    mattermostSend color: "good", 
-                                        message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
-                                        endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
-                                        channel: "all_back_jenkins"
-                }
-                failure {
-                    mattermostSend color: "danger", 
-                                        message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
-                                        endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
-                                        channel: "all_back_jenkins"
-                }
+        post {
+            success {
+                mattermostSend color: "good", 
+                                    message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                                    endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+                                    channel: "all_back_jenkins"
             }
+            failure {
+                mattermostSend color: "danger", 
+                                    message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                                    endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+                                    channel: "all_back_jenkins"
+            }
+        }
     }catch(e){
         throw e
     }
