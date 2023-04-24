@@ -32,7 +32,7 @@ public class Users extends BaseTimeEntity {
 
   @OneToOne(optional = false)
   @JoinColumn(name = "passbook_id", nullable = false)
-  private Users passbookId;
+  private Passbook passbookId;
 
   @Column(name = "email", length = 255, nullable = false)
   private String email;
