@@ -5,7 +5,7 @@ node{
     try{
         stage('Clone Repo'){
             git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                credentialsId: 'wnsdk', // Jenkins에서 설정한 credentail의 ID
+                credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
                 branch: 'deploy-back-admin'
         }
 
@@ -14,14 +14,15 @@ node{
                 sh 'ls'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean build'
+                echo "Docker Image Tag Name: ${dockerImageTag}"
             }
         }
 
-        stage('Build docker'){
+        stage('Build Docker'){
             dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", ".")
         }
 
-        stage('Deploy docker'){
+        stage('Deploy Docker'){
             echo "Docker Image Tag Name: ${dockerImageTag}"
             // sh "docker stop back-admin || true && docker rm back-admin || true"
             sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
