@@ -1,5 +1,5 @@
 # open jdk java 17 버전 환경
-FROM openjdk:17-jdk
+FROM openjdk:17-jdk-slim-buster
 
 # gradle 빌드 시 jar 파일 생성 경로
 ARG JAR_FILE=./cygi-admin/build/libs/*.jar
