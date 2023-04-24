@@ -2,17 +2,14 @@ package com.allback.cygipayment.entity;
 
 import com.allback.cygipayment.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
+@ToString
 @Table(name = "reservation")
 public class Reservation extends BaseTimeEntity {
 
