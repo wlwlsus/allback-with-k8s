@@ -24,7 +24,7 @@ node{
 
         stage('Deploy Docker'){
             echo "Docker Image Tag Name: ${dockerImageTag}"
-            // sh "docker stop back-admin || true && docker rm back-admin || true"
+            sh "docker stop back-admin || true && docker rm back-admin || true"
             sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
             sh "docker image prune -a -f || true"
         }
