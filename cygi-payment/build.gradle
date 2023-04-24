@@ -40,6 +40,10 @@ dependencies {
 	// MapStruct
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.2'
+
 }
 
 tasks.named('test') {

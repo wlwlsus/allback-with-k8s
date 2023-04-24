@@ -27,7 +27,7 @@ public class Reservation extends BaseTimeEntity {
   @Column(name = "user_id", nullable = false, length = 20)
   private Long userId;
 
-  @Column(name = "status", nullable = false, length = 30)
+  @Column(name = "status", nullable = false, length = 150)
   private String status;
 
   @Column(name = "price", nullable = false)
@@ -36,4 +36,8 @@ public class Reservation extends BaseTimeEntity {
   @Column(name = "seat", nullable = false, length = 10)
   private String seat;
 
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
 }
