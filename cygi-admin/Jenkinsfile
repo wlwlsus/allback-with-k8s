@@ -19,7 +19,7 @@ node{
         }
 
         stage('Build Docker'){
-            echo "${dockerImage}"
+            // echo "${dockerImage}"
             dockerImage = docker.build("back-admin:${env.BUILD_NUMBER}", "./cygi-admin/")
         }
 
