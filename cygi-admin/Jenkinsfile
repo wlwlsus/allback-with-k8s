@@ -3,59 +3,40 @@ node{
     def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
 
     try{
-        stage('Clone Repo'){
-            git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
-                branch: 'deploy-back-admin'
-        }
+        stages {
+            stage('Clone Repo'){
+                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-back-admin'
+            }
 
-        stage('Gradle Build'){
-            dir('cygi-admin/'){
-                sh 'ls'
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build'
+            stage('Gradle Build'){
+                dir('cygi-admin/'){
+                    sh 'ls'
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew clean build'
+                    echo "Docker Image Tag Name: ${dockerImageTag}"
+                }
+            }
+
+            stage('Build Docker'){
+                sh "docker build -t back-admin:${env.BUILD_NUMBER} cygi-admin/"
+            }
+
+            stage('Deploy Docker'){
                 echo "Docker Image Tag Name: ${dockerImageTag}"
+                sh "docker stop back-admin || true && docker rm back-admin || true"
+                sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
+                sh "docker image prune -a -f || true"
             }
         }
-
-        stage('Build Docker'){
-            sh "docker build -t back-admin:${env.BUILD_NUMBER} cygi-admin/"
-        }
-
-        stage('Deploy Docker'){
-            echo "Docker Image Tag Name: ${dockerImageTag}"
-            sh "docker stop back-admin || true && docker rm back-admin || true"
-            sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
-            sh "docker image prune -a -f || true"
-        }
-
-        //https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na
-        stage('Send Mattermost') {
-           steps {  
-                script {
-                    try {
-                        mattermostSend (
-                            color: "#2A42EE", 
-                            message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
-                        )                   
-                        sh 'mvn -B -DskipTests clean package'
-                    } catch(e) {
-                        currentBuild.result = "FAILURE"
-                    } finally {
-                        if(currentBuild.result != "FAILURE") {
-                            mattermostSend (
-                                color: "danger", 
-                                message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
-                            )
-                        } else {
-                            mattermostSend (
-                                color: "good", 
-                                message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
-                            )
-                        }                            
-                    }           
-                }
-            }      
+        post {
+            success {
+                mattermostSend channel: 'CAN_YOU_GET_IT', color: 'good', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: 'admin 서버 ${env.BUILD_NUMBER} 빌드 성공'
+            }
+            failure {
+                mattermostSend channel: 'CAN_YOU_GET_IT', color: 'danger', endpoint: 'https://meeting.ssafy.com/hooks/xz7cow4ja3b1dxdwzfe7o6j1na', message: 'admin 서버 ${env.BUILD_NUMBER} 빌드 실패'
+            }
         }
     }catch(e){
         throw e
