@@ -15,11 +15,15 @@ public class Passbook {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "passbook_id", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-	private Long passbookId;
+	private long passbookId;
 
 	@Column(name = "cash", length = 20, nullable = false)
-	private Long cash;
+	private long cash;
 
 	@Column(name = "account_number", nullable = false)
 	private String accountNumber;
+
+	public void setCash(long cash) {
+		this.cash = cash;
+	}
 }

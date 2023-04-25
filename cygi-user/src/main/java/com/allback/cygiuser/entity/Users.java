@@ -5,16 +5,7 @@ import com.allback.cygiuser.config.oauth.entity.ProviderType;
 import com.allback.cygiuser.enums.RoleType;
 import com.allback.cygiuser.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -53,5 +44,6 @@ public class Users extends BaseTimeEntity {
   @Column(name = "provider", length = 20, nullable = false)
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
+
 
 }
