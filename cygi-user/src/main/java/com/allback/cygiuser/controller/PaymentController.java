@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("/payment")
 @RequiredArgsConstructor
-public class PaymenrtController {
+public class PaymentController {
 
   private final UserService userService;
 
