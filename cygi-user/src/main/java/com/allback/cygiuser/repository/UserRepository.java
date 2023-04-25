@@ -1,4 +1,7 @@
 package com.allback.cygiuser.repository;
 
-public interface UserRepository {
+import com.allback.cygiuser.entity.Users;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<Users, Long> {
 }
