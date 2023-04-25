@@ -1,6 +1,5 @@
 pipeline{
     //def WORKSPACE = "/var/jenkins_home/workspace/back-admin/cygi-admin/"
-    //def dockerImageTag = "back-admin-${env.BUILD_NUMBER}"
     agent any
     
     stages{
@@ -27,7 +26,6 @@ pipeline{
                     sh 'ls'
                     sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
-                    //echo "Docker Image Tag Name: ${dockerImageTag}"
                 }
             }
         }
@@ -43,9 +41,8 @@ pipeline{
         stage('Deploy Docker'){
             steps{
                 script{
-                    //echo "Docker Image Tag Name: ${dockerImageTag}"
                     sh "docker stop back-admin || true && docker rm back-admin || true"
-                    sh "docker run --name back-admin -d -p 3000:8080 back-admin:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-admin -d -p 8090:8090 back-admin:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
