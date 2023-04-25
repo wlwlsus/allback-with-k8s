@@ -1,5 +1,7 @@
 package com.allback.cygiuser.config.oauth.handler;
 
-public class OAuth2AuthenticationSuccessHandler {
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 }

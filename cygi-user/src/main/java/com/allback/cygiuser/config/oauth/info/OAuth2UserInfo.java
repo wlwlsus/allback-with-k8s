@@ -1,6 +1,7 @@
 package com.allback.cygiuser.config.oauth.info;
 
 import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.entity.Passbook;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.enums.RoleType;
 import lombok.Builder;
@@ -41,9 +42,9 @@ public class OAuth2UserInfo {
                 .build();
     }
 
-    public Users toEntity(){
+    public Users toEntity(Passbook passbook){
         return  Users.builder()
-                .passbookId()
+                .passbookId(passbook)
                 .email(((Map<String, Object>)attributes.get("kakao_account")).get("email").toString())
                 .nickname(name)
                 .role(RoleType.USER)

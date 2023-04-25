@@ -20,7 +20,7 @@ public class Passbook {
   @Column(name = "cash", length = 20, nullable = false)
   private Long cash;
 
-  @Column(name = "account_number", nullable = false)
+  @Column(name = "account_number", nullable = true)
   private String accountNumber;
 
 }

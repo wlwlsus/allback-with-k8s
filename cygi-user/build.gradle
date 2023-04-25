@@ -35,6 +35,10 @@ dependencies {
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+	 //	jwt
+	// https://mvnrepository.com/artifact/com.auth0/java-jwt
+	implementation 'com.auth0:java-jwt:4.2.1'
+
 }
 
 tasks.named('test') {
