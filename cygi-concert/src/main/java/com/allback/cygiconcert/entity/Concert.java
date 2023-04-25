@@ -26,8 +26,8 @@ public class Concert extends BaseTimeEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;    // 주최자 ID
 
-    @Column(name = "stage_id",nullable = false)
-    private Long stageId;   // 공연장 ID
+//    @Column(name = "stage_id",nullable = false)
+//    private Long stageId;   // 공연장 ID
 
     @Column(name = "title", nullable = false)
     private String title;   // 공연 이름
@@ -43,4 +43,9 @@ public class Concert extends BaseTimeEntity {
 
     @Column(name = "end_date",nullable = false)
     private LocalDateTime endDate;  // 공연 시작 시각
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stage_id")
+    private Stage stage;
+
 }

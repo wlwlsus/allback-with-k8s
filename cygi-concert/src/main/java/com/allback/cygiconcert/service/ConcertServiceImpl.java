@@ -6,8 +6,10 @@ import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
 import com.allback.cygiconcert.entity.Concert;
+import com.allback.cygiconcert.entity.Stage;
 import com.allback.cygiconcert.mapper.ConcertMapper;
 import com.allback.cygiconcert.repository.ConcertRepository;
+import com.allback.cygiconcert.repository.StageRepository;
 import com.allback.cygiconcert.util.S3Upload;
 
 import com.allback.cygiconcert.util.exception.BaseException;
@@ -29,24 +31,23 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConcertServiceImpl implements ConcertService {
 
     private final ConcertRepository concertRepository;
+    private final StageRepository stageRepository;
     private final ConcertMapper concertMapper;
     private final UserServerClient userServerClient;
-    private final PaymentServerClient paymentServerClient;
     private final S3Upload s3Upload;
 
     @Override
     public void registConcert(ConcertReqDto concertReqDto, MultipartFile image) throws Exception {
         //주최자 id 있는지 확인
-        if (!userServerClient.checkUserId(concertReqDto.getUserId())) {
+        if (!userServerClient.checkUserId(concertReqDto.getUserId()).getBody()) {
             throw new BaseException(ErrorMessage.USER_NOT_FOUND);
         }
         log.info("[registConcert] : 주최자id 조회 성공, userId : {}", concertReqDto.getStageId());
 
         //공연장 id 있는지 확인
-        if (!paymentServerClient.checkStageId(concertReqDto.getStageId())) {
-            throw new BaseException(ErrorMessage.STAGE_NOT_FOUND);
-        }
-        log.info("[registConcert] : 공연장id 조회 성공, stageId : {}", concertReqDto.getStageId());
+        Stage stage = stageRepository.findById(concertReqDto.getStageId())
+            .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
+        log.info("[registConcert] : 공연장id 조회 성공, stageId : {}", stage.getStageId());
 
         //이미지 링크 생성
         String imgLink = getImgLink(image);
