@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./SeatList.module.css";
+import Poster from "img/poster_detail.png";
 
 export default function SeatList() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export default function SeatList() {
       location: "싸피콘서트 A홀",
       seelct_seat: "A-01",
       concert_start: "23/04/18 15시",
+      poster: Poster,
+      price: 20000,
     },
   ];
 
@@ -19,6 +22,9 @@ export default function SeatList() {
   const [location, setlocation] = useState();
   const [seat, setSeat] = useState();
   const [date, setDate] = useState();
+  const [price, setPrice] = useState();
+  const [poster, setPoster] = useState();
+
   const [isLoading, setIsloading] = useState(true);
   const rowNo = [
     "",
@@ -91,12 +97,15 @@ export default function SeatList() {
   useEffect(() => {
     async function fetchData() {
       setTitle(data[0].title);
+      setPoster(data[0].poster);
       setlocation(data[0].location);
       setDate(data[0].concert_start);
       setIsloading(false);
+      setPrice(data[0].price);
     }
     fetchData();
   }, []);
+  console.log(title, date, location, seat, Poster);
 
   return (
     <>
@@ -115,8 +124,18 @@ export default function SeatList() {
             <div className={style.reserve_btn}>
               <button
                 onClick={() => {
-                  navigate(`reservation`);
+                  navigate(`reservation`, {
+                    state: {
+                      title: title,
+                      seat: seat,
+                      locate: location,
+                      date: date,
+                      price: price,
+                      poster: poster,
+                    },
+                  });
                 }}
+                disabled={!seat ? true : false}
               >
                 예매하기
               </button>

@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Poster from "img/poster_detail.png";
 import style from "./ConcertList.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { $ } from "util/axios";
 
 export default function ConcertList() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, isError, data } = useQuery(["concert"], () => {
+    $.get(`/concert?page=10`);
+  });
 
   const datas = [
     {
@@ -89,6 +93,9 @@ export default function ConcertList() {
       ticket_start: "23/04/18 15시",
     },
   ];
+
+  console.log(data);
+
   return (
     <div className={style.total}>
       <div className={style.header}>공연 목록</div>
@@ -99,7 +106,7 @@ export default function ConcertList() {
       </div>
       <div className={style.container}>
         {!isLoading &&
-          datas.map((content) => {
+          data.data.map((content) => {
             return (
               <div
                 key={content.seq}
