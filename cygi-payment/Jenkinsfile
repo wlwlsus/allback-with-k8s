@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-payment || true && docker rm back-payment || true"
-                    sh "docker run --name back-payment -d -p 8090:8090 back-payment:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-payment -d -p 8001:8080 back-payment:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
