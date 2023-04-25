@@ -18,7 +18,6 @@ public class ReservationReqDto {
 
 	private long stageId;
 	private long userId;
-	private String status;
 	private int price;
 
 }

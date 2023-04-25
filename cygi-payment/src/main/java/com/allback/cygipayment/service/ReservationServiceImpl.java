@@ -1,7 +1,6 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.client.UserServerClient;
-import com.allback.cygipayment.dto.ReservationOriginalDto;
 import com.allback.cygipayment.dto.request.RefundRequest;
 import com.allback.cygipayment.dto.request.ReservationReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
@@ -29,74 +28,73 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
-  private final UserServerClient userServerClient;
-  private final ReservationRepository reservationRepository;
-  private final ReservationMapper reservationMapper;
+	private final UserServerClient userServerClient;
+	private final ReservationRepository reservationRepository;
+	private final ReservationMapper reservationMapper;
 
-  private final String refundMessage = "Refund Complete";
-  private final String reserveMessage = "Reserve Complete";
+	private final String refundMessage = "Refund Complete";
+	private final String reserveMessage = "Reserve Complete";
 
-  @Override
-  public List<ReservationResDto> getReservationList(Pageable pageable) {
-    List<Reservation> reservationPage = reservationRepository.findAll(pageable).getContent();
-    return reservationMapper.toDtoList(reservationPage);
-  }
+	@Override
+	public List<ReservationResDto> getReservationList(Pageable pageable) {
+		List<Reservation> reservationPage = reservationRepository.findAll(pageable).getContent();
+		return reservationMapper.toDtoList(reservationPage);
+	}
 
-  @Override
-  public ReservationResDto getReservationById(long reservationId) {
-    Optional<Reservation> reservationPage = reservationRepository.findById(reservationId);
-    Reservation reservation = reservationPage.orElse(null);
+	@Override
+	public ReservationResDto getReservationById(long reservationId) {
+		Optional<Reservation> reservationPage = reservationRepository.findById(reservationId);
+		Reservation reservation = reservationPage.orElse(null);
 
-    if (reservation == null) throw new NullPointerException("reservationPage must not be null");
+		if (reservation == null) throw new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER);
 
-    return reservationMapper.toDto(reservation);
-  }
-
-
-  @Override
-  @Transactional
-  public void cancelReservation(long reservationId) {
-
-    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
-    Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
-
-    if (reservation.getStatus().equals(refundMessage)) throw new RuntimeException("이미 환불 처리되었습니다.");
-
-    // 환불 로직 수행
-    reservation.setStatus(refundMessage);
-    reservationRepository.save(reservation);
-
-    // 환불 금액 되돌리기
-    RefundRequest refundRequest = new RefundRequest();
-    refundRequest.setUserId(reservation.getUserId());
-    refundRequest.setRefundAmount(reservation.getPrice());
-    userServerClient.refund(refundRequest);
-
-  }
+		return reservationMapper.toDto(reservation);
+	}
 
 
-  @Override
-  @Transactional
-  public void reserve(long reservationId, ReservationReqDto reservationReqDto) {
-    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
-    Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
-    if (reservation.getStatus().equals(reserveMessage)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
+	@Override
+	@Transactional
+	public void cancelReservation(long reservationId) {
 
-    // 예약 정보에서 필요한 필드를 추출합니다.
-    long stageId = reservationReqDto.getStageId();
-    long userId = reservationReqDto.getUserId();
-    String status = reservationReqDto.getStatus();
-    int price = reservationReqDto.getPrice();
+		Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+		Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
 
-    // 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
-    userServerClient.deductUserCash(userId, price);
+		if (reservation.getStatus().equals(refundMessage)) throw new BaseException(ErrorMessage.ALREADY_REFUND);
 
-    reservation.setReservation(stageId, userId, status, price);
-    reservationRepository.save(reservation);
-  }
+		// 환불 로직 수행
+		reservation.setStatus(refundMessage);
+		reservationRepository.save(reservation);
 
-  @Override
-  public void charge(long reservationId, long cash) {
+		// 환불 금액 되돌리기
+		RefundRequest refundRequest = new RefundRequest();
+		refundRequest.setUserId(reservation.getUserId());
+		refundRequest.setRefundAmount(reservation.getPrice());
+		userServerClient.refund(refundRequest);
 
-  }
+	}
+
+
+	@Override
+	@Transactional
+	public void reserve(long reservationId, ReservationReqDto reservationReqDto) {
+		Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+		Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
+		if (reservation.getStatus().equals(reserveMessage)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
+
+		// 예약 정보에서 필요한 필드를 추출합니다.
+		long stageId = reservationReqDto.getStageId();
+		long userId = reservationReqDto.getUserId();
+		int price = reservationReqDto.getPrice();
+
+		// 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
+		userServerClient.deductUserCash(userId, price);
+
+		reservation.setReservation(stageId, userId, reserveMessage, price);
+		reservationRepository.save(reservation);
+	}
+
+	@Override
+	public void charge(long reservationId, long cash) {
+
+	}
 }
