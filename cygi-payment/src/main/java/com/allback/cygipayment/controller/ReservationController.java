@@ -1,9 +1,13 @@
 package com.allback.cygipayment.controller;
 
 
+import com.allback.cygipayment.dto.request.KakaoPayApproveReqDto;
+import com.allback.cygipayment.dto.request.KakaoPayReqDto;
 import com.allback.cygipayment.dto.request.ReservationReqDto;
+import com.allback.cygipayment.dto.response.KakaoPayApproveResDto;
+import com.allback.cygipayment.dto.response.KakaoPayResDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
-import com.allback.cygipayment.service.PaymentService;
+import com.allback.cygipayment.service.KakaoPayService;
 import com.allback.cygipayment.service.ReservationService;
 import com.allback.cygipayment.util.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,56 +30,62 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationController {
 
-  private final PaymentService paymentService;
-  private final ReservationService reservationService;
+	private final KakaoPayService kakaoPayService;
+	private final ReservationService reservationService;
 
-  @Operation(summary = "예약 목록 조회")
-  @GetMapping(value = "")
-  public ResponseEntity<?> getReservationList(
-      @Schema(hidden = true)
-      Pageable pageable,
-      @Schema(description = "페이지 별 개수", example = "10")
-      @RequestParam
-      int size,
-      @Schema(description = "페이지", example = "0")
-      @RequestParam
-      int page
-  ) {
-    List<ReservationResDto> res = reservationService.getReservationList(pageable);
-    log.info("예약 목록 조회 데이터 : {}", res);
-    return Response.makeResponse(HttpStatus.OK, "예약 목록 조회 성공", res);
-  }
+	@Operation(summary = "예약 목록 조회")
+	@GetMapping(value = "")
+	public ResponseEntity<?> getReservationList(
+			@Schema(hidden = true)
+			Pageable pageable,
+			@Schema(description = "페이지 별 개수", example = "10")
+			@RequestParam
+			int size,
+			@Schema(description = "페이지", example = "0")
+			@RequestParam
+			int page
+	) {
+		List<ReservationResDto> res = reservationService.getReservationList(pageable);
+		log.info("예약 목록 조회 데이터 : {}", res);
+		return Response.makeResponse(HttpStatus.OK, "예약 목록 조회 성공", res);
+	}
 
-  @Operation(summary = "예약 세부 정보 조회")
-  @GetMapping(value = "/{reservationId}")
-  public ResponseEntity<?> getReservationInfo(@PathVariable long reservationId) {
-    ReservationResDto res = reservationService.getReservationById(reservationId);
-    log.info("예약 세부 정보 조회 : {}", res);
-    return Response.makeResponse(HttpStatus.OK, "예약 세부 정보 조회 성공", res);
-  }
+	@Operation(summary = "예약 세부 정보 조회")
+	@GetMapping(value = "/{reservationId}")
+	public ResponseEntity<?> getReservationInfo(@PathVariable long reservationId) {
+		ReservationResDto res = reservationService.getReservationById(reservationId);
+		log.info("예약 세부 정보 조회 : {}", res);
+		return Response.makeResponse(HttpStatus.OK, "예약 세부 정보 조회 성공", res);
+	}
 
-  @Operation(summary = "환불")
-  @PutMapping(value = "/refund/{reservationId}")
-  public ResponseEntity<?> getReservationCancel(@PathVariable long reservationId) {
-    reservationService.cancelReservation(reservationId);
-    return Response.ok("환불 성공");
-  }
+	@Operation(summary = "환불")
+	@PutMapping(value = "/refund/{reservationId}")
+	public ResponseEntity<?> getReservationCancel(@PathVariable long reservationId) {
+		reservationService.cancelReservation(reservationId);
+		return Response.ok("환불 성공");
+	}
 
-  @Operation(summary = "예약 및 결제")
-  @PutMapping(value = "/{reservationId}")
-  public ResponseEntity<?> reservationAndPayment(@PathVariable long reservationId,
-                                                 @RequestBody ReservationReqDto reservationReqDto) {
-    reservationService.reserve(reservationId, reservationReqDto);
-    return Response.makeResponse(HttpStatus.OK, "예약 및 결제 성공");
-  }
+	@Operation(summary = "예약")
+	@PutMapping(value = "/{reservationId}")
+	public ResponseEntity<?> reservationAndPayment(@PathVariable long reservationId,
+	                                               @RequestBody ReservationReqDto reservationReqDto) {
+		reservationService.reserve(reservationId, reservationReqDto);
+		return Response.makeResponse(HttpStatus.OK, "예약 성공");
+	}
 
-  @Operation(summary = "충전")
-  @PutMapping(value = "/charge/{reservationId}")
-  public ResponseEntity<?> payment(@PathVariable long reservationId,
-                                   @RequestParam long cash) {
-    reservationService.charge(reservationId, cash);
-    return Response.makeResponse(HttpStatus.OK, "충전 성공");
-  }
+	@Operation(summary = "결제 준비")
+	@PostMapping(value = "/charge")
+	public ResponseEntity<?> payment(@RequestBody KakaoPayReqDto request) {
+		KakaoPayResDto response = kakaoPayService.requestPayment(request);
+		log.info("KakaoPayResDto : {}", response);
+		return Response.makeResponse(HttpStatus.OK, "결제 준비 완료", response);
+	}
 
-
+	@Operation(summary = "결제 승인")
+	@PostMapping("/approve/{userId}")
+	public ResponseEntity<?> approvePayment(@PathVariable long userId, @RequestBody KakaoPayApproveReqDto requestDto) {
+		KakaoPayApproveResDto response = kakaoPayService.approvePayment(userId, requestDto);
+		log.info("KakaoPayApproveResDto : {}", requestDto);
+		return Response.makeResponse(HttpStatus.OK, "결제 승인 완료", response);
+	}
 }

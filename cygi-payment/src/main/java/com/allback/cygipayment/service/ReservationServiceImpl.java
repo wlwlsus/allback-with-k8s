@@ -1,7 +1,7 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.client.UserServerClient;
-import com.allback.cygipayment.dto.request.RefundRequest;
+import com.allback.cygipayment.dto.request.AmountReqDto;
 import com.allback.cygipayment.dto.request.ReservationReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
@@ -66,10 +66,10 @@ public class ReservationServiceImpl implements ReservationService {
 		reservationRepository.save(reservation);
 
 		// 환불 금액 되돌리기
-		RefundRequest refundRequest = new RefundRequest();
-		refundRequest.setUserId(reservation.getUserId());
-		refundRequest.setRefundAmount(reservation.getPrice());
-		userServerClient.refund(refundRequest);
+		AmountReqDto amountReqDto = new AmountReqDto();
+		amountReqDto.setUserId(reservation.getUserId());
+		amountReqDto.setAmount(reservation.getPrice());
+		userServerClient.amount(amountReqDto);
 
 	}
 
@@ -91,10 +91,5 @@ public class ReservationServiceImpl implements ReservationService {
 
 		reservation.setReservation(stageId, userId, reserveMessage, price);
 		reservationRepository.save(reservation);
-	}
-
-	@Override
-	public void charge(long reservationId, long cash) {
-
 	}
 }

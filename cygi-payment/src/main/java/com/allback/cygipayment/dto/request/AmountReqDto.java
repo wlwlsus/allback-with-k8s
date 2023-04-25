@@ -12,7 +12,7 @@ import lombok.*;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class RefundRequest {
+public class AmountReqDto {
 	private long userId;
-	private int refundAmount;
+	private int amount;
 }

@@ -1,6 +1,6 @@
 package com.allback.cygipayment.client;
 
-import com.allback.cygipayment.dto.request.RefundRequest;
+import com.allback.cygipayment.dto.request.AmountReqDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
 public interface UserServerClient {
-	@PutMapping("/refund")
-	void refund(@RequestBody RefundRequest request);
+	@PutMapping("/amount")
+	void amount(@RequestBody AmountReqDto request);
 
-  @PutMapping("/deduct/{userId}")
-  void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam(name = "price") int price);
+	@PutMapping("/deduct/{userId}")
+	void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam(name = "price") int price);
 }
 

@@ -14,6 +14,8 @@ public enum ErrorMessage {
 	EXIST_CONTENT(21, "이미 존재하는 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
 	ALREADY_RESERVE(22, "이미 예약되어 있습니다.", HttpStatus.BAD_REQUEST),
 	ALREADY_REFUND(23, "이미 환불 처리되었습니다.", HttpStatus.BAD_REQUEST),
+
+	FAIL_PAYMENT(23, "결제 실패하였습니다.", HttpStatus.BAD_REQUEST),
 	// NOT_EXIST_ID(100, "서버에 존재하지 않는 아이디입니다.", HttpStatus.BAD_REQUEST),
 	// NOT_PASSWORD(101, "잘못된 비밀번호입니다.", HttpStatus.BAD_REQUEST),
 	// DONT_EXIST_ACCOUNT(102, "이미 삭제 된 계정입니다.", HttpStatus.BAD_REQUEST),

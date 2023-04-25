@@ -1,6 +1,5 @@
 package com.allback.cygipayment.mapper;
 
-import com.allback.cygipayment.dto.ReservationOriginalDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import org.mapstruct.Mapper;
