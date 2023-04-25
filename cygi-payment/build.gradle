@@ -35,7 +35,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// Spring Cloud Gateway
-	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+	// implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 
 	// MapStruct
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
