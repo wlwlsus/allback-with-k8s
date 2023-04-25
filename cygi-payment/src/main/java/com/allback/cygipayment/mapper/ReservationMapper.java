@@ -23,4 +23,5 @@ public interface ReservationMapper {
 
 	@Mapping(target = "price", source = "price", defaultValue = "null")
 	List<ReservationResDto> toDtoList(List<Reservation> reservationList);
+
 }
