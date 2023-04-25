@@ -2,7 +2,7 @@ package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.client.UserServerClient;
 import com.allback.cygipayment.dto.request.AmountReqDto;
-import com.allback.cygipayment.dto.request.ReservationReqDto;
+import com.allback.cygipayment.dto.request.ReservationFillReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import com.allback.cygipayment.mapper.ReservationMapper;
@@ -76,15 +76,15 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	@Transactional
-	public void reserve(long reservationId, ReservationReqDto reservationReqDto) {
+	public void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto) {
 		Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
 		Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
 		if (reservation.getStatus().equals(reserveMessage)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
 
 		// 예약 정보에서 필요한 필드를 추출합니다.
-		long stageId = reservationReqDto.getStageId();
-		long userId = reservationReqDto.getUserId();
-		int price = reservationReqDto.getPrice();
+		long stageId = reservationFillReqDto.getStageId();
+		long userId = reservationFillReqDto.getUserId();
+		int price = reservationFillReqDto.getPrice();
 
 		// 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
 		userServerClient.deductUserCash(userId, price);

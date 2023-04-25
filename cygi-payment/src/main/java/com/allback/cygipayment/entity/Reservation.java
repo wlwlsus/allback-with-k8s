@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @ToString
 @Table(name = "reservation")
@@ -44,5 +44,9 @@ public class Reservation extends BaseTimeEntity {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+
+  public void setPrice(int price) {
+    this.price = price;
   }
 }

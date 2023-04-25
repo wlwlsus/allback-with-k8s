@@ -3,7 +3,7 @@ package com.allback.cygipayment.controller;
 
 import com.allback.cygipayment.dto.request.KakaoPayApproveReqDto;
 import com.allback.cygipayment.dto.request.KakaoPayReqDto;
-import com.allback.cygipayment.dto.request.ReservationReqDto;
+import com.allback.cygipayment.dto.request.ReservationFillReqDto;
 import com.allback.cygipayment.dto.response.KakaoPayApproveResDto;
 import com.allback.cygipayment.dto.response.KakaoPayResDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
@@ -68,8 +68,8 @@ public class ReservationController {
 	@Operation(summary = "예약")
 	@PutMapping(value = "/{reservationId}")
 	public ResponseEntity<?> reservationAndPayment(@PathVariable long reservationId,
-	                                               @RequestBody ReservationReqDto reservationReqDto) {
-		reservationService.reserve(reservationId, reservationReqDto);
+	                                               @RequestBody ReservationFillReqDto reservationFillReqDto) {
+		reservationService.reserve(reservationId, reservationFillReqDto);
 		return Response.makeResponse(HttpStatus.OK, "예약 성공");
 	}
 
