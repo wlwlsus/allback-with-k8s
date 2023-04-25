@@ -1,6 +1,6 @@
 package com.allback.cygiuser.service;
 
-import com.allback.cygiuser.dto.request.RefundRequest;
+import com.allback.cygiuser.dto.request.AmountRequest;
 import com.allback.cygiuser.entity.Passbook;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.repository.PassbookRepository;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public void refund(RefundRequest request) {
+	public void amount(AmountRequest request) {
 		// userId에 해당하는 사용자 조회
 		Users user = userRepository.findById(request.getUserId()).orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 		// 사용자의 passbook 조회
 		Passbook passbookBuilder = Passbook.builder()
 				.passbookId(passbook.getPassbookId())
-				.cash(passbook.getCash() + request.getRefundAmount())
+				.cash(passbook.getCash() + request.getAmount())
 				.accountNumber(passbook.getAccountNumber())
 				.build();
 
