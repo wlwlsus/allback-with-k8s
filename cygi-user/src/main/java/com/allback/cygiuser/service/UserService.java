@@ -4,5 +4,7 @@ import com.allback.cygiuser.dto.request.RefundRequest;
 
 public interface UserService {
 
-	void refund(RefundRequest request);
+  void refund(RefundRequest request);
+
+  void deductUserCash(long userId, int price);
 }

@@ -54,4 +54,5 @@ public class Users extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
 
+
 }
