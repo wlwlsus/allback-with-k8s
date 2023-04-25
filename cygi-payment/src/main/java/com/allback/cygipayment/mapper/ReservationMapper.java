@@ -1,5 +1,6 @@
 package com.allback.cygipayment.mapper;
 
+import com.allback.cygipayment.dto.ReservationOriginalDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import org.mapstruct.Mapper;
@@ -20,4 +21,5 @@ public interface ReservationMapper {
 
 	@Mapping(target = "price", source = "price", defaultValue = "null")
 	List<ReservationResDto> toDtoList(List<Reservation> reservationList);
+
 }

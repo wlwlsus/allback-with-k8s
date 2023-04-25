@@ -1,12 +1,15 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.client.UserServerClient;
+import com.allback.cygipayment.dto.ReservationOriginalDto;
 import com.allback.cygipayment.dto.request.RefundRequest;
 import com.allback.cygipayment.dto.request.ReservationReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import com.allback.cygipayment.mapper.ReservationMapper;
 import com.allback.cygipayment.repository.ReservationRepository;
+import com.allback.cygipayment.util.exception.BaseException;
+import com.allback.cygipayment.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
   private final ReservationRepository reservationRepository;
   private final ReservationMapper reservationMapper;
 
-  private final String refundMsg = "Refund Complete";
+  private final String refundMessage = "Refund Complete";
+  private final String reserveMessage = "Reserve Complete";
 
   @Override
   public List<ReservationResDto> getReservationList(Pageable pageable) {
@@ -54,12 +58,12 @@ public class ReservationServiceImpl implements ReservationService {
   public void cancelReservation(long reservationId) {
 
     Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
-    Reservation reservation = optionalReservation.orElseThrow(() -> new RuntimeException("예약 번호가 존재하지 않습니다."));
+    Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
 
-    if (reservation.getStatus().equals(refundMsg)) throw new RuntimeException("이미 환불 처리되었습니다.");
+    if (reservation.getStatus().equals(refundMessage)) throw new RuntimeException("이미 환불 처리되었습니다.");
 
     // 환불 로직 수행
-    reservation.setStatus(refundMsg);
+    reservation.setStatus(refundMessage);
     reservationRepository.save(reservation);
 
     // 환불 금액 되돌리기
@@ -72,8 +76,23 @@ public class ReservationServiceImpl implements ReservationService {
 
 
   @Override
+  @Transactional
   public void reserve(long reservationId, ReservationReqDto reservationReqDto) {
+    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+    Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
+    if (reservation.getStatus().equals(reserveMessage)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
 
+    // 예약 정보에서 필요한 필드를 추출합니다.
+    long stageId = reservationReqDto.getStageId();
+    long userId = reservationReqDto.getUserId();
+    String status = reservationReqDto.getStatus();
+    int price = reservationReqDto.getPrice();
+
+    // 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
+    userServerClient.deductUserCash(userId, price);
+
+    reservation.setReservation(stageId, userId, status, price);
+    reservationRepository.save(reservation);
   }
 
   @Override

@@ -2,8 +2,7 @@ package com.allback.cygipayment.client;
 
 import com.allback.cygipayment.dto.request.RefundRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * author : cadqe13@gmail.com
@@ -13,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
 public interface UserServerClient {
-	@PostMapping("/refund")
-	void refund(@RequestBody RefundRequest request);
+  @PutMapping("/refund")
+  void refund(@RequestBody RefundRequest request);
+
+  @PutMapping("/deduct/{userId}")
+  void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam int price);
 }
 
