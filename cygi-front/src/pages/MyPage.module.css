@@ -92,3 +92,13 @@
   font-size: 1.2em;
   font-weight: bold;
 }
+
+.kakao_pay_title {
+  margin-bottom: 10%;
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+.kakao_pay_btn {
+  cursor: pointer;
+}

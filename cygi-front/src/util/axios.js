@@ -8,7 +8,7 @@ export const $_user = axios.create({
 });
 
 export const $_payment = axios.create({
-  baseURL: "http://localhost:8001/api/v1",
+  baseURL: "http://localhost:8001/api/v1/reservation",
   headers: {
     "Content-Type": "application/json",
   },

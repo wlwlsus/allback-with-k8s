@@ -8,6 +8,7 @@ import ReserveComplete from "./pages/ReserveComplete";
 import MyPage from "./pages/MyPage";
 import Admin from "./pages/Admin";
 import Loading from "components/common/Loading";
+import SuccessPage from "components/kakao/SuccessPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/complete" element={<ReserveComplete />} />
         <Route path="/mypage/*" element={<MyPage />} />
+        <Route path="/success" element={<SuccessPage />} />
       </Routes>
     </>
   );
