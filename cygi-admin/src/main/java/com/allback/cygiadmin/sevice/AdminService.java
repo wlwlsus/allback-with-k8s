@@ -1,5 +1,8 @@
 package com.allback.cygiadmin.sevice;
 
-public class AdminService {
+import com.allback.cygiadmin.dto.response.TokenResDto;
 
+public interface AdminService {
+
+    TokenResDto getLoginToken(Long userId);
 }
