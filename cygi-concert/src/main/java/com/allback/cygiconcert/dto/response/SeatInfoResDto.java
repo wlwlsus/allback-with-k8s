@@ -13,7 +13,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SeatStatusResDto {
+public class SeatInfoResDto {
     String seat;
-    boolean status;
 }

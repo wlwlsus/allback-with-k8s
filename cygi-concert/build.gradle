@@ -35,9 +35,14 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+	// MapStruct
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2'
+
 
 }
 
