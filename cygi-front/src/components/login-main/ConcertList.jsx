@@ -7,8 +7,10 @@ import { $ } from "util/axios";
 
 export default function ConcertList() {
   const navigate = useNavigate();
-  const { isLoading, isError, data } = useQuery(["concert"], () => {
-    $.get(`/concert?page=10`);
+  const { isLoading, isError, data } = useQuery(["concert"], async () => {
+    // async 키워드 추가
+    const response = await $.get(`/concert?page=10`); // await 키워드 추가
+    return response.data; // 실제 데이터가 들어있는 response.data를 반환하도록 수정
   });
 
   const datas = [
