@@ -1,31 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import style from "./SeatList.module.css";
 import Poster from "img/poster_detail.png";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { $_concert } from "util/axios";
 
 export default function SeatList() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const data = [
-    {
-      seq: 0,
-      title: "맘마미아!",
-      location: "싸피콘서트 A홀",
-      seelct_seat: "A-01",
-      concert_start: "23/04/18 15시",
-      poster: Poster,
-      price: 20000,
-    },
-  ];
-
-  const [title, setTitle] = useState();
-  const [location, setlocation] = useState();
   const [seat, setSeat] = useState();
-  const [date, setDate] = useState();
-  const [price, setPrice] = useState();
-  const [poster, setPoster] = useState();
+  const [cols, setCols] = useState();
+  const [rows, setRows] = useState();
 
-  const [isLoading, setIsloading] = useState(true);
+  // 해당 공연장의 좌석 조회
+  const { isLoading, data } = useQuery(
+    [`seat-list_${location.state.concertId}`],
+    () => $_concert.get(`/seat/${location.state.concertId}`)
+  );
+
+  const newData = {
+    concertId: location.state.concertId,
+    seat: seat,
+  };
+
+  //API_POST 함수
+  const res_post = () => {
+    return $_concert.post(`/seat`, newData);
+  };
+
+  // 예매하기 클릭 시 이벤트 발생
+  const { mutate: onSelect } = useMutation(res_post, {
+    onSuccess: (res) => {
+      navigate(`reservation`, {
+        state: {
+          reservationId: res.data,
+          title: location.state.title,
+          seat: seat,
+          location: location.state.location,
+          endDate: location.state.endDate,
+          price: location.state.price,
+          image: location.state.image,
+        },
+      });
+    },
+  });
+
   const rowNo = [
     "",
     "A",
@@ -50,22 +70,27 @@ export default function SeatList() {
     "T",
   ];
 
-  let rows = 20;
-  let cols = 50;
-
-  const onSelect = (e) => {
-    setSeat(e);
+  const onClicked = (e) => {
+    if (e === seat) setSeat();
+    else setSeat(e);
   };
 
   //각 좌석의 btn 태그 생성
   const renderSeat = (row, col) => {
     const value = `${rowNo[row]}${col}`;
+
     return (
       <button
         key={value}
         value={value}
-        className={value === seat ? style.seat_selected : style.seat}
-        onClick={() => onSelect(value)}
+        className={
+          value.indexOf(data.data.seatList) !== -1
+            ? style.seat_reserved
+            : value === seat
+            ? style.seat_selected
+            : style.seat
+        }
+        onClick={() => onClicked(value)}
       ></button>
     );
   };
@@ -94,48 +119,47 @@ export default function SeatList() {
     rowsElements.push(renderRow(row));
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      setTitle(data[0].title);
-      setPoster(data[0].poster);
-      setlocation(data[0].location);
-      setDate(data[0].concert_start);
-      setIsloading(false);
-      setPrice(data[0].price);
+  const onCheck = () => {
+    if (seat === undefined || seat === null) {
+      alert("좌석을 선택하여주세요.");
+      return;
     }
-    fetchData();
-  }, []);
-  console.log(title, date, location, seat, Poster);
+    onSelect();
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      setCols(data.data.col);
+      setRows(data.data.row);
+      console.log(data.data.seatList);
+    }
+  }, [isLoading]);
 
   return (
     <>
-      {!isLoading && (
+      {!isLoading && data && (
         <div className={style.container}>
           <div className={style.header}>
-            <div className={style.title}>{title}</div>
+            <div className={style.title}>{location.state.title}</div>
             <div className={style.information}>
               <div className={style.name}>공연일</div>
-              <div className={style.content}>{date}</div>
+              <div className={style.content}>
+                {location.state.endDate.slice(0, 4)}년&nbsp;
+                {location.state.endDate.slice(5, 7)}월&nbsp;
+                {location.state.endDate.slice(8, 10)}일&nbsp;
+                {location.state.endDate.slice(11, 13)}시&nbsp;
+                {location.state.endDate.slice(14, 16)}분&nbsp;
+              </div>
               <div className={style.name}>공연장소</div>
-              <div className={style.content}>{location}</div>
+              <div className={style.content}>{location.state.location}</div>
               <div className={style.name}>선택 좌석</div>
               <div className={style.content}>{seat}</div>
             </div>
             <div className={style.reserve_btn}>
               <button
                 onClick={() => {
-                  navigate(`reservation`, {
-                    state: {
-                      title: title,
-                      seat: seat,
-                      locate: location,
-                      date: date,
-                      price: price,
-                      poster: poster,
-                    },
-                  });
+                  onCheck();
                 }}
-                disabled={!seat ? true : false}
               >
                 예매하기
               </button>

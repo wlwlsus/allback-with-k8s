@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import style from "./Reservation.module.css";
 
@@ -19,6 +19,29 @@ export default function Reservation() {
     }
   };
 
+  // 페이지 벗어날시 예약상태 초기화
+  const preventGoBack = (e) => {
+    console.log(e);
+  };
+
+  // 새로고침 막기 변수
+  const preventClose = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
+
+  useEffect(() => {
+    (() => {
+      window.addEventListener("popstate", preventGoBack);
+      window.addEventListener("beforeunload", preventClose);
+    })();
+
+    return () => {
+      window.removeEventListener("popstate", preventGoBack);
+      window.removeEventListener("beforeunload", preventClose);
+    };
+  }, []);
+
   return (
     <div>
       <div className={style.total}>
@@ -26,7 +49,7 @@ export default function Reservation() {
           <div>
             <img
               className={style.poster_img}
-              src={location.state.poster}
+              src={location.state.image}
               alt=""
             />
           </div>
@@ -38,8 +61,7 @@ export default function Reservation() {
                   state: {
                     title: location.state.title,
                     seat: location.state.seat,
-                    locate: location.state.locate,
-                    date: location.state.date,
+                    endDate: location.state.endDate,
                     price: location.state.price,
                   },
                 });
@@ -96,11 +118,11 @@ export default function Reservation() {
             </div>
             <div className={style.location}>
               <div className={style.title}>공연장</div>
-              <div className={style.content}>{location.state.locate}</div>
+              <div className={style.content}>{location.state.location}</div>
             </div>
             <div className={style.date}>
               <div className={style.title}>공연일</div>
-              <div className={style.content}>{location.state.date}</div>
+              <div className={style.content}>{location.state.endDate}</div>
             </div>
           </div>
           <div className={style.pay}>

@@ -15,8 +15,8 @@ export const $_payment = axios.create({
 });
 
 export const $_concert = axios.create({
-  // baseURL: "http://localhost:8002/api/v1",
-  baseURL: "https://k8a806.p.ssafy.io:3002/api/v1",
+  baseURL: "http://localhost:8002/api/v1",
+  // baseURL: "https://k8a806.p.ssafy.io:3002/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

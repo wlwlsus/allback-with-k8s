@@ -1,11 +1,12 @@
 .total {
-  margin-left: 18%;
+  margin-left: 6%;
   margin-right: 18%;
   margin-top: 5%;
   width: 1200px;
 }
 
 .header {
+  width: 1700px;
   text-align: center;
   font-size: 3em;
   font-weight: bold;
@@ -13,14 +14,16 @@
 }
 
 .descript {
+  width: 1700px;
   text-align: center;
   margin-bottom: 5%;
+  font-size: 1.3em;
 }
 
 .container {
   display: flex;
   flex-wrap: wrap;
-  width: 1400px;
+  width: 1700px;
 }
 
 .card {
@@ -55,7 +58,7 @@
 
 .content_title {
   margin-top: 5%;
-  margin-left: 10%;
+  margin-left: 5%;
   color: white;
   font-size: 1.5em;
   font-weight: bold;
@@ -63,7 +66,7 @@
 
 .contents {
   margin-top: 5%;
-  margin-left: 10%;
+  margin-left: 5%;
   margin-bottom: 5%;
 }
 
@@ -84,6 +87,6 @@
 }
 
 .content {
-  width: 300px;
+  width: 430px;
   color: white;
 }

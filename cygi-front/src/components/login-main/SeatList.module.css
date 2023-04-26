@@ -21,7 +21,7 @@
 .information {
   display: grid;
   width: 1000px;
-  grid-template-columns: 10% 22% 13% 25% 15% 15%;
+  grid-template-columns: 10% 30% 13% 30% 15% 15%;
 }
 
 .name {
@@ -30,7 +30,7 @@
 }
 
 .content {
-  font-size: 1.4em;
+  font-size: 1.3em;
 }
 
 .reserve_btn > button {
@@ -112,10 +112,10 @@
   border: none;
 }
 
-.seat_disabled {
+.seat_reserved {
   width: 20px;
   height: 20px;
-  background-color: #ff0000;
+  background-color: #f57171;
   margin-left: 5px;
   border: none;
 }

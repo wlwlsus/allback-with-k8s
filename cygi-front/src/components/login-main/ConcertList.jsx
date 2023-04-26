@@ -1,102 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Poster from "img/poster_detail.png";
 import style from "./ConcertList.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $ } from "util/axios";
+import { $_concert } from "util/axios";
 
 export default function ConcertList() {
   const navigate = useNavigate();
-  const { isLoading, isError, data } = useQuery(["concert"], async () => {
-    // async 키워드 추가
-    const response = await $.get(`/concert?page=10`); // await 키워드 추가
-    return response.data; // 실제 데이터가 들어있는 response.data를 반환하도록 수정
-  });
 
-  const datas = [
-    {
-      seq: 0,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 1,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 2,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 3,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 4,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 5,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 6,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 7,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 8,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 9,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-  ];
+  const [page, setPage] = useState(1);
 
-  console.log(data);
+  const { isLoading, data } = useQuery(["concert"], () =>
+    $_concert.get(`/concert?page=${page}`)
+  );
+
+  const onSelect = (id) => {
+    navigate(`detail/${id}`, {
+      state: {
+        concertId: id,
+      },
+    });
+  };
 
   return (
     <div className={style.total}>
@@ -108,29 +32,41 @@ export default function ConcertList() {
       </div>
       <div className={style.container}>
         {!isLoading &&
+          data &&
           data.data.map((content) => {
+            let date =
+              content.endDate.slice(0, 4) +
+              "/" +
+              content.endDate.slice(5, 7) +
+              "/" +
+              content.endDate.slice(8, 10) +
+              " " +
+              content.endDate.slice(11, 13) +
+              "시" +
+              content.endDate.slice(14, 16) +
+              "분";
             return (
               <div
-                key={content.seq}
+                key={content.concertId}
                 className={style.card}
                 onClick={() => {
-                  navigate(`detail/${1}`);
+                  onSelect(content.concertId);
                 }}
               >
                 <div className={style.poster_url}>
-                  <img src={content.poster_url} alt="" />
+                  <img src={content.image} alt="" />
                 </div>
                 <div className={style.content_title}>{content.title}</div>
                 <div className={style.contents}>
                   <div className={style.name}>
                     <div className={style.title}>잔여좌석</div>
                     <div className={style.content}>
-                      {content.remain_seat} / {content.total_seat}
+                      {content.rest} / {content.all}
                     </div>
                   </div>
                   <div className={style.seat}>
-                    <div className={style.title}>예매시작일</div>
-                    <div className={style.content}>{content.ticket_start}</div>
+                    <div className={style.title}>예매마감일</div>
+                    <div className={style.content}>{date}</div>
                   </div>
                 </div>
               </div>
