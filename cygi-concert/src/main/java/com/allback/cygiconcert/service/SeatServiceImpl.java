@@ -4,11 +4,8 @@ import com.allback.cygiconcert.client.PaymentServerClient;
 import com.allback.cygiconcert.dto.request.ReservationReqDto;
 import com.allback.cygiconcert.dto.request.SeatStatusChangeReqDto;
 import com.allback.cygiconcert.dto.response.SeatRestCntResDto;
-import com.allback.cygiconcert.dto.response.SeatInfoResDto;
 import com.allback.cygiconcert.entity.Concert;
-import com.allback.cygiconcert.entity.Stage;
 import com.allback.cygiconcert.repository.ConcertRepository;
-import com.allback.cygiconcert.repository.StageRepository;
 import com.allback.cygiconcert.util.exception.BaseException;
 import com.allback.cygiconcert.util.exception.ErrorMessage;
 import java.util.HashMap;
@@ -39,7 +36,7 @@ public class SeatServiceImpl implements SeatService {
         int col = concert.getStage().getCol();
 
         //결제컨테이너이너의 예약완료거나 예약중 좌석리스트반환
-        List<String> seatList = paymentServerClient.getSoldSeatInfo().getBody();
+        List<String> seatList = paymentServerClient.getSoldSeatInfo(concertId).getBody();
 
         //반환
         Map<String, Object> map = new HashMap<>();
