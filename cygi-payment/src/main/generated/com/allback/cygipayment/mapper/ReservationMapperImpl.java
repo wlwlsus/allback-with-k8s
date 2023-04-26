@@ -1,5 +1,6 @@
 package com.allback.cygipayment.mapper;
 
+import com.allback.cygipayment.dto.request.ReservationReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import java.util.ArrayList;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-25T13:28:27+0900",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.7 (Amazon.com Inc.)"
+    date = "2023-04-26T04:10:03+0900",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Amazon.com Inc.)"
 )
 @Component
 public class ReservationMapperImpl implements ReservationMapper {
@@ -31,6 +32,20 @@ public class ReservationMapperImpl implements ReservationMapper {
         reservationResDto.setSeat( reservation.getSeat() );
 
         return reservationResDto;
+    }
+
+    @Override
+    public Reservation toEntity(ReservationReqDto reservationReqDto) {
+        if ( reservationReqDto == null ) {
+            return null;
+        }
+
+        Reservation reservation = new Reservation();
+
+        reservation.setPrice( reservationReqDto.getPrice() );
+        reservation.setStatus( reservationReqDto.getStatus() );
+
+        return reservation;
     }
 
     @Override

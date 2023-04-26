@@ -3,16 +3,19 @@ package com.allback.cygipayment.util.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorMessage {
+
+
 	// VALIDATION_FAIL_EXCEPTION(-1, "입력 값의 조건이 잘못 되었습니다.", HttpStatus.BAD_REQUEST),
 	QUERY_FAIL_EXCEPTION(0, "JPA 쿼리가 잘못 되었습니다.", HttpStatus.BAD_REQUEST),
 	// UNDEFINED_EXCEPTION(0, "정의되지 않은 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	// BINDING_FAIL_EXCEPTION(1, "내부 서버에서 오류가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	NOT_PERMISSION_EXCEPTION(5, "권한이 없거나 부족합니다.", HttpStatus.FORBIDDEN),
-	IPFS_CONNECTION_EXCEPTION(11, "IPFS 연결이 되지 않았습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-	IPFS_FILE_EXCEPTION(12, "IPFS 파일을 읽는 데 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-	// REQUEST_EXCEPTION(10, "", HttpStatus.BAD_REQUEST),
-	NOT_EXIST_CONTENT(20, "존재하지 않는 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
+	NOT_EXIST_RESERVATION_NUMBER(20, "예약 번호가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
 	EXIST_CONTENT(21, "이미 존재하는 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
+	ALREADY_RESERVE(22, "이미 예약되어 있습니다.", HttpStatus.BAD_REQUEST),
+	ALREADY_REFUND(23, "이미 환불 처리되었습니다.", HttpStatus.BAD_REQUEST),
+
+	FAIL_PAYMENT(23, "결제 실패하였습니다.", HttpStatus.BAD_REQUEST),
 	// NOT_EXIST_ID(100, "서버에 존재하지 않는 아이디입니다.", HttpStatus.BAD_REQUEST),
 	// NOT_PASSWORD(101, "잘못된 비밀번호입니다.", HttpStatus.BAD_REQUEST),
 	// DONT_EXIST_ACCOUNT(102, "이미 삭제 된 계정입니다.", HttpStatus.BAD_REQUEST),
