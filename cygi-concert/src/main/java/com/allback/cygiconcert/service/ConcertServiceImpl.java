@@ -14,6 +14,7 @@ import com.allback.cygiconcert.util.S3Upload;
 
 import com.allback.cygiconcert.util.exception.BaseException;
 import com.allback.cygiconcert.util.exception.ErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,8 +67,27 @@ public class ConcertServiceImpl implements ConcertService {
         PageRequest pageRequest = PageRequest.of(page - 1, 10);
         List<Concert> concertPage = concertRepository.findAll(pageRequest).getContent();
         log.info("[getConcertPage] : 공연장 목록 조회 성공 : {}", concertPage.size());
-
-        return concertMapper.toDtoList(concertPage);
+        //all, rest 추가 해야함
+        //우선 concertId만 빼기
+        List<ConcertPageResDto> concertPageList = concertMapper.toDtoList(concertPage);
+        List<Long> concertIdList = new ArrayList<>();
+        int size = concertPageList.size();
+        for (int i = 0; i < size; i++) {
+            concertIdList.add(concertPage.get(i).getConcertId());
+        }
+        List<Integer> allList = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            Concert concert = concertRepository.findById(concertIdList.get(i))
+                .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
+            allList.add(concert.getStage().getCol() * concert.getStage().getRow());
+        }
+        List<Integer> soldList = paymentServerClient.getRestSeatCntList(concertIdList).getBody();
+        for (int i = 0; i < size; i++) {
+            int all = allList.get(i);
+            concertPageList.get(i).setAll(all);
+            concertPageList.get(i).setRest(all - soldList.get(i));
+        }
+        return concertPageList;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.allback.cygiconcert.dto.response;
 
+import com.allback.cygiconcert.entity.Stage;
 import lombok.*;
 
 import java.time.LocalDateTime;

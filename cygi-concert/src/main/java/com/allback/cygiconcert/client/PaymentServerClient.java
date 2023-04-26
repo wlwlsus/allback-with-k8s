@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,5 +29,6 @@ public interface PaymentServerClient {
 
     @GetMapping("/server-concert/seat/{concertId}")
     ResponseEntity<List<String>> getSeatInfo(@PathVariable Long concertId);
-
+    @PostMapping("/server-concert/rest")
+    ResponseEntity<List<Integer>> getRestSeatCntList(@RequestBody List<Long> concertIdList);
 }
