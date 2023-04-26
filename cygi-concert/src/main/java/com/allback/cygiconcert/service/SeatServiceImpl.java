@@ -35,10 +35,8 @@ public class SeatServiceImpl implements SeatService {
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
 
         //전체 좌석 정보 확인
-        Stage stage = stageRepository.findById(concert.getStage().getStageId())
-            .orElseThrow(() -> new BaseException(ErrorMessage.STAGE_NOT_FOUND));
-        int row = stage.getRow();
-        int col = stage.getCol();
+        int row = concert.getStage().getRow();
+        int col = concert.getStage().getCol();
 
         //결제컨테이너이너의 예약완료거나 예약중 좌석리스트반환
         List<String> seatList = paymentServerClient.getSeatInfo(concertId).getBody();
