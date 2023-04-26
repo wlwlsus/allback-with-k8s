@@ -1,0 +1,19 @@
+version: "3"
+services:
+  client:
+    container_name: client
+    build:
+      context: ./cygi-front
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+  nginx:
+    container_name: nginx
+    build: ./.nginx
+    depends_on:
+      - client
+    volumes:
+      - .nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - 80:80
+      - 443:443
