@@ -1,0 +1,102 @@
+.total {
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* 좌측 div css */
+.poster_img {
+  width: 400px;
+  height: 600px;
+  border-radius: 10px;
+  box-shadow: 1px 4px 2px 2px #43434180;
+}
+
+.left_div {
+  text-align: center;
+  margin-right: 2%;
+}
+
+.btn {
+  width: 250px;
+  height: 50px;
+  font-size: 1.7em;
+  font-weight: bold;
+  background-color: #75a4ff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  margin-top: 10%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background-color: #1b4aa7;
+  transition: all 0.3s;
+}
+
+/* 우측 div css */
+
+.right_div {
+  background-image: url(/src/img/receipt.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 400px;
+  height: 700px;
+  margin-left: 2%;
+  padding-left: 2%;
+}
+
+.pay_type {
+  font-size: 1.5em;
+  margin-top: 30%;
+  margin-bottom: 3%;
+  font-weight: 600;
+}
+
+.btn_type {
+  display: flex;
+  width: 280px;
+  justify-content: space-between;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.radio_btn {
+  cursor: pointer;
+}
+
+.contents {
+  margin-top: 15%;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 3%;
+}
+
+.title {
+  width: 150px;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.content {
+  width: 300px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+.pay {
+  display: flex;
+  margin-top: 17%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3em;
+}
+
+.pay > .title {
+  margin-right: 20%;
+  width: 300px;
+}

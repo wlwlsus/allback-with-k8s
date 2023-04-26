@@ -1,0 +1,8 @@
+.container {
+  display: flex;
+  height: 1000px;
+}
+
+.right_div {
+  height: 1000px;
+}

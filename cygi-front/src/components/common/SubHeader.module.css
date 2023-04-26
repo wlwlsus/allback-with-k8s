@@ -1,0 +1,56 @@
+.header {
+  max-width: 1920px;
+  height: 65px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+  font-size: 16px;
+  position: relative;
+  background-color: rbga(255, 255, 255, 0);
+  padding: 0 20px;
+  box-shadow: 0px 1px 1px 1px #43434180;
+}
+
+.header_left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.logo {
+  width: 50px;
+}
+
+.logo_name {
+  font-weight: 700;
+  font-size: 1.5em;
+  margin-left: 10px;
+}
+
+.header_right {
+  width: 70%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.nologin {
+  cursor: pointer;
+}
+
+.login {
+  cursor: pointer;
+}
+
+.mypage {
+  cursor: pointer;
+}
+
+.admin {
+  cursor: pointer;
+}
+
+.loading {
+  cursor: pointer;
+}

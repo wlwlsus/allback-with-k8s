@@ -1,0 +1,89 @@
+.total {
+  margin-left: 18%;
+  margin-right: 18%;
+  margin-top: 5%;
+  width: 1200px;
+}
+
+.header {
+  text-align: center;
+  font-size: 3em;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+
+.descript {
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 1400px;
+}
+
+.card {
+  background-color: #a33b39;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 5%;
+  width: 270px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.card:hover {
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.poster_url {
+  width: 220px;
+  height: 300px;
+  margin-top: 5%;
+  margin-left: 10%;
+  margin-right: 2%;
+}
+
+.poster_url > img {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+}
+
+.content_title {
+  margin-top: 5%;
+  margin-left: 10%;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.contents {
+  margin-top: 5%;
+  margin-left: 10%;
+  margin-bottom: 5%;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 1%;
+}
+
+.concert_title {
+  font-size: 4em;
+  margin-bottom: 30%;
+  color: white;
+}
+
+.title {
+  width: 250px;
+  color: white;
+}
+
+.content {
+  width: 300px;
+  color: white;
+}
