@@ -29,19 +29,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
-        System.out.println("Access Token : " + userRequest.getAccessToken()); // org.springframework.security.oauth2.core.OAuth2AccessToken@6ac383dd
-        System.out.println("client id : " + userRequest.getClientRegistration().getClientId()); // 6a1d3bc13059fff7378e513ede3a36a2
-        System.out.println("client name : " + userRequest.getClientRegistration().getClientName()); // Kakao
-        System.out.println("client secret : " + userRequest.getClientRegistration().getClientSecret()); // yCeJ01jCXTKvKWDITAM7KsV44YLFr5Ky
-        System.out.println("client authentication method : " + userRequest.getClientRegistration().getClientAuthenticationMethod()); // org.springframework.security.oauth2.core.ClientAuthenticationMethod@2590a0
-        System.out.println("registration id : " + userRequest.getClientRegistration().getRegistrationId()); // kakao
-        System.out.println("authorization grant type : " + userRequest.getClientRegistration().getAuthorizationGrantType()); // org.springframework.security.oauth2.core.AuthorizationGrantType@5da5e9f3
-        System.out.println("provider details : " + userRequest.getClientRegistration().getProviderDetails()); // org.springframework.security.oauth2.client.registration.ClientRegistration$ProviderDetails@9b28173
-        System.out.println("scopes : " + userRequest.getClientRegistration().getScopes()); // [profile_nickname, account_email, profile_image]
-        System.out.println("redirect uri : " + userRequest.getClientRegistration().getRedirectUri()); // http://localhost:8080/login/oauth2/code/kakao
-
-
-        System.out.println("--------------------------------------------- 해당 정보를 client로 보내야 할것으로 보입니다");
+//        System.out.println("Access Token : " + userRequest.getAccessToken()); // org.springframework.security.oauth2.core.OAuth2AccessToken@6ac383dd
+//        System.out.println("client id : " + userRequest.getClientRegistration().getClientId()); // 6a1d3bc13059fff7378e513ede3a36a2
+//        System.out.println("client name : " + userRequest.getClientRegistration().getClientName()); // Kakao
+//        System.out.println("client secret : " + userRequest.getClientRegistration().getClientSecret()); // yCeJ01jCXTKvKWDITAM7KsV44YLFr5Ky
+//        System.out.println("client authentication method : " + userRequest.getClientRegistration().getClientAuthenticationMethod()); // org.springframework.security.oauth2.core.ClientAuthenticationMethod@2590a0
+//        System.out.println("registration id : " + userRequest.getClientRegistration().getRegistrationId()); // kakao
+//        System.out.println("authorization grant type : " + userRequest.getClientRegistration().getAuthorizationGrantType()); // org.springframework.security.oauth2.core.AuthorizationGrantType@5da5e9f3
+//        System.out.println("provider details : " + userRequest.getClientRegistration().getProviderDetails()); // org.springframework.security.oauth2.client.registration.ClientRegistration$ProviderDetails@9b28173
+//        System.out.println("scopes : " + userRequest.getClientRegistration().getScopes()); // [profile_nickname, account_email, profile_image]
+//        System.out.println("redirect uri : " + userRequest.getClientRegistration().getRedirectUri()); // http://localhost:8080/login/oauth2/code/kakao
+//
+//
+//        System.out.println("--------------------------------------------- 해당 정보를 client로 보내야 할것으로 보입니다");
         OAuth2UserService<OAuth2UserRequest, OAuth2User> service = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = service.loadUser(userRequest); //Oauth2 정보를 가져온다????
 
@@ -59,8 +59,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId(); // kakao
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        System.out.println("registrationId : " + registrationId);
-        System.out.println("userNameAttributeName : " + userNameAttributeName);
+//        System.out.println("registrationId : " + registrationId);
+//        System.out.println("userNameAttributeName : " + userNameAttributeName);
 
 //        return null;
 
@@ -68,8 +68,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfo.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
         Users user = saveOrUpdate(userInfo);
 
-        System.out.println(" >>>>>>>>>>>> " + userInfo.getAttributes());
+//        System.out.println(" >>>>>>>>>>>> " + userInfo.getAttributes());
 
+        System.out.println("--------------------------- Oauth실행됨");
 //        세션은 사용하지 않는다
 //        httpSession.setAttribute("user", new SessionUser(user));
 
@@ -80,7 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         System.out.println("-------------------- save or update");
 //        System.out.println(userInfo.getAttributes().get("kakao_account"));
 
-        Users user =  userRepository.findOneByuuid(userInfo.getAttributes().get("id").toString());
+        Users user =  userRepository.findOneByemail(((Map<String, Object>)userInfo.getAttributes().get("kakao_account")).get("email").toString());
 //        System.out.println("--------------------" + user.toString());
 
         if(user == null) {
@@ -91,8 +92,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             passbookRepository.save(passbook);
 
             user = userInfo.toEntity(passbook);
+            System.out.println("save");
         }
-        else user.update(userInfo.getAttributes().get("nickname").toString());
+        else {
+            user.update(((Map<String, Object>)userInfo.getAttributes().get("properties")).get("nickname").toString());
+            System.out.println("update");
+        }
 
         System.out.println(user);
 
