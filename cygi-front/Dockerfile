@@ -11,6 +11,4 @@ RUN npm run build
 
 FROM nginx:alpine
 
-ADD ./build ./build
-
 CMD ["nginx", "-g", "daemon off;"]
