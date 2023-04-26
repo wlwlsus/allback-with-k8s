@@ -23,8 +23,8 @@ pipeline{
         stage('Deploy Docker'){
             steps{
                 script{
-                    sh 'docker build -t front:${env.BUILD_NUMBER} cygi-front/'
-                    sh 'docker run -d -p 3000:3000 --name front frontend:${env.BUILD_NUMBER}'
+                    sh "docker build -t front:${env.BUILD_NUMBER} cygi-front/"
+                    sh "docker run -d -p 3000:3000 --name front frontend:${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline{
         stage('Finish'){
             steps{
                 script{
-                    sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
+                    sh "docker images -qf dangling=true | xargs -I{} docker rmi {}"
                 }
             }
         }
