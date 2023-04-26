@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SeatService {
-    Map<String, Object> getStatus(long concertId) throws Exception;
+    Map<String, Object> getStatus(Long concertId) throws Exception;
 
     Long changeStatus(SeatStatusChangeReqDto seatStatusChangeReqDto)throws Exception;
 

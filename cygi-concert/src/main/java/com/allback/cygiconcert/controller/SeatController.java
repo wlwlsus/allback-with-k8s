@@ -27,13 +27,6 @@ public class SeatController {
 
     private final SeatServiceImpl seatService;
 
-    @Operation(summary = "좌석 정보 조회")
-    @GetMapping("/{concertId}")
-    public ResponseEntity<Map<String, Object>> getSeatInfo(@PathVariable long concertId)
-        throws Exception {
-        Map<String, Object> seatStatus = seatService.getStatus(concertId);
-        return new ResponseEntity<>(seatStatus, HttpStatus.OK);
-    }
 
     @Operation(summary = "좌석 상태 변경")
     @PostMapping("")
@@ -56,6 +49,14 @@ public class SeatController {
         throws Exception {
         SeatRestCntResDto seatRestCntResDto = seatService.getRestSeatCnt(concertId);
         return new ResponseEntity<>(seatRestCntResDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "좌석 정보 조회")
+    @GetMapping("/{concertId}")
+    public ResponseEntity<Map<String, Object>> getSeatInfo(@PathVariable Long concertId)
+        throws Exception {
+        Map<String, Object> seatStatus = seatService.getStatus(concertId);
+        return new ResponseEntity<>(seatStatus, HttpStatus.OK);
     }
 
 

@@ -26,9 +26,6 @@ public class Concert extends BaseTimeEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;    // 주최자 ID
 
-    @Column(name = "stage_id",nullable = false)
-    private Long stageId;   // 공연장 ID
-
     @Column(name = "title", nullable = false)
     private String title;   // 공연 이름
 
@@ -38,9 +35,14 @@ public class Concert extends BaseTimeEntity {
     @Column(name = "image", nullable = false, length = 1000)
     private String image;   // 공연 이미지 URL
 
-    @Column(name = "start_date",nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;    // 예매 시작 시각
 
-    @Column(name = "end_date",nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;  // 공연 시작 시각
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stage_id")
+    private Stage stage;
+
 }
