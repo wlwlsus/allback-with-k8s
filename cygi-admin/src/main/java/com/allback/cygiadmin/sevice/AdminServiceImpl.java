@@ -1,5 +1,11 @@
 package com.allback.cygiadmin.sevice;
 
-public class AdminServiceImpl {
+import com.allback.cygiadmin.dto.response.TokenResDto;
 
+public class AdminServiceImpl implements AdminService {
+
+    @Override
+    public TokenResDto getLoginToken(Long userId) {
+        return null;
+    }
 }
