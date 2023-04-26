@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "seat", description = "공연서버를 위한 API")
 @Slf4j
 @RestController
-@RequestMapping("/server/concert")
+@RequestMapping("/server-concert")
 @RequiredArgsConstructor
 public class SeatController {
 
@@ -33,6 +33,12 @@ public class SeatController {
         return new ResponseEntity<>(reservationId, HttpStatus.CREATED);
     }
 
+    @GetMapping("/seat/{concertId}")
+    ResponseEntity<List<String>> getSoldSeatInfo(@PathVariable Long concertId) {
+        List<String> seatList = seatService.getSoldSeatList(concertId);
+        return new ResponseEntity<>(seatList, HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/seat/{reservationId}")
     ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId) {
@@ -42,16 +48,15 @@ public class SeatController {
 
 
     @GetMapping("/rest/{concertId}")
-    ResponseEntity<Integer> getSoldSeatCnt(Long concertId) {
+    ResponseEntity<Integer> getSoldSeatCnt(@PathVariable Long concertId) {
         int sold = seatService.getSoldSeatCnt(concertId);
         return new ResponseEntity<>(sold, HttpStatus.OK);
     }
-
-
-    @GetMapping("/seat/{concertId}")
-    ResponseEntity<List<String>> getSoldSeatInfo(long concertId) {
-        List<String> seatList = seatService.getSoldSeatList(concertId);
-        return new ResponseEntity<>(seatList, HttpStatus.OK);
+    @PostMapping("/rest")
+    ResponseEntity<List<Integer>> getSoldSeatCnt(@RequestBody List<Long> concertIdList) {
+        List<Integer> soldList = seatService.getSoldSeatCntList(concertIdList);
+        return new ResponseEntity<>(soldList, HttpStatus.OK);
     }
+
 
 }

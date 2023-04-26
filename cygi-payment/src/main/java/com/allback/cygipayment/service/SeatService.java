@@ -12,5 +12,7 @@ public interface SeatService {
 
     int getSoldSeatCnt(Long concertId);
 
-    List<String> getSoldSeatList(long concertId);
+    List<String> getSoldSeatList(Long concertId);
+
+    List<Integer> getSoldSeatCntList(List<Long> concertIdList);
 }

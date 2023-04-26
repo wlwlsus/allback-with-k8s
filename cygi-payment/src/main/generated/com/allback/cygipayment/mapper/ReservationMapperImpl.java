@@ -43,7 +43,11 @@ public class ReservationMapperImpl implements ReservationMapper {
         Reservation reservation = new Reservation();
 
         reservation.setPrice( reservationReqDto.getPrice() );
+        reservation.setConcertId( reservationReqDto.getConcertId() );
+        reservation.setStageId( reservationReqDto.getStageId() );
+        reservation.setUserId( reservationReqDto.getUserId() );
         reservation.setStatus( reservationReqDto.getStatus() );
+        reservation.setSeat( reservationReqDto.getSeat() );
 
         return reservation;
     }
