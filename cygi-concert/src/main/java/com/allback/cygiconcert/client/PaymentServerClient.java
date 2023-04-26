@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component
 public interface PaymentServerClient {
 
-    @PostMapping("/server-concert/seat")
+    @PostMapping("/seat")
     ResponseEntity<Long> chageStatus(@RequestBody ReservationReqDto reservationReqDto);
 
-    @DeleteMapping("/server-concert/seat/{reservationId}")
+    @DeleteMapping("/seat/{reservationId}")
     ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId);
 
-    @GetMapping("/server-concert/rest/{concertId}")
+    @GetMapping("/rest/{concertId}")
     ResponseEntity<Integer> getRestSeatCnt(@PathVariable Long concertId);
 
-    @GetMapping("/server-concert/seat/{concertId}")
+    @GetMapping("/seat/{concertId}")
     ResponseEntity<List<String>> getSeatInfo(@PathVariable Long concertId);
-    @PostMapping("/server-concert/rest")
+    @PostMapping("/rest")
     ResponseEntity<List<Integer>> getRestSeatCntList(@RequestBody List<Long> concertIdList);
 }
