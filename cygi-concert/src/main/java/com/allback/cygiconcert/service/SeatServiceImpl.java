@@ -46,7 +46,7 @@ public class SeatServiceImpl implements SeatService {
         map.put("row", row);
         map.put("col", col);
         map.put("seatList", seatList);
-
+        log.info("[getStatus] : 공연 좌석정보 조회 성공");
         return map;
     }
 
@@ -68,7 +68,7 @@ public class SeatServiceImpl implements SeatService {
             .build();
 
         Long reservationId = paymentServerClient.chageStatus(reservationReqDto).getBody();
-
+        log.info("[changeStatus] : 예약중 등록 성공, reservationId : {}", reservationId);
         return reservationId;
     }
 
@@ -76,6 +76,7 @@ public class SeatServiceImpl implements SeatService {
     public void deleteReservationById(Long reservationId) {
         //결제컨테이너의 reservation 테이블 에서 resevationId기반으로 삭제
         paymentServerClient.deleteReservationById(reservationId);
+        log.info("[deleteReservationById] : 예약중 삭제 성공");
     }
 
     @Override
@@ -97,6 +98,7 @@ public class SeatServiceImpl implements SeatService {
             .rest(rest)
             .build();
 
+        log.info("[getRestSeatCnt] : 전체좌석, 남은좌석 조회 성공, all : {}, rest : {}", all, rest);
         return seatRestCntResDto;
     }
 }
