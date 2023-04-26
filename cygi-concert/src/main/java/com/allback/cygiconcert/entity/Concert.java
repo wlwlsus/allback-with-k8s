@@ -31,8 +31,7 @@ public class Concert extends BaseTimeEntity {
 
     @Column(name = "content", nullable = false, length = 1000)
     private String content; // 공연 설명
-    @Column(name = "location", nullable = false, length = 1000)
-    private String location; // 공연 장소
+
 
     @Column(name = "image", nullable = false, length = 1000)
     private String image;   // 공연 이미지 URL

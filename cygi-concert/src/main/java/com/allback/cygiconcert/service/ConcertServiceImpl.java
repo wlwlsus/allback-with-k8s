@@ -96,6 +96,7 @@ public class ConcertServiceImpl implements ConcertService {
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
         ConcertResDto concertResDto = concertMapper.toDto(concert);
         concertResDto.setPrice(concert.getStage().getPrice());
+        concertResDto.setLocation(concert.getStage().getLocation());
         log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concert.getConcertId());
         return concertResDto;
     }
