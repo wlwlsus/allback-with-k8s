@@ -29,7 +29,7 @@ pipeline{
             }
         }
 
-        stage('Deploy Docker'){
+        stage('Finish'){
             steps{
                 script{
                     sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
