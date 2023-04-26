@@ -14,5 +14,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeatInfoResDto {
-    String seat;
+    private String seat;
 }
