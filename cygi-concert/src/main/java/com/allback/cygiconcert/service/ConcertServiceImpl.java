@@ -94,9 +94,10 @@ public class ConcertServiceImpl implements ConcertService {
     public ConcertResDto getConcert(Long id) {
         Concert concert = concertRepository.findById(id)
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
-
+        ConcertResDto concertResDto = concertMapper.toDto(concert);
+        concertResDto.setPrice(concert.getStage().getPrice());
         log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concert.getConcertId());
-        return concertMapper.toDto(concert);
+        return concertResDto;
     }
 
     private String getImgLink(MultipartFile image) throws Exception {
