@@ -4,7 +4,6 @@ services:
     container_name: client
     build:
       context: ./cygi-front
-      dockerfile: Dockerfile
     ports:
       - 3000:3000
   nginx:
