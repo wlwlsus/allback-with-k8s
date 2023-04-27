@@ -26,9 +26,6 @@ export default function ConcertDetail() {
       },
     });
   };
-  useEffect(() => {
-    if (!isLoading) console.log(data);
-  }, [isLoading]);
 
   return (
     <>
