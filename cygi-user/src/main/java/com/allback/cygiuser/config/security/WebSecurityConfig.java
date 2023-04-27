@@ -4,10 +4,12 @@ import com.allback.cygiuser.config.filter.MyFilter;
 import com.allback.cygiuser.config.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.allback.cygiuser.config.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.allback.cygiuser.config.oauth.service.CustomOAuth2UserService;
+import com.allback.cygiuser.jwt.JwtTokenProvider;
 import jakarta.persistence.Basic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,6 +25,9 @@ public class WebSecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 //    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final CorsFilter corsFilter;
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
     @Bean
@@ -65,7 +70,7 @@ public class WebSecurityConfig {
     @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
         return new OAuth2AuthenticationSuccessHandler(
-                oAuth2AuthorizationRequestBasedOnCookieRepository(),
+//                oAuth2AuthorizationRequestBasedOnCookieRepository(),
                 jwtTokenProvider,
                 redisTemplate
         );
