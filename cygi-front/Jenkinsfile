@@ -23,8 +23,8 @@ pipeline{
         stage('Deploy Docker'){
             steps{
                 script{
-                    sh "docker stop front-nginx || true && docker rm front-nginx || true"
-                    sh "docker stop front-client || true && docker rm front-client || true"
+                    sh "docker stop nginx || true && docker rm nginx || true"
+                    sh "docker stop client || true && docker rm client || true"
                     sh "docker compose up -d"
                 }
             }
