@@ -1,2 +1,2 @@
 FROM nginx:stable-alpine
-RUN rm -rf /etc/nginx/conf.d/default.conf
+RUN rm -rf /etc/nginx/conf.d/nginx.conf
