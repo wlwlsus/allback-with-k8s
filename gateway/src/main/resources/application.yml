@@ -15,14 +15,14 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8000/
+          uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
-#          filters:
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+          filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: payment-service
-          uri: http://localhost:8001/
+          uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/payment-service/**
-#          filters:
-#            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+          filters:
+            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
