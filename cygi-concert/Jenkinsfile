@@ -30,24 +30,20 @@ pipeline{
             }
         }
 
-        //stage('Build Docker'){
-        //    steps{
-        //        script{
-                    //sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-concert/"
-        //        }
-        //    }
-        //}
+        stage('Build Docker'){
+            steps{
+                script{
+                    sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-concert/"
+                }
+            }
+        }
 
         stage('Deploy Docker'){
             steps{
                 script{
                     sh "docker stop back-concert || true && docker rm back-concert || true"
-                    sh "docker stop beat-concert || true && docker rm beat-concert || true"
-                    //sh "docker run --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
-                    //sh "docker image prune -a -f || true"
-
-                    sh "docker compose up -d"
-                    sh "docker compose up -d server"
+                    sh "docker run --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
+                    sh "docker image prune -a -f || true"
                 }
             }
         }
