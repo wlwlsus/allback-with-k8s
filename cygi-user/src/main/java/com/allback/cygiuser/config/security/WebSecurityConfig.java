@@ -39,6 +39,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilter(corsFilter) // 모든 요청은 이 필터를 탄다
                 .authorizeHttpRequests()
+                .requestMatchers("/api/v1/dashboard").hasAnyRole("ADMIN")
                 .requestMatchers("/api/v1/**").permitAll() // 요청 권한은 나중에 처리
                 .and()
                 .oauth2Login()
@@ -64,9 +65,9 @@ public class WebSecurityConfig {
     @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
         return new OAuth2AuthenticationSuccessHandler(
-//                oAuth2AuthorizationRequestBasedOnCookieRepository(),
-//                jwtTokenProvider,
-//                redisTemplate
+                oAuth2AuthorizationRequestBasedOnCookieRepository(),
+                jwtTokenProvider,
+                redisTemplate
         );
     }
 
