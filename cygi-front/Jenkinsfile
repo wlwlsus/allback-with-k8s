@@ -23,9 +23,6 @@ pipeline{
         stage('Deploy Docker'){
             steps{
                 script{
-                    //sh "docker build -t front:${env.BUILD_NUMBER} cygi-front/"
-                    //sh "docker stop front || true && docker rm front || true"
-                    //sh "docker run -d -p 3000:3000 --name front front:${env.BUILD_NUMBER}"
                     sh "docker compose up -d"
                 }
             }
