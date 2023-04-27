@@ -30,13 +30,13 @@ pipeline{
             }
         }
 
-        stage('Build Docker'){
-            steps{
-                script{
+        //stage('Build Docker'){
+        //    steps{
+        //        script{
                     //sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-concert/"
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         stage('Deploy Docker'){
             steps{
