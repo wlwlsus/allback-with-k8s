@@ -2,7 +2,7 @@ services:
     filebeat:
         container_name: beat-concert
         build:
-            context:
+            context: ./cygi-concert/filebeat
         ports:
             - 5042:5044
         #volumes:
