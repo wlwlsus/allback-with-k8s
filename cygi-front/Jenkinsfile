@@ -25,7 +25,7 @@ pipeline{
                 script{
                     sh "docker stop nginx || true && docker rm nginx || true"
                     sh "docker stop client || true && docker rm client || true"
-                    sh "docker compose up -d"
+                    sh "docker compose up -d -v"
                 }
             }
         }
