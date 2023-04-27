@@ -44,6 +44,11 @@ dependencies {
     // Feign Client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2'
 
+    //Spring Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+
+
 }
 
 tasks.named('test') {
