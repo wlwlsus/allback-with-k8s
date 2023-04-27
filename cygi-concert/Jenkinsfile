@@ -45,8 +45,8 @@ pipeline{
                     //sh "docker run --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
                     //sh "docker image prune -a -f || true"
 
-                    sh "docker-compose up -d"
-                    sh "docker-compose up -d server"
+                    sh "docker compose up -d"
+                    sh "docker compose up -d server"
                 }
             }
         }
