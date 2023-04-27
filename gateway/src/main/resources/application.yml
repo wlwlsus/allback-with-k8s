@@ -3,22 +3,26 @@ server:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: http://localhsot:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
 spring:
   application:
     name: gateway-service
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: first-service
-#          uri: http://localhost:8001/
-#          predicates:
-#            - Path=/first-service/**
-#        - id: second-service
-#          uri: http://localhost:8002/
-#          predicates:
-#            - Path=/second-service/**
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://localhost:8000/
+          predicates:
+            - Path=/user-service/**
+#          filters:
+#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: payment-service
+          uri: http://localhost:8001/
+          predicates:
+            - Path=/payment-service/**
+#          filters:
+#            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
