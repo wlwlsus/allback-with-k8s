@@ -5,8 +5,8 @@ services:
             context:
         ports:
             - 5042:5044
-        volumes:
-            - ${HOST_LOG_PATH}:/var/log/server
+        #volumes:
+        #    - ${HOST_LOG_PATH}:/var/log/server
     server:
         container_name: back-concert
         build:
