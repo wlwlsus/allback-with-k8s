@@ -14,7 +14,7 @@ export default function SeatList() {
   const [rows, setRows] = useState();
 
   // 해당 공연장의 좌석 조회
-  const { isLoading, data } = useQuery(
+  const { isLoading, data, refetch } = useQuery(
     [`seat-list_${location.state.concertId}`],
     () => $_concert.get(`/seat/${location.state.concertId}`)
   );
@@ -74,23 +74,27 @@ export default function SeatList() {
     if (e === seat) setSeat();
     else setSeat(e);
   };
+  const getKeyByValue = (obj, value) => {
+    return Object.keys(obj).find((key) => obj[key] === value);
+  };
 
   //각 좌석의 btn 태그 생성
   const renderSeat = (row, col) => {
     const value = `${rowNo[row]}${col}`;
-
+    const key = getKeyByValue(data.data.seatList, value);
     return (
       <button
         key={value}
         value={value}
         className={
-          value.indexOf(data.data.seatList) !== -1
+          key !== undefined
             ? style.seat_reserved
             : value === seat
             ? style.seat_selected
             : style.seat
         }
         onClick={() => onClicked(value)}
+        disabled={key !== undefined ? true : false}
       ></button>
     );
   };
@@ -124,14 +128,21 @@ export default function SeatList() {
       alert("좌석을 선택하여주세요.");
       return;
     }
-    onSelect();
+    // 좌석 한번 더 갱신
+    refetch();
+    const key = getKeyByValue(data.data.seatList, seat);
+    if (key === undefined) {
+      onSelect();
+    } else {
+      alert("이미 예약된 좌석입니다. 다른 좌석을 선택해주세요.");
+      setSeat();
+    }
   };
 
   useEffect(() => {
     if (!isLoading) {
       setCols(data.data.col);
       setRows(data.data.row);
-      console.log(data.data.seatList);
     }
   }, [isLoading]);
 

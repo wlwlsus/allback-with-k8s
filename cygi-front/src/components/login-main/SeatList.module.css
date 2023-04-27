@@ -97,11 +97,13 @@
   background-color: #bebec2;
   margin-left: 5px;
   border: none;
+  cursor: pointer;
 }
 
 .seat:hover {
   background-color: #6161ff;
   border: none;
+  cursor: pointer;
 }
 
 .seat_selected {
@@ -110,6 +112,7 @@
   background-color: #0000ff;
   margin-left: 5px;
   border: none;
+  cursor: pointer;
 }
 
 .seat_reserved {

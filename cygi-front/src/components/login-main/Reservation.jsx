@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import style from "./Reservation.module.css";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { $_concert } from "util/axios";
 
 export default function Reservation() {
   const navigate = useNavigate();
@@ -19,27 +21,36 @@ export default function Reservation() {
     }
   };
 
-  // 페이지 벗어날시 예약상태 초기화
-  const preventGoBack = (e) => {
-    console.log(e);
+  // API_DELETE 함수
+  const res_delete = () => {
+    return $_concert.delete(
+      `/seat/delete/${location.state.reservationId}`,
+      location.state.reservationId
+    );
   };
 
-  // 새로고침 막기 변수
-  const preventClose = (e) => {
+  // 페이지 벗어날 시 이벤트 발생
+  const { mutate: onDelete } = useMutation(res_delete);
+
+  const handleBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = "";
+    onDelete();
+    setTimeout(() => {
+      navigate("../../../");
+    }, 1000);
   };
 
   useEffect(() => {
-    (() => {
-      window.addEventListener("popstate", preventGoBack);
-      window.addEventListener("beforeunload", preventClose);
-    })();
-
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener("popstate", preventGoBack);
-      window.removeEventListener("beforeunload", preventClose);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
+  }, []);
+
+  useEffect(() => {
+    console.log(location.state.reservationId);
+    if (location.state.reservationId === undefined) navigate("../../../");
   }, []);
 
   return (
@@ -122,7 +133,13 @@ export default function Reservation() {
             </div>
             <div className={style.date}>
               <div className={style.title}>공연일</div>
-              <div className={style.content}>{location.state.endDate}</div>
+              <div className={style.content}>
+                {location.state.endDate.slice(0, 4)}년&nbsp;
+                {location.state.endDate.slice(5, 7)}월&nbsp;
+                {location.state.endDate.slice(8, 10)}일&nbsp;
+                {location.state.endDate.slice(11, 13)}시&nbsp;
+                {location.state.endDate.slice(14, 16)}분&nbsp;
+              </div>
             </div>
           </div>
           <div className={style.pay}>
