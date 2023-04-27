@@ -1,0 +1,26 @@
+service: &service concert
+
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - "/var/log/*service/*.log"
+    tags: ["*service-log"]
+    fields: {log_type: *service, index_type: *service-log}
+  - type: log
+    paths:
+      - "/var/log/*service/access/*.log"
+    tags: ["*service-access"]
+    fields: {log_type: *service, index_type: *service-access}
+    exclude_lines: ['.*ELB-HealthChecker.*']
+  - type: log
+    paths:
+      - "/var/log/*service/error/*.log"
+    tags: ["*service-error"]
+    fields: {log_type: *service, index_type: *service-error} 
+
+setup.dashboards.enabled: false  
+
+output.logstash:
+  hosts: ["k8A806.p.ssafy.io:5000"]
+  # hosts: ["logstash:5000"] # docker-elk 내부에서 띄울 경우

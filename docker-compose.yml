@@ -1,0 +1,16 @@
+services:
+    filebeat:
+        container_name: beat-concert
+        build:
+            context:
+        ports:
+            - 5042:5044
+        volumes:
+            - ${HOST_LOG_PATH}:/var/log/server
+    server:
+        container_name: back-concert
+        build:
+            context: ./cygi-concert
+        ports:
+            - 8002:8090
+        command: bash -c "docker-compose up -d filebeat"
