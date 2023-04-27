@@ -1,5 +1,3 @@
-service: &service concert
-
 filebeat.inputs:
   - type: log
     enabled: true
