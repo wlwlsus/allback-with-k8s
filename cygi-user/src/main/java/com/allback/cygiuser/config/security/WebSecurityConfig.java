@@ -44,17 +44,14 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeHttpRequests()
-//        .requestMatchers("/ws/**", "/api/v1/user/password-find/**", "/api/v1/user/email-check/**", "/api/v1" +
-//            "/user/email" +
-//            "-valid/**", "/api/v1/user", "/api/v1/user/login", "/api/v1/user/logout", "/api/v1/user/token", "/swagger-ui/**", "/v3/api" +
-//            "-docs/**").permitAll()
-        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
+        .requestMatchers("/login").permitAll();
+//        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
 
     httpSecurity
         .oauth2Login()
         .authorizationEndpoint()
         .baseUri("/oauth2/authorization")
-//        .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
+        .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
         .and()
         .redirectionEndpoint()
         .baseUri("/*/oauth2/code/*")

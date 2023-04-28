@@ -23,7 +23,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class Users extends BaseTimeEntity implements OAuth2User, UserDetails, OidcUser {
+public class Users extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,65 +53,4 @@ public class Users extends BaseTimeEntity implements OAuth2User, UserDetails, Oi
   @Column(name = "provider", length = 20, nullable = false)
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
-
-
-  @Override
-  public Map<String, Object> getClaims() {
-    return null;
-  }
-
-  @Override
-  public OidcUserInfo getUserInfo() {
-    return null;
-  }
-
-  @Override
-  public OidcIdToken getIdToken() {
-    return null;
-  }
-
-  @Override
-  public Map<String, Object> getAttributes() {
-    return null;
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
-  }
-
-  @Override
-  public String getPassword() {
-    return null;
-  }
-
-  @Override
-  public String getUsername() {
-    return null;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return false;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return false;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return false;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return false;
-  }
-
-  @Override
-  public String getName() {
-    return null;
-  }
 }
