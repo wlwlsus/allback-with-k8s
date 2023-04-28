@@ -10,7 +10,8 @@ spring:
     generate-ddl: false
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_concert
+    # url: jdbc:mysql://localhost:3306/ssafy806_concert
+    url: jdbc:mysql://k8A806.p.ssafy.io:3308/ssafy806_concert
     username: ssafy806
     password: ssafy806
   servlet:
@@ -32,12 +33,14 @@ cloud:
 
 user:
   server:
-    url: http://localhost:8000
+    # url: http://localhost:8000
+    url: http://k8A806.p.ssafy.io:8000
     prefix: /api/v1
 
 payment:
   server:
-    url: http://localhost:8001
+    # url: http://localhost:8001
+    url: http://k8A806.p.ssafy.io:8000
     prefix: /api/v1/server-concert
 
 logging:
