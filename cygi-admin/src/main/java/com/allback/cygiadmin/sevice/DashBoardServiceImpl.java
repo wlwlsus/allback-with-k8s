@@ -22,6 +22,8 @@ public class DashBoardServiceImpl implements DashBoardService {
 
     @Override
     public List<UserResDto> getUsers() {
+        System.out.println("dashboard impl get users");
+        System.out.println(userServerClient.getUsers());
         return userServerClient.getUsers().getBody();
     }
 
