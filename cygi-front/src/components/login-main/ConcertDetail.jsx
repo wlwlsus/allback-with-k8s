@@ -9,10 +9,23 @@ export default function ConcertDetail() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  let nowTime = new Date();
+
   const { isLoading, data } = useQuery(
     [`concert_${location.state.concertId}`],
     () => $_concert.get(`/concert/${location.state.concertId}`)
   );
+
+  const onCheck = () => {
+    $_concert.get(`seat/rest/${location.state.concertId}`).then((res) => {
+      if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
+        alert("마감되었습니다. 다른 공연을 예매해주세요.");
+        navigate("/home");
+      } else {
+        onSelect(data.data.concertId);
+      }
+    });
+  };
 
   const onSelect = (id) => {
     navigate(`seat`, {
@@ -82,7 +95,7 @@ export default function ConcertDetail() {
               <div className={style.reserve_btn}>
                 <button
                   onClick={() => {
-                    onSelect(data.data.concertId);
+                    onCheck();
                   }}
                 >
                   예매하기

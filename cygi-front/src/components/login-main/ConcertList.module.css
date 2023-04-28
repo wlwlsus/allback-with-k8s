@@ -38,8 +38,18 @@
 }
 
 .card:hover {
-  opacity: 0.5;
+  opacity: 0.7;
   transition: all 0.3s;
+}
+
+.card_disable {
+  background-color: #a33b39;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 5%;
+  width: 270px;
+  border-radius: 10px;
+  opacity: 0.2;
 }
 
 .poster_url {

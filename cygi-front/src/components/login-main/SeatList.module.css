@@ -33,6 +33,10 @@
   font-size: 1.3em;
 }
 
+.btn_list {
+  display: flex;
+}
+
 .reserve_btn > button {
   width: 150px;
   height: 70px;
@@ -45,10 +49,30 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  margin-right: 50px;
 }
 
 .reserve_btn > button:hover {
   background-color: #1b4aa7;
+  transition: all 0.3s;
+}
+
+.cancel_btn > button {
+  width: 150px;
+  height: 70px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  background-color: #fa6e6e;
+  height: 40px;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancel_btn > button:hover {
+  background-color: #f81515;
   transition: all 0.3s;
 }
 

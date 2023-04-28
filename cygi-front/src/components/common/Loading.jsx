@@ -23,7 +23,9 @@ export default function Loading() {
       <span className={style.warning}>
         ※재접속 시, 대기시간이 더 길어집니다.
       </span>
-      <button className={style.btn}>요청중지</button>
+      <button className={style.btn} onClick={() => navigate("/home")}>
+        요청중지
+      </button>
     </div>
   );
 }

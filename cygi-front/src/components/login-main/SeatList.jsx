@@ -8,6 +8,7 @@ import { $_concert } from "util/axios";
 export default function SeatList() {
   const navigate = useNavigate();
   const location = useLocation();
+  let nowTime = new Date();
 
   const [seat, setSeat] = useState();
   const [cols, setCols] = useState();
@@ -175,6 +176,11 @@ export default function SeatList() {
       alert("좌석을 선택하여주세요.");
       return;
     }
+    console.log(nowTime >= new Date(data.data.endDate));
+    if (nowTime >= new Date(data.data.endDate)) {
+      alert("마감된 공연입니다.");
+      navigate("/home");
+    }
     // 좌석 한번 더 갱신
     refetch();
     const key = getKeyByValue(data.data.seatList, seat);
@@ -213,14 +219,25 @@ export default function SeatList() {
               <div className={style.name}>선택 좌석</div>
               <div className={style.content}>{seat}</div>
             </div>
-            <div className={style.reserve_btn}>
-              <button
-                onClick={() => {
-                  onCheck();
-                }}
-              >
-                예매하기
-              </button>
+            <div className={style.btn_list}>
+              <div className={style.reserve_btn}>
+                <button
+                  onClick={() => {
+                    onCheck();
+                  }}
+                >
+                  예매하기
+                </button>
+              </div>
+              <div className={style.cancel_btn}>
+                <button
+                  onClick={() => {
+                    navigate("/home");
+                  }}
+                >
+                  메인으로
+                </button>
+              </div>
             </div>
           </div>
           <div className={style.main}>

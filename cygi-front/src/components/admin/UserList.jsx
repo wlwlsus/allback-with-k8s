@@ -1,7 +1,14 @@
 import React from "react";
 import style from "./UserList.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { $_admin } from "util/axios";
 
 export default function UserList() {
+  // 사용자 목록 조회
+  const { isLoading, data } = useQuery(["user"], () =>
+    $_admin.get(`/dashboard/user`)
+  );
+
   return (
     <div className={style.container}>
       <div className={style.user}>

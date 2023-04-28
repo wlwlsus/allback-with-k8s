@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import SubHeader from "../components/common/SubHeader";
 import style from "./MyPage.module.css";
 import Profile from "img/profile.png";
 import KakaoPay from "img/payment_icon_yellow_small.png";
 import axios from "axios";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { $_user } from "util/axios";
 
 export default function MyPage() {
+  const [page, setPage] = useState(1);
+  const [reservationId, setReservationId] = useState();
+
+  // 예약 목록 조회
+  const { isLoading, data, refetch } = useQuery(["mypage"], () =>
+    $_user.get(`/reservation?page=${page}`)
+  );
+
+  // API_PUT 함수
+  const res_put = () => {
+    return $_user.put(`/reservation/refund/${reservationId}`);
+  };
+
+  // 예약 취소 & 환불
+  const { mutate: onRefund } = useMutation(res_put, {
+    onSuccess: () => {
+      alert("환불이 완료되었습니다.");
+      refetch();
+    },
+  });
+
   const paymentData = {
     cid: "TC0ONETIME",
     partner_order_id: "1001",
@@ -61,7 +84,6 @@ export default function MyPage() {
               src={KakaoPay}
               alt=""
               onClick={() => {
-                console.log("클릭!");
                 preparePayment(paymentData);
                 // navigate("../home");
               }}

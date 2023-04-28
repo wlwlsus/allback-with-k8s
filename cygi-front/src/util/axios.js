@@ -22,8 +22,8 @@ export const $_concert = axios.create({
   },
 });
 
-export const $ = axios.create({
-  baseURL: "http://localhost:8002/api/v1",
+export const $_admin = axios.create({
+  baseURL: "http://localhost:8090/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Poster from "img/poster_detail.png";
 import style from "./ConcertList.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { $_concert } from "util/axios";
 
 export default function ConcertList() {
   const navigate = useNavigate();
+  const bottomObserver = useRef(null);
+  let nowTime = new Date();
 
   const [page, setPage] = useState(1);
+  const [bottom, setBottom] = useState(null);
+  const [list, setList] = useState([]);
 
-  const { isLoading, data } = useQuery(["concert"], () =>
+  const { isLoading, data, refetch } = useQuery(["concert"], () =>
     $_concert.get(`/concert?page=${page}`)
   );
 
@@ -21,6 +24,35 @@ export default function ConcertList() {
       },
     });
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage(page + 1);
+          refetch();
+        }
+      },
+      { threshold: 0.25, rootMargin: "80px" }
+    );
+    bottomObserver.current = observer;
+  }, []);
+
+  useEffect(() => {
+    const observer = bottomObserver.current;
+    if (bottom) {
+      observer.observe(bottom);
+    }
+    return () => {
+      if (bottom) {
+        observer.unobserve(bottom);
+      }
+    };
+  }, [bottom]);
+
+  useEffect(() => {
+    if (!isLoading) setList((list) => [...list, data.data]);
+  }, [isLoading]);
 
   return (
     <div className={style.total}>
@@ -48,9 +80,14 @@ export default function ConcertList() {
             return (
               <div
                 key={content.concertId}
-                className={style.card}
+                className={
+                  content.rest === 0 || nowTime >= new Date(content.endDate)
+                    ? style.card_disable
+                    : style.card
+                }
                 onClick={() => {
-                  onSelect(content.concertId);
+                  if (content.rest !== 0 && nowTime < new Date(content.endDate))
+                    onSelect(content.concertId);
                 }}
               >
                 <div className={style.poster_url}>
@@ -61,18 +98,23 @@ export default function ConcertList() {
                   <div className={style.name}>
                     <div className={style.title}>잔여좌석</div>
                     <div className={style.content}>
-                      {content.rest} / {content.all}
+                      {content.rest === 0
+                        ? "마감"
+                        : content.rest + "/" + content.all}
                     </div>
                   </div>
                   <div className={style.seat}>
                     <div className={style.title}>예매마감일</div>
-                    <div className={style.content}>{date}</div>
+                    <div className={style.content}>
+                      {nowTime >= new Date(content.endDate) ? "마감" : date}
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })}
       </div>
+      <div ref={setBottom}></div>
     </div>
   );
 }
