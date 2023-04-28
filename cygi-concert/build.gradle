@@ -42,7 +42,8 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 	// Feign Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2'
-
+	// Filebeat
+	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
 
 }
 
