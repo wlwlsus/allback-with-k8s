@@ -40,9 +40,9 @@ payment:
     url: http://localhost:8001
     prefix: /api/v1/server-concert
 
-logging:
-  level:
-    com:
-      allback:
-        cygiconcert: info
-  config: classpath:logback.xml
+# logging:
+#   level:
+#     com:
+#       allback:
+#         cygiconcert: info
+#   config: classpath:logback.xml
