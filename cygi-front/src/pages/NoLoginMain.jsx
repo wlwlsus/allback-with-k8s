@@ -5,6 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function NoLoginMain() {
   const navigate = useNavigate();
+
+  const redirectUri = "http://localhost:3000/oauth/redirect";
+
+  const goSocialLogin = (socialType) => {
+    const url = `http://localhost:8000/api/v1/oauth2/authorization/${socialType}?redirect_uri=${redirectUri}`;
+    window.location.href = url;
+  };
+
   return (
     <div className={style.background}>
       <div className={style.title}>
@@ -22,7 +30,8 @@ export default function NoLoginMain() {
         src={Kakao}
         alt=""
         onClick={() => {
-          navigate("../home");
+          goSocialLogin("kakao");
+          // navigate("../home");
         }}
       />
     </div>
