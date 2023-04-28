@@ -6,6 +6,15 @@ import com.allback.cygiuser.enums.RoleType;
 import com.allback.cygiuser.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.Collection;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -14,7 +23,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class Users extends BaseTimeEntity {
+public class Users extends BaseTimeEntity implements OAuth2User, UserDetails, OidcUser {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +55,63 @@ public class Users extends BaseTimeEntity {
   private ProviderType providerType;
 
 
+  @Override
+  public Map<String, Object> getClaims() {
+    return null;
+  }
+
+  @Override
+  public OidcUserInfo getUserInfo() {
+    return null;
+  }
+
+  @Override
+  public OidcIdToken getIdToken() {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getAttributes() {
+    return null;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return null;
+  }
+
+  @Override
+  public String getPassword() {
+    return null;
+  }
+
+  @Override
+  public String getUsername() {
+    return null;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return false;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return false;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return false;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return false;
+  }
+
+  @Override
+  public String getName() {
+    return null;
+  }
 }

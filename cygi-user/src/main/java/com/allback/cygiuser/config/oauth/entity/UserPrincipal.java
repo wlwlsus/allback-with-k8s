@@ -1,4 +1,57 @@
 package com.allback.cygiuser.config.oauth.entity;
 
-public class UserPrincipal {
+import com.allback.cygiuser.entity.Users;
+import com.allback.cygiuser.enums.RoleType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.Collection;
+import java.util.Map;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class UserPrincipal implements OAuth2User {
+
+  private final String email;
+  private final String nickname;
+  private final ProviderType providerType;
+  private final RoleType roleType;
+  private Map<String, Object> attributes;
+
+  @Override
+  public Map<String, Object> getAttributes() {
+    return attributes;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return null;
+  }
+
+  @Override
+  public String getName() {
+    return email;
+  }
+
+  public static UserPrincipal create(Users user) {
+    return new UserPrincipal(
+        user.getEmail(),
+        user.getNickname(),
+        user.getProviderType(),
+        RoleType.ROLE_USER
+    );
+  }
+
+  public static UserPrincipal create(Users user, Map<String, Object> attributes) {
+    UserPrincipal userPrincipal = create(user);
+    userPrincipal.setAttributes(attributes);
+
+    return userPrincipal;
+  }
 }
