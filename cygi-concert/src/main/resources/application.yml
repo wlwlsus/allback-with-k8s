@@ -1,0 +1,48 @@
+server:
+  port: 8002
+  servlet:
+    context-path: /api/v1
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssafy806_concert
+    username: ssafy806
+    password: ssafy806
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAW3NG45NH2Q4ICFCX
+      secretKey: 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
+    s3:
+      bucket: hosan-s3
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+user:
+  server:
+    url: http://localhost:8000
+    prefix: /api/v1
+
+payment:
+  server:
+    url: http://localhost:8001
+    prefix: /api/v1/server-concert
+
+logging:
+  level:
+    com:
+      allback:
+        cygiconcert: info
+  config: classpath:logback.xml

@@ -14,6 +14,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeatRestCntResDto {
-    int all;
-    int rest;
+    private int all;
+    private int rest;
 }

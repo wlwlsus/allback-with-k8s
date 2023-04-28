@@ -23,6 +23,8 @@ public class ConcertResDto {
     private String title;   // 공연 이름
 
     private String content; // 공연 설명
+    private int price; // 공연 설명
+    private String location; // 공연 설명
 
     private String image;   // 공연 이미지 URL
 

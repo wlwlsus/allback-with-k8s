@@ -27,4 +27,7 @@ public class Stage {
 
     @Column(nullable = false)
     private Integer price;
+
+    @Column(nullable = false, length = 1000)
+    private String location; // 공연 장소
 }
