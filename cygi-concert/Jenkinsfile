@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-concert || true && docker rm back-concert || true"
-                    sh "docker run --privileged -v /var/run/dbus:/var/run/dbus --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER} /usr/sbin/init"
+                    sh "docker run --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
