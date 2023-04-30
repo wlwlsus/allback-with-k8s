@@ -44,7 +44,7 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeHttpRequests()
-        .requestMatchers("/login").permitAll();
+        .requestMatchers("/**").permitAll();
 //        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
 
     httpSecurity
