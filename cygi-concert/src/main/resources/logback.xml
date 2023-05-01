@@ -3,7 +3,7 @@
     <property name="CONSOLE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta(%-4relative) --- [ %thread{10} ] %cyan(%logger{20}) : %msg%n"/>
     <!--프로젝트 최상단을 기준으로 아래 경로에 로그 파일(.log)이 저장된다.-->
-    <property name="LOG_PATH" value="/var/log/cygi/*.log"/>
+    <property name="LOG_PATH" value="/var/log/cygi"/>
 <!--        <property name="LOG_PATH" value="./logs"/>-->
     <!--저장되는 로그 파일의 이름을 지정한다.-->
     <property name="FILE_NAME" value="cygi-concert-logs"/>
