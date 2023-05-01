@@ -2,9 +2,13 @@ import React from "react";
 import style from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import logo from "img/logo.png";
+import { useRecoilState } from "recoil";
+import { user } from "../../util/store";
 
 export default function Header() {
   const navigate = useNavigate();
+  const [userId, setUserId] = useRecoilState(user);
+
   return (
     <div className={style.header}>
       <div>

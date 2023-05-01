@@ -1,6 +1,8 @@
 import { Buffer } from "buffer";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { user } from "../../util/store";
 
 export default function Redirect() {
   const navigate = useNavigate();
@@ -9,6 +11,8 @@ export default function Redirect() {
   const refreshToken = serchParams.get("refreshToken");
   sessionStorage.setItem("isSocial", JSON.stringify(true));
   const error = serchParams.get("error");
+
+  const [userId, setUserId] = useRecoilState(user);
 
   useEffect(() => {
     if (error) {
@@ -25,7 +29,8 @@ export default function Redirect() {
 
     console.log("회원 정보");
     console.log(result);
+    setUserId(result.sub);
 
-    navigate("../../home");
+    navigate("../../");
   });
 }
