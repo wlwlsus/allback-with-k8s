@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @ToString
+@Builder
 @Table(name = "reservation")
 public class Reservation extends BaseTimeEntity {
 
