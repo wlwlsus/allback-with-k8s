@@ -26,13 +26,14 @@ public class DashBoardController {
     @GetMapping("/user")
     @ResponseBody
     public ResponseEntity<List<UserResDto>> getUsers() {
-        System.out.println("회원 목록 조회 controller");
+//        System.out.println("회원 목록 조회 controller");
         List<UserResDto> userList = dashBoardService.getUsers();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @Operation(summary = "전체 예매내역 조회")
     @GetMapping("/reservation")
     public ResponseEntity<List<ReservationResDto>> getReservations() {
+//        System.out.println("예매 내역 조회 Controller");
         List<ReservationResDto> reservationResDtoList = dashBoardService.getReservations();
         return new ResponseEntity<>(reservationResDtoList, HttpStatus.OK);
     }
