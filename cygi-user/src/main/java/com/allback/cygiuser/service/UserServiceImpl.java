@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
 		Passbook passbookBuilder = Passbook.builder()
 				.passbookId(passbook.getPassbookId())
 				.cash(passbook.getCash() + request.getAmount())
-				.accountNumber(passbook.getAccountNumber())
 				.build();
 
 		// 업데이트된 passbook 저장

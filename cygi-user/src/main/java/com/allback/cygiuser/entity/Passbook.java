@@ -20,9 +20,6 @@ public class Passbook {
 	@Column(name = "cash", length = 20, nullable = false)
 	private long cash;
 
-	@Column(name = "account_number", nullable = false)
-	private String accountNumber;
-
 	public void setCash(long cash) {
 		this.cash = cash;
 	}
