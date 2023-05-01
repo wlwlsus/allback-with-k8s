@@ -30,10 +30,6 @@ spring:
     show-sql: true
   application:
     name: user-service
-  cloud:
-    discovery:
-      service-url:
-        defaultZone: http://localhost:8761/eureka/
 
 
   # MySQL DB Connection Info
@@ -44,12 +40,10 @@ spring:
 
 # API Context Path
 server:
-  port: 8000
+  port: 0
   servlet:
     context-path: /api/v1
 
-## Eureka Client
-#spring:
 
 jwt:
   secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==
@@ -58,3 +52,13 @@ jwt:
 app:
   oauth2:
     authorizedRedirectUris: http://localhost:3000/oauth/redirect
+
+## Eureka Client
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
