@@ -53,4 +53,12 @@ public class Users extends BaseTimeEntity {
   @Column(name = "provider", length = 20, nullable = false)
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public void setProfile(String profile) {
+    this.profile = profile;
+  }
 }

@@ -44,8 +44,9 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeHttpRequests()
-        .requestMatchers("/**").permitAll();
-//        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
+        .requestMatchers("/swagger-ui/**", "/v3/api" +
+            "-docs/**").permitAll()
+        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
 
     httpSecurity
         .oauth2Login()
