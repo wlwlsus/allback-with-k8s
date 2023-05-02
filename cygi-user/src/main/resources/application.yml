@@ -34,7 +34,8 @@ spring:
 
   # MySQL DB Connection Info
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_user
+#    url: jdbc:mysql://localhost:3306/ssafy806_user
+    url: jdbc:mysql://k8a805.p.ssafy.io:3306/ssafy806_user
     username: ssafy806
     password: ssafy806
 
