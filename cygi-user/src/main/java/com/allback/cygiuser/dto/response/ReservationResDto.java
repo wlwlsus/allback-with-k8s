@@ -11,10 +11,10 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class ReservationResDto {
 
-  private Long concertId;
-  private Long stageId;
-  private Long userId;
+  private long concertId;
+  private long stageId;
+  private long userId;
   private String status;
-  private Integer price;
+  private int price;
   private String seat;
 }

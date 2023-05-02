@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentServerController {
     private final UserServiceImpl userService;
     @PostMapping("/point")
-    ResponseEntity<Void> sendPoint(@RequestParam Long receiverId, @RequestParam Long point){
+    ResponseEntity<Void> sendPoint(@RequestParam long receiverId, @RequestParam long point){
         userService.updateCash(receiverId, point);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

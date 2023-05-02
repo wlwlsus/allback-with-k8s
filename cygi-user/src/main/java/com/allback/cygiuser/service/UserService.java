@@ -16,5 +16,5 @@ public interface UserService {
 
   List<ReservationResDto> getReservations();
 
-  void updateCash(Long userId, Long cash);
+  void updateCash(long userId, long cash);
 }

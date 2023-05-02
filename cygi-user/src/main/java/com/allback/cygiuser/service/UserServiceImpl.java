@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
 
 	@Transactional
-	public void updateCash(Long userId, Long cash) {
+	public void updateCash(long userId, long cash) {
 		Users user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
 		Passbook passbook = user.getPassbookId();
