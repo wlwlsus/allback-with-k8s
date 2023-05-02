@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,4 +25,10 @@ public class PaymentServerController {
         List<Long> endedConcert = concertService.getEndedConcert(LocalDate.now());
         return new ResponseEntity<>(endedConcert, HttpStatus.OK);
     }
+    @Operation(summary = "주최자 ID 조회")
+    @GetMapping("/receiverId/{concertId}")
+    ResponseEntity<Long> getUserId(@PathVariable Long concertId){
+        Long userId = concertService.getUserId(concertId);
+        return new ResponseEntity<>(userId, HttpStatus.OK);
+    };
 }
