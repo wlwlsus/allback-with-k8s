@@ -28,7 +28,7 @@ pipeline{
                     // gradle의 권한 변경
                     sh 'chmod +x ./gradlew'
                     // gradle 빌드 -> 배포 파일 생성
-                    sh './gradlew clean build'
+                    sh './gradlew clean build --debug'
                 }
             }
         }
