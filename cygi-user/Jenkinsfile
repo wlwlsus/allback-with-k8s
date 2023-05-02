@@ -41,7 +41,7 @@ pipeline{
                   // 도커 빌드
                   // 이름설정 back-concert:${env.BUILD_NUMBER} -> 빌드넘버는 이미지 태그이다
                   // 경로는 cygi-concert/
-                    sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-user/"
+                    sh "docker build -t back-user:${env.BUILD_NUMBER} cygi-user/"
                 }
             }
         }
