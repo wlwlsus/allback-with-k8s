@@ -40,7 +40,7 @@ spring:
 
 # API Context Path
 server:
-  port: 0
+  port: 8000
   servlet:
     context-path: /api/v1
 

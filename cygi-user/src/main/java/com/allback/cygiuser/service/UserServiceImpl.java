@@ -1,9 +1,13 @@
 package com.allback.cygiuser.service;
 
 import com.allback.cygiuser.dto.request.AmountRequest;
+import com.allback.cygiuser.dto.response.ReservationResDto;
+import com.allback.cygiuser.dto.response.UserResDto;
 import com.allback.cygiuser.entity.Passbook;
+import com.allback.cygiuser.entity.Reservation;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.repository.PassbookRepository;
+import com.allback.cygiuser.repository.ReservationRepository;
 import com.allback.cygiuser.repository.UserRepository;
 import com.allback.cygiuser.util.exception.BaseException;
 import com.allback.cygiuser.util.exception.ErrorMessage;
@@ -12,7 +16,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PassbookRepository passbookRepository;
+	private final ReservationRepository reservationRepository;
 
 	@Override
 	@Transactional
@@ -58,4 +65,51 @@ public class UserServiceImpl implements UserService {
 			throw new BaseException(ErrorMessage.FAILED_TO_SAVE_USER_INFO);
 		}
 	}
+
+	@Override
+	public List<UserResDto> getAllUserInfo() {
+		System.out.println("회원 전체 목록 반환 service");
+
+		List<Users> list = userRepository.findAll();
+
+//		System.out.println(list);
+
+		List<UserResDto> resList = list.stream().map(e -> UserResDto.builder()
+				.userId(e.getUserId())
+				.passbokId(e.getPassbookId())
+				.nickname(e.getNickname())
+				.email(e.getEmail())
+				.provider(e.getProviderType().name())
+				.profile(e.getProfile())
+				.uuid(e.getUuid())
+				.createDate(e.getCreatedDate())
+				.modifiedDate(e.getModifiedDate())
+				.role(e.getRole())
+				.build())
+				.collect(Collectors.toList());
+
+		return resList;
+	}
+
+	@Override
+	public List<ReservationResDto> getReservations() {
+		List<Reservation> list = reservationRepository.findAll();
+
+		List<ReservationResDto> resList = list.stream().map(e -> {
+			ReservationResDto dto = new ReservationResDto();
+			dto.setSeat(e.getSeat());
+			dto.setPrice(e.getPrice());
+			dto.setConcertId(e.getConcertId());
+			dto.setStatus(e.getStatus());
+			dto.setUserId(e.getUserId());
+			dto.setStageId(e.getStageId());
+			return dto;
+		}).collect(Collectors.toList());
+
+//		System.out.println(resList);
+
+		return resList;
+	}
+
+
 }
