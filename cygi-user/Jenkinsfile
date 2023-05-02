@@ -23,7 +23,7 @@ pipeline{
         stage('Gradle Build'){
             steps{
               // cygi-concert 디렉토리로 이동하여
-                dir('cygi-concert/'){
+                dir('cygi-user/'){
                     sh 'ls' // 없어도 되지 않나?
                     // gradle의 권한 변경
                     sh 'chmod +x ./gradlew'
