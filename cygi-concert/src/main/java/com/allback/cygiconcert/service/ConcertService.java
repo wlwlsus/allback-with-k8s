@@ -4,6 +4,7 @@ import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
 import com.allback.cygiconcert.dto.response.SeatRestCntResDto;
+import java.time.LocalDate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface ConcertService {
 
     ConcertResDto getConcert(Long concertId);
 
+    List<Long> getEndedConcert(LocalDate now);
 }

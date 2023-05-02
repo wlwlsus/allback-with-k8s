@@ -14,6 +14,7 @@ import com.allback.cygiconcert.util.S3Upload;
 
 import com.allback.cygiconcert.util.exception.BaseException;
 import com.allback.cygiconcert.util.exception.ErrorMessage;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -100,6 +101,13 @@ public class ConcertServiceImpl implements ConcertService {
         concertResDto.setLocation(concert.getStage().getLocation());
         log.info("[getConcert] : 공연장 조회 성공, concertId : {}", concert.getConcertId());
         return concertResDto;
+    }
+
+    @Override
+    public List<Long> getEndedConcert(LocalDate now) {
+        List<Long> endedConcert = concertRepository.getEndedConcert(now);
+        log.info("[getEndedConcert] : 종료된 공연장 조회 성공, size : {}", endedConcert.size());
+        return endedConcert;
     }
 
     private String getImgLink(MultipartFile image) throws Exception {

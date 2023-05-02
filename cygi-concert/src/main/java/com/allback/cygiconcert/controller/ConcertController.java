@@ -52,4 +52,6 @@ public class ConcertController {
         ConcertResDto concert = concertService.getConcert(concertId);
         return new ResponseEntity<>(concert, HttpStatus.OK);
     }
+
+
 }
