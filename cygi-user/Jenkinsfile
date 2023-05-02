@@ -1,0 +1,76 @@
+pipeline{
+    def WORKSPACE = "/var/jenkins_home/workspace/back-user/cygi-user/"
+    agent any
+
+    stages{
+        stage('Build Start'){
+            steps{
+                mattermostSend color: "#2A42EE",
+                    message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                    endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+                    channel: "all_back_jenkins"
+            }
+        }
+
+        stage('Clone Repo'){
+            steps{
+                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-back-user'
+            }
+        }
+
+        stage('Gradle Build'){
+            steps{
+              // cygi-concert 디렉토리로 이동하여
+                dir('cygi-concert/'){
+                    sh 'ls' // 없어도 되지 않나?
+                    // gradle의 권한 변경
+                    sh 'chmod +x ./gradlew'
+                    // gradle 빌드 -> 배포 파일 생성
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
+        stage('Build Docker'){
+            steps{
+                script{
+                  // 도커 파일을 빌드
+                  // 도커 빌드
+                  // 이름설정 back-concert:${env.BUILD_NUMBER} -> 빌드넘버는 이미지 태그이다
+                  // 경로는 cygi-concert/
+                    sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-concert/"
+                }
+            }
+        }
+
+        stage('Deploy Docker'){
+            steps{
+                script{
+                    // 도커가 실행중이면 중지 | 도커가 중지되면 삭제
+                    sh "docker stop back-concert || true && docker rm back-concert || true"
+                    // 로그 폴더를 호스트와 공유하기 | 도커 컨테이너의 이름은 back-concert | 8002:8090포트를 연결 후 도커 이미지 이름을 back-concert로 하고 태그로 빌드넘버를 붙임
+                    sh "docker run -v log-concert:/var/log/cygi --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
+                    // 사용하지 않는 모든 이미지를 강제 삭제
+                    sh "docker image prune -a -f || true"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            mattermostSend color: "good",
+                message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+                channel: "all_back_jenkins"
+        }
+        failure {
+            mattermostSend color: "danger",
+                message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+                endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+                channel: "all_back_jenkins"
+        }
+    }
+}
