@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserServerClient {
 
     @GetMapping("/check/{userId}")
-    boolean checkUserId(@PathVariable Long userId);
+    boolean checkUserId(@PathVariable long userId);
 }

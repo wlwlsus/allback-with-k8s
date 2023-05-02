@@ -15,9 +15,9 @@ public interface ConcertService {
 
     List<ConcertPageResDto> getConcertPage(int page);
 
-    ConcertResDto getConcert(Long concertId);
+    ConcertResDto getConcert(long concertId);
 
     List<Long> getEndedConcert(LocalDate now);
 
-    Long getUserId(Long concertId);
+    Long getUserId(long concertId);
 }

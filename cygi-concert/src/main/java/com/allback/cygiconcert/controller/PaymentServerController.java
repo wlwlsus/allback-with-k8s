@@ -27,7 +27,7 @@ public class PaymentServerController {
     }
     @Operation(summary = "주최자 ID 조회")
     @GetMapping("/receiverId/{concertId}")
-    ResponseEntity<Long> getUserId(@PathVariable Long concertId){
+    ResponseEntity<Long> getUserId(@PathVariable long concertId){
         Long userId = concertService.getUserId(concertId);
         return new ResponseEntity<>(userId, HttpStatus.OK);
     };

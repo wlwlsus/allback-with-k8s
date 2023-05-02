@@ -14,6 +14,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class SeatStatusChangeReqDto {
-    private Long concertId;
+    private long concertId;
     private String seat;
 }
