@@ -16,11 +16,17 @@
 .descript {
   width: 1700px;
   text-align: center;
-  margin-bottom: 5%;
+  margin-bottom: 15%;
   font-size: 1.3em;
 }
 
 .container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 1700px;
+}
+
+.infinity {
   display: flex;
   flex-wrap: wrap;
   width: 1700px;
