@@ -1,5 +1,5 @@
 pipeline{
-    def WORKSPACE = "/var/jenkins_home/workspace/back-user/cygi-user/"
+    // def WORKSPACE = "/var/jenkins_home/workspace/back-user/cygi-user/"
     agent any
 
     stages{
