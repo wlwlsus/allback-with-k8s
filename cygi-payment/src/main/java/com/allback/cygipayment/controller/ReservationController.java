@@ -67,10 +67,10 @@ public class ReservationController {
 
 	@Operation(summary = "예약")
 	@PutMapping(value = "/{reservationId}")
-	public ResponseEntity<?> reservationAndPayment(@PathVariable long reservationId,
+	public ResponseEntity<Void> reservationAndPayment(@PathVariable long reservationId,
 	                                               @RequestBody ReservationFillReqDto reservationFillReqDto) {
 		reservationService.reserve(reservationId, reservationFillReqDto);
-		return Response.makeResponse(HttpStatus.OK, "예약 성공");
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@Operation(summary = "결제 준비")
