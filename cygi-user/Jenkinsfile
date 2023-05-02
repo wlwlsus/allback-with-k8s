@@ -28,7 +28,7 @@ pipeline{
                     // gradle의 권한 변경
                     sh 'chmod +x ./gradlew'
                     // gradle 빌드 -> 배포 파일 생성
-                    sh './gradlew clean build --debug'
+                    sh './gradlew clean build --info'
                 }
             }
         }
@@ -36,6 +36,7 @@ pipeline{
         stage('Build Docker'){
             steps{
                 script{
+                    sh 'ls'
                   // 도커 파일을 빌드
                   // 도커 빌드
                   // 이름설정 back-concert:${env.BUILD_NUMBER} -> 빌드넘버는 이미지 태그이다
