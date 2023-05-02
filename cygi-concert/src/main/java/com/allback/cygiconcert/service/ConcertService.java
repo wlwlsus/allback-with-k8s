@@ -18,4 +18,6 @@ public interface ConcertService {
     ConcertResDto getConcert(Long concertId);
 
     List<Long> getEndedConcert(LocalDate now);
+
+    Long getUserId(Long concertId);
 }

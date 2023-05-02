@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ConcertRepository extends JpaRepository<Concert, Long> {
-    @Query("SELECT c.concertId FROM Concert c WHERE date_fomat(c.endDate, '%Y-%m-%d') = date_fomat(:now, '%Y-%m-%d')")
+    @Query("SELECT c.concertId FROM Concert c WHERE date_format(c.endDate, '%Y-%m-%d') = date_format(:now, '%Y-%m-%d')")
     List<Long> getEndedConcert(LocalDate now);
 }

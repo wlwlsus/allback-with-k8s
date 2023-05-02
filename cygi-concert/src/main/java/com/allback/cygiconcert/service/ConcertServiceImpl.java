@@ -110,6 +110,14 @@ public class ConcertServiceImpl implements ConcertService {
         return endedConcert;
     }
 
+    @Override
+    public Long getUserId(Long concertId) {
+        Concert concert = concertRepository.findById(concertId)
+            .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
+        log.info("[getUserId] : 주최자 id 조회 성공, userId : {}", concert.getUserId());
+        return concert.getUserId();
+    }
+
     private String getImgLink(MultipartFile image) throws Exception {
         //파일이름 설정
         String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
