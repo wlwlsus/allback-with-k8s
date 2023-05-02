@@ -6,6 +6,15 @@ import com.allback.cygiuser.enums.RoleType;
 import com.allback.cygiuser.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.util.Collection;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -45,5 +54,11 @@ public class Users extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private ProviderType providerType;
 
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
 
+  public void setProfile(String profile) {
+    this.profile = profile;
+  }
 }
