@@ -59,7 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
   private Users createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
     Passbook newPassbook = Passbook.builder()
-        .cash(5000)
+        .cash(5000L)
         .build();
 
     passbookRepository.save(newPassbook);

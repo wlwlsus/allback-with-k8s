@@ -1,5 +1,6 @@
 package com.allback.cygiuser.service;
 
+import ch.qos.logback.classic.Logger;
 import com.allback.cygiuser.dto.request.AmountRequest;
 import com.allback.cygiuser.dto.response.ReservationResDto;
 import com.allback.cygiuser.dto.response.UserResDto;
@@ -12,6 +13,7 @@ import com.allback.cygiuser.repository.UserRepository;
 import com.allback.cygiuser.util.exception.BaseException;
 import com.allback.cygiuser.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -112,4 +115,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	@Transactional
+	public void updateCash(Long userId, Long cash) {
+		Users user = userRepository.findById(userId)
+			.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
+		Passbook passbook = user.getPassbookId();
+		log.info("[updateCash] : 기존 금액, cash : {}", passbook.getCash());
+		passbook.setCash(passbook.getCash()+cash);
+		log.info("[updateCash] : 바뀐 금액, cash : {}", passbook.getCash());
+	}
 }
