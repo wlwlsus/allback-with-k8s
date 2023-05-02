@@ -22,16 +22,22 @@ public class DashBoardServiceImpl implements DashBoardService {
 
     @Override
     public List<UserResDto> getUsers() {
+//        System.out.println("dashboard impl get users");
+//        System.out.println(userServerClient.getUsers());
         return userServerClient.getUsers().getBody();
     }
 
     @Override
     public List<ReservationResDto> getReservations() {
+//        System.out.println("dashboard impl get reservations");
+//        System.out.println(paymentServerClient.getReservations());
         return paymentServerClient.getReservations().getBody();
     }
 
     @Override
     public List<BalanceResDto> getBalances() {
+//        System.out.println("dashboard impl get balances");
+//        System.out.println(paymentServerClient.getReservations());
         return null;
     }
 }
