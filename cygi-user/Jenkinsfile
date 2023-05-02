@@ -36,6 +36,7 @@ pipeline{
         stage('Build Docker'){
             steps{
                 script{
+                    sh 'ls'
                   // 도커 파일을 빌드
                   // 도커 빌드
                   // 이름설정 back-concert:${env.BUILD_NUMBER} -> 빌드넘버는 이미지 태그이다
