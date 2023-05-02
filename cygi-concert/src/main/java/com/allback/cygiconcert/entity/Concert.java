@@ -21,10 +21,10 @@ public class Concert extends BaseTimeEntity {
     @Id
     @Column(name = "concert_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long concertId; // 공연 ID
+    private long concertId; // 공연 ID
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;    // 주최자 ID
+    private long userId;    // 주최자 ID
 
     @Column(name = "title", nullable = false)
     private String title;   // 공연 이름

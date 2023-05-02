@@ -92,7 +92,7 @@ public class ConcertServiceImpl implements ConcertService {
     }
 
     @Override
-    public ConcertResDto getConcert(Long id) {
+    public ConcertResDto getConcert(long id) {
         Concert concert = concertRepository.findById(id)
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
         ConcertResDto concertResDto = concertMapper.toDto(concert);
@@ -111,7 +111,7 @@ public class ConcertServiceImpl implements ConcertService {
     }
 
     @Override
-    public Long getUserId(Long concertId) {
+    public Long getUserId(long concertId) {
         Concert concert = concertRepository.findById(concertId)
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
         log.info("[getUserId] : 주최자 id 조회 성공, userId : {}", concert.getUserId());

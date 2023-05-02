@@ -15,11 +15,11 @@ import lombok.ToString;
 @ToString
 public class ReservationReqDto {
 
-    private Long concertId;
+    private long concertId;
 
-    private Long stageId;
+    private long stageId;
 
-    private Long userId;
+    private long userId;
 
     private String status;
 

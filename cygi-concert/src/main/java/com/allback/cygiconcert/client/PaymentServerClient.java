@@ -22,13 +22,13 @@ public interface PaymentServerClient {
     ResponseEntity<Long> chageStatus(@RequestBody ReservationReqDto reservationReqDto);
 
     @DeleteMapping("/seat/{reservationId}")
-    ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId);
+    ResponseEntity<Void> deleteReservationById(@PathVariable long reservationId);
 
     @GetMapping("/rest/{concertId}")
-    ResponseEntity<Integer> getRestSeatCnt(@PathVariable Long concertId);
+    ResponseEntity<Integer> getRestSeatCnt(@PathVariable long concertId);
 
     @GetMapping("/seat/{concertId}")
-    ResponseEntity<List<String>> getSeatInfo(@PathVariable Long concertId);
+    ResponseEntity<List<String>> getSeatInfo(@PathVariable long concertId);
     @PostMapping("/rest")
     ResponseEntity<List<Integer>> getRestSeatCntList(@RequestBody List<Long> concertIdList);
 }

@@ -15,10 +15,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConcertResDto {
-    private Long concertId;
-    private Long userId;    // 주최자 ID
+    private long concertId;
+    private long userId;    // 주최자 ID
 
-    private Long stageId;   // 공연장 ID
+    private long stageId;   // 공연장 ID
 
     private String title;   // 공연 이름
 

@@ -17,16 +17,16 @@ public class Stage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stageId;
+    private long stageId;
 
     @Column(name = "\"row\"", nullable = false)
-    private Integer row;
+    private int row;
 
     @Column(nullable = false)
-    private Integer col;
+    private int col;
 
     @Column(nullable = false)
-    private Integer price;
+    private int price;
 
     @Column(nullable = false, length = 1000)
     private String location; // 공연 장소
