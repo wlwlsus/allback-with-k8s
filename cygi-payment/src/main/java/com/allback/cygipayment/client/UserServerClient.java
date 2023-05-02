@@ -18,6 +18,6 @@ public interface UserServerClient {
 	@PostMapping("/balace")
 	ResponseEntity<Void> getEndedConcert();
 	@PostMapping("/point")
-	ResponseEntity<Void> sendPoint(@RequestParam Long receiverId, @RequestParam Long point);
+	ResponseEntity<Void> sendPoint(@RequestParam long receiverId, @RequestParam long point);
 }
 

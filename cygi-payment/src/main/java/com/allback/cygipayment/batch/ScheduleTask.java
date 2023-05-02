@@ -18,8 +18,8 @@ public class ScheduleTask {
     private final Job myJob;
     static int num = 0;
 
-//    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
-    @Scheduled(cron = "*/20 * * * * *")
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+//    @Scheduled(cron = "*/20 * * * * *")
     public void runMyJob() throws JobExecutionException {
         JobExecution jobExecution = jobLauncher.run(myJob, new JobParameters());
         BatchStatus status = jobExecution.getStatus();

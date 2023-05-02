@@ -145,15 +145,15 @@ public class MyJobConfig {
                     //state는 total, cnt
                     if(state.containsKey("total")) {
                         BalanceState balanceState = BalanceState.builder()
-                            .proceed((Long) state.get("total"))
-                            .customer((Long) state.get("cnt"))
-                            .concertId((Long)state.get("concertId"))
+                            .proceed((long) state.get("total"))
+                            .customer((long) state.get("cnt"))
+                            .concertId((long)state.get("concertId"))
                             .userId(1L)
                             .build();
                         balanceStateRepository.save(balanceState);
                         //주최자에거 돈 주면 됨
-                        Long receiverId = concertServerClient.getUserId(concertList.get(i)).getBody();
-                        Long point = (Long) state.get("total");
+                        long receiverId = concertServerClient.getUserId(concertList.get(i)).getBody();
+                        long point = (long) state.get("total");
                         userServerClient.sendPoint(receiverId, point);
                     }
                 }

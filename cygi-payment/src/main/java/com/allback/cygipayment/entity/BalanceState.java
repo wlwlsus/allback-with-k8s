@@ -25,17 +25,17 @@ public class BalanceState extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "balance_state_id", nullable = false, length = 20, columnDefinition = "BIGINT UNSIGNED")
-    private Long balanceId;
+    private long balanceId;
 
     @Column(name = "concert_id", nullable = false, length = 20)
-    private Long concertId;
+    private long concertId;
     @Column(name = "user_id", nullable = false, length = 20)
-    private Long userId;
+    private long userId;
 
     @Column(name = "customer", nullable = false)
-    private Long customer;
+    private long customer;
 
     @Column(name = "proceed", nullable = false)
-    private Long proceed;
+    private long proceed;
 
 }

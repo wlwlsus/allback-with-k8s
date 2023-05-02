@@ -21,12 +21,12 @@ public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "balance_id", nullable = false, length = 20, columnDefinition = "BIGINT UNSIGNED")
-    private Long balanceId;
+    private long balanceId;
     @Column(name = "concert_id", nullable = false, length = 20)
-    private Long concertId;
+    private long concertId;
 
     @Column(name = "user_id", nullable = false, length = 20)
-    private Long userId;
+    private long userId;
 
     @Column(name = "price", nullable = false)
     private int price;
