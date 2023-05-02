@@ -25,7 +25,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     generate-ddl: false
     show-sql: true
   application:
@@ -40,7 +40,7 @@ spring:
 
 # API Context Path
 server:
-  port: 8000
+  port: 0
   servlet:
     context-path: /api/v1
 
