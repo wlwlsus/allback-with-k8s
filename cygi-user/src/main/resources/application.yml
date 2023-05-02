@@ -1,0 +1,64 @@
+# JPA Settings
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 'ac489018abf3b5780c12661a8861085a'
+            client-secret: '9wCzvP1Luh2TR1tsN293m1Z1SzT7SliS'
+            scope:
+              - profile_nickname
+              - account_email
+              - profile_image
+            client-name: Kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            client-authentication-method: POST
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: true
+  application:
+    name: user-service
+
+
+  # MySQL DB Connection Info
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssafy806_user
+    username: ssafy806
+    password: ssafy806
+
+# API Context Path
+server:
+  port: 8000
+  servlet:
+    context-path: /api/v1
+
+
+jwt:
+  secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==
+
+
+app:
+  oauth2:
+    authorizedRedirectUris: http://localhost:3000/oauth/redirect
+
+## Eureka Client
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
