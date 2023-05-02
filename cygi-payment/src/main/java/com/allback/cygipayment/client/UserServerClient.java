@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
  * description :
  */
 
-@FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
+//@FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
+@FeignClient("user-service")
 public interface UserServerClient {
 	@PutMapping("/amount")
 	void amount(@RequestBody AmountReqDto request);
