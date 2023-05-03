@@ -31,6 +31,9 @@ export default function Header() {
       navigate("/");
     },
   });
+  console.log(id);
+  console.log(nickName);
+  console.log(role);
 
   return (
     <>
@@ -54,7 +57,7 @@ export default function Header() {
                 navigate("login");
               }}
             >
-              비로그인 메인페이지
+              비로그인 메인페이지 {id}
             </div>
             <div
               className={style.login}
@@ -105,7 +108,9 @@ export default function Header() {
             </div>
           </div>
           <div className={style.header_right_user}>
-            <div className={style.user_name}>김정수님 환영합니다.</div>
+            <div className={style.user_name}>
+              {id} {nickName}님 환영합니다.
+            </div>
             <div className={style.user_point}>500,000원</div>
             <div className={style.user_logout} onClick={() => onLogout()}>
               로그아웃

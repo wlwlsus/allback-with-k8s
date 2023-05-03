@@ -39,7 +39,7 @@ export default function Header() {
           <div>
             <div
               onClick={() => {
-                navigate("/");
+                navigate("../");
               }}
               className={style.header_left_admin}
             >
@@ -51,7 +51,7 @@ export default function Header() {
             <div
               className={style.nologin}
               onClick={() => {
-                navigate("login");
+                navigate("../login");
               }}
             >
               비로그인 메인페이지
@@ -59,7 +59,7 @@ export default function Header() {
             <div
               className={style.login}
               onClick={() => {
-                navigate("home");
+                navigate("../home");
               }}
             >
               로그인 메인페이지
@@ -67,7 +67,7 @@ export default function Header() {
             <div
               className={style.mypage}
               onClick={() => {
-                navigate("mypage");
+                navigate("../mypage");
               }}
             >
               유저 마이페이지
@@ -75,7 +75,7 @@ export default function Header() {
             <div
               className={style.admin}
               onClick={() => {
-                navigate("admin/total");
+                navigate("../admin/total");
               }}
             >
               관리자페이지
@@ -83,7 +83,7 @@ export default function Header() {
             <div
               className={style.loading}
               onClick={() => {
-                navigate("loading");
+                navigate("../loading");
               }}
             >
               로딩스피너 확인용
@@ -96,7 +96,7 @@ export default function Header() {
           <div>
             <div
               onClick={() => {
-                navigate("home");
+                navigate("../");
               }}
               className={style.header_left_user}
             >
@@ -105,7 +105,7 @@ export default function Header() {
             </div>
           </div>
           <div className={style.header_right_user}>
-            <div className={style.user_name}>김정수님 환영합니다.</div>
+            <div className={style.user_name}>{nickName}님 환영합니다.</div>
             <div className={style.user_point}>500,000원</div>
             <div className={style.user_logout} onClick={() => onLogout()}>
               로그아웃

@@ -5,16 +5,22 @@ import Profile from "img/profile.png";
 import KakaoPay from "img/payment_icon_yellow_small.png";
 import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { userId, userNick, createdTime } from "../util/store";
+import { useRecoilValue } from "recoil";
 import { $_user } from "util/axios";
 
 export default function MyPage() {
   const [page, setPage] = useState(1);
   const [reservationId, setReservationId] = useState();
 
+  const id = useRecoilValue(userId);
+  const nickName = useRecoilValue(userNick);
+  const createTime = useRecoilValue(createdTime);
+
   // 예약 목록 조회
-  const { isLoading, data, refetch } = useQuery(["mypage"], () =>
-    $_user.get(`/reservation?page=${page}`)
-  );
+  // const { isLoading, data, refetch } = useQuery(["mypage"], () =>
+  //   $_user.get(`${id}/reservation?page=${page}`)
+  // );
 
   // API_PUT 함수
   const res_put = () => {
@@ -25,7 +31,7 @@ export default function MyPage() {
   const { mutate: onRefund } = useMutation(res_put, {
     onSuccess: () => {
       alert("환불이 완료되었습니다.");
-      refetch();
+      // refetch();
     },
   });
 
@@ -72,11 +78,11 @@ export default function MyPage() {
             <img className={style.picture_img} src={Profile} alt="" />
           </div>
           <div className={style.profile_name}>
-            <span>홍길동</span>님
+            <span>{nickName}</span>님
           </div>
           <div className={style.profile_point}>500,000원</div>
           <div className={style.profile_signup_title}>가입일</div>
-          <div className={style.profile_signup_date}>2023-04-11</div>
+          <div className={style.profile_signup_date}>{createTime}</div>
           <div>
             <div className={style.kakao_pay_title}>충전하기</div>
             <img
@@ -103,6 +109,7 @@ export default function MyPage() {
               <div className={style.status}>예약 상태</div>
               <div className={style.cancel}>예약 취소</div>
             </div>
+            {/* {!isLoading && <div>데이터</div>} */}
           </div>
         </div>
       </div>

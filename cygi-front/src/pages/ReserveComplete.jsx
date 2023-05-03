@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SubHeader from "../components/common/SubHeader";
 import style from "./ReserveComplete.module.css";
 import { useLocation } from "react-router-dom";
 import Poster from "img/poster.png";
+import { reservation } from "util/store";
+import { useSetRecoilState } from "recoil";
 
 export default function ReserveComplete() {
   const location = useLocation();
+  const setReservationInfo = useSetRecoilState(reservation);
+
+  useEffect(() => {
+    setReservationInfo({
+      title: "",
+      reservationId: "",
+      seat: "",
+      price: 0,
+      date: "",
+    });
+  }, []);
 
   return (
     <div className={style.background}>

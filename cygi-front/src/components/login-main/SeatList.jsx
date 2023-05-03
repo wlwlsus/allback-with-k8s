@@ -4,6 +4,9 @@ import style from "./SeatList.module.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { history } from "./history";
 import { $_concert } from "util/axios";
+import axios from "axios";
+import { userNick, reservation } from "util/store";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 export default function SeatList() {
   const navigate = useNavigate();
@@ -16,9 +19,47 @@ export default function SeatList() {
 
   const [isPointBtn, setIsPointBtn] = useState(false);
   const [isKakaoBtn, setIsKakaoBtn] = useState(false);
-  const [reservationId, setReservationId] = useState();
 
+  const nickName = useRecoilValue(userNick);
+  const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
+
+  // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
+
+  // 결제 준비를 위한 함수
+  const paymentData = {
+    cid: "TC0ONETIME",
+    partner_order_id: reservationInfo.reservationId,
+    partner_user_id: nickName,
+    item_name: location.state.title,
+    quantity: 1,
+    total_amount: location.state.price,
+    tax_free_amount: 0,
+    approval_url: "http://localhost:3000/success",
+    cancel_url: "http://localhost:3000/home",
+    fail_url: "http://localhost:3000/home",
+  };
+
+  const preparePayment = async (paymentData) => {
+    const headers = {
+      "Content-Type": "application/json; charset=UTF-8",
+    };
+    const response = await axios.post(
+      "http://localhost:8001/api/v1/reservation/charge",
+      paymentData,
+      { headers }
+    );
+
+    if (response.status === 200) {
+      // PC에서 결제 진행
+      const tid = response.data.result.tid;
+      localStorage.setItem("tid", tid);
+      window.location.href = response.data.result.next_redirect_pc_url;
+    } else {
+      alert("문제가 발생하였습니다.");
+    }
+    return response.data;
+  };
 
   // 해당 공연장의 좌석 조회
   const { isLoading, data, refetch } = useQuery(
@@ -34,8 +75,8 @@ export default function SeatList() {
   // API_DELETE 함수
   const res_delete = () => {
     return $_concert.delete(
-      `/seat/delete/${reservationId}`,
-      location.state.reservationId
+      `/seat/delete/${reservationInfo.reservationId}`,
+      reservationInfo.reservationId
     );
   };
 
@@ -45,13 +86,26 @@ export default function SeatList() {
   const handleBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = "";
-    onDelete();
+    setReservationInfo({
+      title: "",
+      reservationId: "",
+      seat: "",
+      price: 0,
+      date: "",
+    });
   };
 
   // 뒤로가기 이벤트 감지
   useEffect(() => {
     const listenBackEvent = () => {
       if (window.confirm("페이지를 나가시겠습니까?")) {
+        setReservationInfo({
+          title: "",
+          reservationId: "",
+          seat: "",
+          price: 0,
+          date: "",
+        });
         onDelete();
         navigate("/");
       }
@@ -80,7 +134,13 @@ export default function SeatList() {
   const { mutate: onSelect } = useMutation(res_post, {
     onSuccess: (res) => {
       setIsreserve(true);
-      setReservationId(res.data);
+      setReservationInfo({
+        title: location.state.title,
+        reservationId: res.data,
+        seat: seat,
+        price: location.state.price,
+        date: location.state.endDate,
+      });
     },
   });
 
@@ -176,7 +236,6 @@ export default function SeatList() {
       alert("좌석을 선택하여주세요.");
       return;
     }
-    console.log(nowTime >= new Date(data.data.endDate));
     if (nowTime >= new Date(data.data.endDate)) {
       alert("마감된 공연입니다.");
       navigate("/home");
@@ -261,14 +320,7 @@ export default function SeatList() {
               <button
                 className={style.btn}
                 onClick={() => {
-                  navigate("/complete", {
-                    state: {
-                      title: location.state.title,
-                      seat: location.state.seat,
-                      endDate: location.state.endDate,
-                      price: location.state.price,
-                    },
-                  });
+                  preparePayment(paymentData);
                 }}
               >
                 결제하기
@@ -336,17 +388,16 @@ export default function SeatList() {
               <div className={style.date2}>
                 <div className={style.title2}>공연일</div>
                 <div className={style.content2}>
-                  {location.state.endDate.slice(0, 4)}년&nbsp;
+                  {location.state.endDate.slice(2, 4)}년&nbsp;
                   {location.state.endDate.slice(5, 7)}월&nbsp;
                   {location.state.endDate.slice(8, 10)}일&nbsp;
                   {location.state.endDate.slice(11, 13)}시&nbsp;
-                  {location.state.endDate.slice(14, 16)}분&nbsp;
                 </div>
               </div>
             </div>
             <div className={style.pay}>
-              <div className={style.title}>총 결제 금액</div>
-              <div className={style.content}>{location.state.price}원</div>
+              <div className={style.title2}>총 결제 금액</div>
+              <div className={style.content2}>{location.state.price}원</div>
             </div>
           </div>
         </div>

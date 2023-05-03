@@ -8,11 +8,12 @@ export default function ConcertList() {
   const navigate = useNavigate();
   let nowTime = new Date();
 
-  const obsRef = useRef(null); //observer Element
   const [concertList, setConcertList] = useState([]);
 
   const [page, setPage] = useState(0); //현재 페이지
   const [load, setLoad] = useState(true); //로딩 스피너
+
+  const obsRef = useRef(null); //observer Element
   const preventRef = useRef(true); //옵저버 중복 실행 방지
 
   useEffect(() => {
@@ -67,19 +68,16 @@ export default function ConcertList() {
       <div className={style.container}>
         {concertList &&
           concertList.map((contents, index1) => {
-            console.log(concertList);
             return contents.map((content, index2) => {
               let date =
-                content.endDate.slice(0, 4) +
+                content.endDate.slice(2, 4) +
                 "/" +
                 content.endDate.slice(5, 7) +
                 "/" +
                 content.endDate.slice(8, 10) +
                 " " +
                 content.endDate.slice(11, 13) +
-                "시" +
-                content.endDate.slice(14, 16) +
-                "분";
+                "시";
               return (
                 <div
                   key={content.concertId}
