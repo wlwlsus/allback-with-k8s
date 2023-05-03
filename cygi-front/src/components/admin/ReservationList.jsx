@@ -1,7 +1,14 @@
 import React from "react";
 import style from "./ReservationList.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { $_admin } from "util/axios";
 
 export default function ReservationList() {
+  // 전체 예매내역 조회
+  const { isLoading, data } = useQuery(["reservation"], () =>
+    $_admin.get(`/dashboard/reservation`)
+  );
+
   return (
     <div className={style.container}>
       <div className={style.reservation}>

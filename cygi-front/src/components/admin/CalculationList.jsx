@@ -1,7 +1,14 @@
 import React from "react";
 import style from "./CalculationList.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { $_admin } from "util/axios";
 
 export default function CalculationList() {
+  // 정산 내역 조회
+  const { isLoading, data } = useQuery(["balance"], () =>
+    $_admin.get(`/dashboard/balance`)
+  );
+
   return (
     <div className={style.container}>
       <div className={style.calculation}>

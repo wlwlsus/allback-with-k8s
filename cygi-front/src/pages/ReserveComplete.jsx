@@ -33,7 +33,13 @@ export default function ReserveComplete() {
           </div>
           <div className={style.date}>
             <div className={style.title}>공연일</div>
-            <div className={style.content}>{location.state.date}</div>
+            <div className={style.content}>
+              {location.state.endDate.slice(0, 4)}년&nbsp;
+              {location.state.endDate.slice(5, 7)}월&nbsp;
+              {location.state.endDate.slice(8, 10)}일&nbsp;
+              {location.state.endDate.slice(11, 13)}시&nbsp;
+              {location.state.endDate.slice(14, 16)}분&nbsp;
+            </div>
           </div>
         </div>
       </div>

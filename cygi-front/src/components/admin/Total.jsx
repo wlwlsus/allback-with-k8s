@@ -1,7 +1,24 @@
 import React from "react";
 import style from "./Total.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { $_admin } from "util/axios";
 
 export default function Total() {
+  // 정산 내역 조회
+  const { data: balance } = useQuery(["balance"], () =>
+    $_admin.get(`/dashboard/balance`)
+  );
+
+  // 사용자 목록 조회
+  const { data: user } = useQuery(["user"], () =>
+    $_admin.get(`/dashboard/user`)
+  );
+
+  // 전체 예매내역 조회
+  const { data: reservation } = useQuery(["reservation"], () =>
+    $_admin.get(`/dashboard/reservation`)
+  );
+
   return (
     <div className={style.container}>
       <div className={style.calculation}>

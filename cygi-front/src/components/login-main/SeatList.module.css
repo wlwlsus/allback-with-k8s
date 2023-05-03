@@ -21,7 +21,7 @@
 .information {
   display: grid;
   width: 1000px;
-  grid-template-columns: 10% 22% 13% 25% 15% 15%;
+  grid-template-columns: 10% 30% 13% 30% 15% 15%;
 }
 
 .name {
@@ -30,7 +30,11 @@
 }
 
 .content {
-  font-size: 1.4em;
+  font-size: 1.3em;
+}
+
+.btn_list {
+  display: flex;
 }
 
 .reserve_btn > button {
@@ -45,10 +49,30 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
+  margin-right: 50px;
 }
 
 .reserve_btn > button:hover {
   background-color: #1b4aa7;
+  transition: all 0.3s;
+}
+
+.cancel_btn > button {
+  width: 150px;
+  height: 70px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  background-color: #fa6e6e;
+  height: 40px;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancel_btn > button:hover {
+  background-color: #f81515;
   transition: all 0.3s;
 }
 
@@ -97,11 +121,13 @@
   background-color: #bebec2;
   margin-left: 5px;
   border: none;
+  cursor: pointer;
 }
 
 .seat:hover {
   background-color: #6161ff;
   border: none;
+  cursor: pointer;
 }
 
 .seat_selected {
@@ -110,12 +136,137 @@
   background-color: #0000ff;
   margin-left: 5px;
   border: none;
+  cursor: pointer;
 }
 
-.seat_disabled {
+.seat_reserved {
   width: 20px;
   height: 20px;
-  background-color: #ff0000;
+  background-color: #f57171;
   margin-left: 5px;
   border: none;
+}
+
+/* 예약 페이지 css */
+
+.total {
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* 좌측 div css */
+.poster_img {
+  width: 400px;
+  height: 600px;
+  border-radius: 10px;
+  box-shadow: 1px 4px 2px 2px #43434180;
+}
+
+.left_div {
+  text-align: center;
+  margin-right: 2%;
+}
+
+.btn {
+  width: 150px;
+  height: 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: #75a4ff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  margin-top: 10%;
+  margin-right: 10%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background-color: #1b4aa7;
+  transition: all 0.3s;
+}
+
+.btn_cancel {
+  width: 150px;
+  height: 50px;
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: #ff6666;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  margin-top: 10%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn_cancel:hover {
+  background-color: #ff1010;
+  transition: all 0.3s;
+}
+
+/* 우측 div css */
+
+.right_div {
+  background-image: url(/src/img/receipt.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 400px;
+  height: 700px;
+  margin-left: 2%;
+  padding-left: 2%;
+}
+
+.pay_type {
+  font-size: 1.5em;
+  margin-top: 30%;
+  margin-bottom: 3%;
+  font-weight: 600;
+}
+
+.btn_type {
+  display: flex;
+  width: 280px;
+  justify-content: space-between;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.radio_btn {
+  cursor: pointer;
+}
+
+.contents {
+  margin-top: 15%;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 3%;
+}
+
+.title2 {
+  width: 150px;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.content2 {
+  width: 300px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+.pay {
+  display: flex;
+  margin-top: 17%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3em;
+}
+
+.pay > .title {
+  margin-right: 20%;
+  width: 300px;
 }

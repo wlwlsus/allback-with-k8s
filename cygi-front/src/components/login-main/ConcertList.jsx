@@ -1,102 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import Poster from "img/poster_detail.png";
 import style from "./ConcertList.module.css";
-import { useQuery } from "@tanstack/react-query";
-import { $ } from "util/axios";
+import { $_concert } from "util/axios";
+import ListLoading from "gif/list_loading.gif";
 
 export default function ConcertList() {
   const navigate = useNavigate();
-  const { isLoading, isError, data } = useQuery(["concert"], async () => {
-    // async 키워드 추가
-    const response = await $.get(`/concert?page=10`); // await 키워드 추가
-    return response.data; // 실제 데이터가 들어있는 response.data를 반환하도록 수정
-  });
+  let nowTime = new Date();
 
-  const datas = [
-    {
-      seq: 0,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 1,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 2,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 3,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 4,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 5,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 6,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 7,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 8,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-    {
-      seq: 9,
-      title: "맘마미아!",
-      poster_url: Poster,
-      total_seat: 100,
-      remain_seat: 80,
-      ticket_start: "23/04/18 15시",
-    },
-  ];
+  const obsRef = useRef(null); //observer Element
+  const [concertList, setConcertList] = useState([]);
 
-  console.log(data);
+  const [page, setPage] = useState(0); //현재 페이지
+  const [load, setLoad] = useState(true); //로딩 스피너
+  const preventRef = useRef(true); //옵저버 중복 실행 방지
+
+  useEffect(() => {
+    //옵저버 생성
+    const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 });
+    if (obsRef.current) observer.observe(obsRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // 옵저버 생성
+  const obsHandler = (entries) => {
+    //옵저버 콜백함수
+    const target = entries[0];
+    //옵저버 중복 실행 방지
+    if (target.isIntersecting && preventRef.current) {
+      preventRef.current = false; //옵저버 중복 실행 방지
+      setPage((prev) => prev + 1); //페이지 값 증가
+    }
+  };
+
+  const getConcert = useCallback(async () => {
+    setLoad(true);
+    await $_concert(`concert?page=${page}`).then((res) => {
+      setConcertList((prev) => [...prev, res.data]);
+      preventRef.current = true;
+      setLoad(false);
+    });
+  }, [page]);
+
+  useEffect(() => {
+    if (page > 0) getConcert();
+  }, [page]);
+
+  const onSelect = (id) => {
+    navigate(`detail/${id}`, {
+      state: {
+        concertId: id,
+      },
+    });
+  };
 
   return (
     <div className={style.total}>
@@ -107,36 +65,68 @@ export default function ConcertList() {
         결제는 CAN YOU GET IT 포인트 또는 카카오 페이를 통해 이루어집니다.
       </div>
       <div className={style.container}>
-        {!isLoading &&
-          data.data.map((content) => {
-            return (
-              <div
-                key={content.seq}
-                className={style.card}
-                onClick={() => {
-                  navigate(`detail/${1}`);
-                }}
-              >
-                <div className={style.poster_url}>
-                  <img src={content.poster_url} alt="" />
-                </div>
-                <div className={style.content_title}>{content.title}</div>
-                <div className={style.contents}>
-                  <div className={style.name}>
-                    <div className={style.title}>잔여좌석</div>
-                    <div className={style.content}>
-                      {content.remain_seat} / {content.total_seat}
+        {concertList &&
+          concertList.map((contents, index1) => {
+            console.log(concertList);
+            return contents.map((content, index2) => {
+              let date =
+                content.endDate.slice(0, 4) +
+                "/" +
+                content.endDate.slice(5, 7) +
+                "/" +
+                content.endDate.slice(8, 10) +
+                " " +
+                content.endDate.slice(11, 13) +
+                "시" +
+                content.endDate.slice(14, 16) +
+                "분";
+              return (
+                <div
+                  key={content.concertId}
+                  className={
+                    content.rest === 0 || nowTime >= new Date(content.endDate)
+                      ? style.card_disable
+                      : style.card
+                  }
+                  onClick={() => {
+                    if (
+                      content.rest !== 0 &&
+                      nowTime < new Date(content.endDate)
+                    )
+                      onSelect(content.concertId);
+                  }}
+                >
+                  <div className={style.poster_url}>
+                    <img src={content.image} alt="" />
+                  </div>
+                  <div className={style.content_title}>{content.title}</div>
+                  <div className={style.contents}>
+                    <div className={style.name}>
+                      <div className={style.title}>잔여좌석</div>
+                      <div className={style.content}>
+                        {content.rest === 0
+                          ? "마감"
+                          : content.rest + "/" + content.all}
+                      </div>
+                    </div>
+                    <div className={style.seat}>
+                      <div className={style.title}>예매마감일</div>
+                      <div className={style.content}>
+                        {nowTime >= new Date(content.endDate) ? "마감" : date}
+                      </div>
                     </div>
                   </div>
-                  <div className={style.seat}>
-                    <div className={style.title}>예매시작일</div>
-                    <div className={style.content}>{content.ticket_start}</div>
-                  </div>
                 </div>
-              </div>
-            );
+              );
+            });
           })}
       </div>
+      {load && (
+        <div>
+          <img src={ListLoading} alt="" />
+        </div>
+      )}
+      <div ref={obsRef}>&nbsp;</div>
     </div>
   );
 }
