@@ -33,8 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final ReservationMapper reservationMapper;
 	private final KafkaProducer kafkaProducer;
-	private final String refundMessage = "Refund Complete";
-	private final String reserveMessage = "Reserve Complete";
+	private final String refundMessage = "환불완료";
+	private final String reserveMessage = "예약완료";
 
 	@Override
 	public List<ReservationResDto> getReservationList(Pageable pageable) {
@@ -75,6 +75,7 @@ public class ReservationServiceImpl implements ReservationService {
 //		userServerClient.amount(amountReqDto);
 
 	}
+
 
 
 	@Override

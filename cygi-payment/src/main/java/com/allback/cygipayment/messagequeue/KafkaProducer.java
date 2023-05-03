@@ -18,18 +18,17 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaProducer {
-	private KafkaTemplate<String, String> kafkaTemplate;
+  private final KafkaTemplate<String, String> kafkaTemplate;
 
-	public AmountReqDto send(String topic, AmountReqDto amountReqDto) {
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = "";
-		try {
-			jsonInString = mapper.writeValueAsString(amountReqDto);
-		} catch (JsonProcessingException ex) {
-			ex.printStackTrace();
-		}
-		kafkaTemplate.send(topic, jsonInString);
-		log.info("Kafka Producer sent data from the Order microservice: " + amountReqDto);
-		return amountReqDto;
-	}
+  public void send(String topic, AmountReqDto amountReqDto) {
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonInString = "";
+    try {
+      jsonInString = mapper.writeValueAsString(amountReqDto);
+    } catch (JsonProcessingException ex) {
+      ex.printStackTrace();
+    }
+    kafkaTemplate.send(topic, jsonInString);
+    log.info("Kafka Producer sent data from the Order microservice: " + amountReqDto);
+  }
 }
