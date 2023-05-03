@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
-    List<Users> findAll();
-    Users findUserByUuid(String uuid);
+  List<Users> findAll();
+
+  Users findUsersByUuid(String uuid);
+
+
 
 }
