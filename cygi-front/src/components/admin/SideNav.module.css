@@ -1,0 +1,46 @@
+.container {
+  width: 200px;
+  height: 100%;
+  margin-right: 100px;
+}
+
+.menu_list {
+  background-color: #474747;
+  width: 150px;
+  height: 100%;
+  color: white;
+  padding: 10px;
+}
+
+.total_menu {
+  text-align: center;
+  font-size: 1.4em;
+  margin-bottom: 50px;
+  background-color: #474747;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.calculation_menu {
+  margin-bottom: 50px;
+  background-color: #474747;
+  font-size: 1.2em;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.user_menu {
+  margin-bottom: 50px;
+  background-color: #474747;
+  font-size: 1.2em;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.reservation_menu {
+  margin-bottom: 50px;
+  background-color: #474747;
+  font-size: 1.2em;
+  font-weight: 500;
+  cursor: pointer;
+}

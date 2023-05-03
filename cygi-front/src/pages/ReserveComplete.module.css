@@ -1,0 +1,66 @@
+/* 나중에 styled components로 대체*/
+.background {
+  width: 100%;
+  height: 1080px;
+  position: relative;
+}
+
+.background_img {
+  position: absolute;
+  object-fit: cover;
+  top: 0%;
+  opacity: 0.3;
+  z-index: -2;
+}
+
+.background_img > img {
+  width: 100%;
+  height: 1080px;
+}
+
+.complete_text {
+  text-align: center;
+  margin-top: 5%;
+  font-size: 4em;
+  font-weight: 500;
+}
+
+.ticket_information {
+  text-align: center;
+  background-image: url(../img/ticket.png);
+  background-repeat: no-repeat;
+  position: relative;
+  top: 5%;
+  left: 32%;
+  width: 1100px;
+  height: 700px;
+}
+
+.name {
+  font-size: 3em;
+  font-weight: 600;
+}
+
+.contents {
+  position: absolute;
+  top: 5%;
+  left: 20%;
+  text-align: left;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 5%;
+}
+
+.title {
+  width: 150px;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.content {
+  width: 300px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
