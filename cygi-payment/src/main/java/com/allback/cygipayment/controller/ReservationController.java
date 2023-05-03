@@ -34,7 +34,7 @@ public class ReservationController {
 	private final ReservationService reservationService;
 
 	@Operation(summary = "유저 예약 목록 조회")
-	@GetMapping(value = "/{userId}")
+	@GetMapping(value = "/id/{userId}")
 	public ResponseEntity<?> getReservationList(
 			@PathVariable long userId,
 			@Schema(hidden = true)

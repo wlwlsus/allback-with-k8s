@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -19,4 +20,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<String> findSoldSeatByConcertId(Long concertId);
 
     Page<Reservation> findByUserId(long userId, Pageable pageable);
+
+    Optional<Reservation> findReservationByUserId(long userId);
 }
