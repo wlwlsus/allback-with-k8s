@@ -7,12 +7,14 @@ import com.allback.cygiuser.entity.Passbook;
 import com.allback.cygiuser.entity.Reservation;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.repository.PassbookRepository;
-import com.allback.cygiuser.repository.ReservationRepository;
 import com.allback.cygiuser.repository.UserRepository;
 import com.allback.cygiuser.util.exception.BaseException;
 import com.allback.cygiuser.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,6 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PassbookRepository passbookRepository;
-	private final ReservationRepository reservationRepository;
 
 	@Override
 	@Transactional
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserResDto> getAllUserInfo() {
+	public Page<UserResDto> getAllUserInfo(int page) {
 		System.out.println("회원 전체 목록 반환 service");
 
 		List<Users> list = userRepository.findAll();
@@ -88,28 +89,13 @@ public class UserServiceImpl implements UserService {
 				.build())
 				.collect(Collectors.toList());
 
-		return resList;
+		//		list to page
+		PageRequest pageRequestForList = PageRequest.of(page, 10);
+		int start = (int) pageRequestForList.getOffset();
+		int end = Math.min((start + pageRequestForList.getPageSize()), resList.size());
+		Page<UserResDto> resPage = new PageImpl<>(resList.subList(start, end),
+				pageRequestForList, resList.size());
+
+		return resPage;
 	}
-
-	@Override
-	public List<ReservationResDto> getReservations() {
-		List<Reservation> list = reservationRepository.findAll();
-
-		List<ReservationResDto> resList = list.stream().map(e -> {
-			ReservationResDto dto = new ReservationResDto();
-			dto.setSeat(e.getSeat());
-			dto.setPrice(e.getPrice());
-			dto.setConcertId(e.getConcertId());
-			dto.setStatus(e.getStatus());
-			dto.setUserId(e.getUserId());
-			dto.setStageId(e.getStageId());
-			return dto;
-		}).collect(Collectors.toList());
-
-//		System.out.println(resList);
-
-		return resList;
-	}
-
-
 }
