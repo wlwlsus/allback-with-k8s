@@ -36,8 +36,8 @@ public class ReservationServiceImpl implements ReservationService {
 	private final String reserveMessage = "Reserve Complete";
 
 	@Override
-	public List<ReservationResDto> getReservationList(Pageable pageable) {
-		List<Reservation> reservationPage = reservationRepository.findAll(pageable).getContent();
+	public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
+		List<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable).getContent();
 		return reservationMapper.toDtoList(reservationPage);
 	}
 

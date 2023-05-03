@@ -17,4 +17,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r.seat FROM Reservation r WHERE r.concertId = ?1 AND r.status LIKE '예약%'")
     List<String> findSoldSeatByConcertId(Long concertId);
+
+    Page<Reservation> findByUserId(long userId, Pageable pageable);
 }
