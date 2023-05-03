@@ -2,49 +2,50 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./ConcertList.module.css";
 import { $_concert } from "util/axios";
+import ListLoading from "gif/list_loading.gif";
 
 export default function ConcertList() {
   const navigate = useNavigate();
   let nowTime = new Date();
 
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
+  const obsRef = useRef(null); //observer Element
   const [concertList, setConcertList] = useState([]);
-  const [prevScrollY, setPrevScrollY] = useState(0);
 
-  const observer = useRef();
-  const lastIdx = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          console.log("visible");
-          setPage((prev) => prev + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading]
-  );
+  const [page, setPage] = useState(0); //현재 페이지
+  const [load, setLoad] = useState(true); //로딩 스피너
+  const preventRef = useRef(true); //옵저버 중복 실행 방지
 
   useEffect(() => {
-    // 이전 스크롤 위치를 기억하고, 새로운 공연 목록이 렌더링될 때 이전 스크롤 위치로 스크롤
-    setPrevScrollY(window.scrollY);
-  }, [concertList]);
+    //옵저버 생성
+    const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 });
+    if (obsRef.current) observer.observe(obsRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, prevScrollY);
-  }, [prevScrollY]);
+  // 옵저버 생성
+  const obsHandler = (entries) => {
+    //옵저버 콜백함수
+    const target = entries[0];
+    //옵저버 중복 실행 방지
+    if (target.isIntersecting && preventRef.current) {
+      preventRef.current = false; //옵저버 중복 실행 방지
+      setPage((prev) => prev + 1); //페이지 값 증가
+    }
+  };
 
-  useEffect(() => {
-    setLoading(true);
-    $_concert.get(`concert?page=${page}`).then((res) => {
-      setConcertList((prevConcerts) => {
-        return [...new Set([...prevConcerts, res.data])];
-      });
-      setLoading(false);
+  const getConcert = useCallback(async () => {
+    setLoad(true);
+    await $_concert(`concert?page=${page}`).then((res) => {
+      setConcertList((prev) => [...prev, res.data]);
+      preventRef.current = true;
+      setLoad(false);
     });
+  }, [page]);
+
+  useEffect(() => {
+    if (page > 0) getConcert();
   }, [page]);
 
   const onSelect = (id) => {
@@ -64,8 +65,9 @@ export default function ConcertList() {
         결제는 CAN YOU GET IT 포인트 또는 카카오 페이를 통해 이루어집니다.
       </div>
       <div className={style.container}>
-        {!loading &&
+        {concertList &&
           concertList.map((contents, index1) => {
+            console.log(concertList);
             return contents.map((content, index2) => {
               let date =
                 content.endDate.slice(0, 4) +
@@ -93,11 +95,6 @@ export default function ConcertList() {
                     )
                       onSelect(content.concertId);
                   }}
-                  ref={
-                    concertList.length * 10 === index1 * 10 + index2 + 1
-                      ? lastIdx
-                      : null
-                  }
                 >
                   <div className={style.poster_url}>
                     <img src={content.image} alt="" />
@@ -124,6 +121,12 @@ export default function ConcertList() {
             });
           })}
       </div>
+      {load && (
+        <div>
+          <img src={ListLoading} alt="" />
+        </div>
+      )}
+      <div ref={obsRef}>&nbsp;</div>
     </div>
   );
 }

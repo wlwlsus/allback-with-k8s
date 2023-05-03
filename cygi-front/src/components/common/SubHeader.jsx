@@ -3,13 +3,15 @@ import style from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import logo from "img/logo.png";
 import { useRecoilState } from "recoil";
-import { user } from "../../util/store";
+import { userId, userRole, userNick } from "../../util/store";
 import { $_user } from "util/axios";
 import { useMutation } from "@tanstack/react-query";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useRecoilState(user);
+  const [id, setId] = useRecoilState(userId);
+  const [role, setRole] = useRecoilState(userRole);
+  const [nickName, setNickName] = useRecoilState(userNick);
 
   // API_POST 함수
   const res_put = () => {
@@ -23,7 +25,9 @@ export default function Header() {
   const { mutate: onLogout } = useMutation(res_put, {
     onSuccess: () => {
       sessionStorage.clear();
-      setUserId("");
+      setId("");
+      setRole("");
+      setNickName("");
       navigate("/");
     },
   });
