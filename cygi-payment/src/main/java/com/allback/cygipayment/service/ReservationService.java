@@ -2,6 +2,7 @@ package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.dto.request.ReservationFillReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface ReservationService {
 	void cancelReservation(long reservationId);
 
 	void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto);
+
+	Page<ReservationResDto> getReservations(int page);
 }

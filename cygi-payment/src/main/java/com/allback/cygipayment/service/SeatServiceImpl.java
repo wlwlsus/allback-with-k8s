@@ -1,6 +1,7 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.dto.request.ReservationReqDto;
+import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import com.allback.cygipayment.mapper.ReservationMapper;
 import com.allback.cygipayment.repository.ReservationRepository;
@@ -60,5 +61,7 @@ public class SeatServiceImpl implements SeatService {
         }
         return soldList;
     }
+
+
 
 }

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-26T04:10:03+0900",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Amazon.com Inc.)"
+    date = "2023-04-28T16:08:45+0900",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Amazon.com Inc.)"
 )
 @Component
 public class ReservationMapperImpl implements ReservationMapper {
@@ -43,9 +43,15 @@ public class ReservationMapperImpl implements ReservationMapper {
         Reservation reservation = new Reservation();
 
         reservation.setPrice( reservationReqDto.getPrice() );
-        reservation.setConcertId( reservationReqDto.getConcertId() );
-        reservation.setStageId( reservationReqDto.getStageId() );
-        reservation.setUserId( reservationReqDto.getUserId() );
+        if ( reservationReqDto.getConcertId() != null ) {
+            reservation.setConcertId( reservationReqDto.getConcertId() );
+        }
+        if ( reservationReqDto.getStageId() != null ) {
+            reservation.setStageId( reservationReqDto.getStageId() );
+        }
+        if ( reservationReqDto.getUserId() != null ) {
+            reservation.setUserId( reservationReqDto.getUserId() );
+        }
         reservation.setStatus( reservationReqDto.getStatus() );
         reservation.setSeat( reservationReqDto.getSeat() );
 
