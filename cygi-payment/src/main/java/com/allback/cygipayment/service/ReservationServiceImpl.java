@@ -6,7 +6,6 @@ import com.allback.cygipayment.dto.request.ReservationFillReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import com.allback.cygipayment.mapper.ReservationMapper;
-import com.allback.cygipayment.messagequeue.KafkaProducer;
 import com.allback.cygipayment.repository.ReservationRepository;
 import com.allback.cygipayment.util.exception.BaseException;
 import com.allback.cygipayment.util.exception.ErrorMessage;
@@ -32,7 +31,6 @@ public class ReservationServiceImpl implements ReservationService {
 	private final UserServerClient userServerClient;
 	private final ReservationRepository reservationRepository;
 	private final ReservationMapper reservationMapper;
-	private final KafkaProducer kafkaProducer;
 	private final String refundMessage = "환불완료";
 	private final String reserveMessage = "예약완료";
 
@@ -71,8 +69,7 @@ public class ReservationServiceImpl implements ReservationService {
 		amountReqDto.setUserId(reservation.getUserId());
 		amountReqDto.setAmount(reservation.getPrice());
 
-		kafkaProducer.send("example-user-topic", amountReqDto);
-//		userServerClient.amount(amountReqDto);
+		userServerClient.amount(amountReqDto);
 
 	}
 
