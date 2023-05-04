@@ -33,9 +33,10 @@ public class ReservationController {
 	private final KakaoPayService kakaoPayService;
 	private final ReservationService reservationService;
 
-	@Operation(summary = "예약 목록 조회")
-	@GetMapping(value = "")
+	@Operation(summary = "유저 예약 목록 조회")
+	@GetMapping(value = "/id/{userId}")
 	public ResponseEntity<?> getReservationList(
+			@PathVariable long userId,
 			@Schema(hidden = true)
 			Pageable pageable,
 			@Schema(description = "페이지 별 개수", example = "10")
@@ -45,9 +46,9 @@ public class ReservationController {
 			@RequestParam
 			int page
 	) {
-		List<ReservationResDto> res = reservationService.getReservationList(pageable);
+		List<ReservationResDto> res = reservationService.getReservationList(userId, pageable);
 		log.info("예약 목록 조회 데이터 : {}", res);
-		return Response.makeResponse(HttpStatus.OK, "예약 목록 조회 성공", res);
+		return Response.makeResponse(HttpStatus.OK, "유저 예약 목록 조회 성공", res);
 	}
 
 	@Operation(summary = "예약 세부 정보 조회")

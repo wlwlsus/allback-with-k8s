@@ -16,8 +16,6 @@ import lombok.*;
 @Builder
 @ToString
 public class ReservationFillReqDto {
-
-	private long stageId;
 	private long userId;
 	private int price;
 }

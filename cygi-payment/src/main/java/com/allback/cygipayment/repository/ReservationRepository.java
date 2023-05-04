@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -17,4 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r.seat FROM Reservation r WHERE r.concertId = ?1 AND r.status LIKE '예약%'")
     List<String> findSoldSeatByConcertId(Long concertId);
+
+    Page<Reservation> findByUserId(long userId, Pageable pageable);
+
+    Optional<Reservation> findReservationByUserId(long userId);
 }

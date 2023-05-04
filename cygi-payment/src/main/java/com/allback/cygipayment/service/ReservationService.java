@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface ReservationService {
 
-	List<ReservationResDto> getReservationList(Pageable pageable);
+	List<ReservationResDto> getReservationList(long userId, Pageable pageable);
 
 	ReservationResDto getReservationById(long reservationId);
 

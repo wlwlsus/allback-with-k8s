@@ -34,21 +34,21 @@ public class SeatController {
     }
 
     @GetMapping("/seat/{concertId}")
-    ResponseEntity<List<String>> getSoldSeatInfo(@PathVariable Long concertId) {
+    ResponseEntity<List<String>> getSoldSeatInfo(@PathVariable long concertId) {
         List<String> seatList = seatService.getSoldSeatList(concertId);
         return new ResponseEntity<>(seatList, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/seat/{reservationId}")
-    ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId) {
+    ResponseEntity<Void> deleteReservationById(@PathVariable long reservationId) {
         seatService.deleteReservationById(reservationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping("/rest/{concertId}")
-    ResponseEntity<Integer> getSoldSeatCnt(@PathVariable Long concertId) {
+    ResponseEntity<Integer> getSoldSeatCnt(@PathVariable long concertId) {
         int sold = seatService.getSoldSeatCnt(concertId);
         return new ResponseEntity<>(sold, HttpStatus.OK);
     }

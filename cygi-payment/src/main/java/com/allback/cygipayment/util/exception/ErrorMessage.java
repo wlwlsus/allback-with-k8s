@@ -11,9 +11,13 @@ public enum ErrorMessage {
 	// BINDING_FAIL_EXCEPTION(1, "내부 서버에서 오류가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 	NOT_PERMISSION_EXCEPTION(5, "권한이 없거나 부족합니다.", HttpStatus.FORBIDDEN),
 	NOT_EXIST_RESERVATION_NUMBER(20, "예약 번호가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+
+	INVALID_REQUEST(25, "유저 번호가 일치하지 않거나 예약 데이터가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
 	EXIST_CONTENT(21, "이미 존재하는 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
 	ALREADY_RESERVE(22, "이미 예약되어 있습니다.", HttpStatus.BAD_REQUEST),
 	ALREADY_REFUND(23, "이미 환불 처리되었습니다.", HttpStatus.BAD_REQUEST),
+
+	ALREADY_BALANCE(23, "정산 완료된 건입니다.", HttpStatus.BAD_REQUEST),
 
 	FAIL_PAYMENT(23, "결제 실패하였습니다.", HttpStatus.BAD_REQUEST),
 	// NOT_EXIST_ID(100, "서버에 존재하지 않는 아이디입니다.", HttpStatus.BAD_REQUEST),
