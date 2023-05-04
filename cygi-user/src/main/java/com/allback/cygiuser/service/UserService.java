@@ -1,9 +1,11 @@
 package com.allback.cygiuser.service;
 
 import com.allback.cygiuser.dto.request.AmountRequest;
+import com.allback.cygiuser.dto.request.UserTestReqDto;
 import com.allback.cygiuser.dto.response.UserResDto;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
@@ -16,4 +18,7 @@ public interface UserService {
   void updateCash(long userId, long cash);
 
   int getPoint(long userId);
+
+  ResponseEntity<?> logout(UserTestReqDto.Logout logout);
+
 }
