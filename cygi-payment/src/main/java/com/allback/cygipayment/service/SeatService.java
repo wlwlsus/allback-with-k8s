@@ -1,7 +1,8 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.dto.request.ReservationReqDto;
-import com.allback.cygipayment.dto.request.SeatStatusChangeReqDto;
+import com.allback.cygipayment.dto.response.ReservationResDto;
+
 import java.util.List;
 
 public interface SeatService {
