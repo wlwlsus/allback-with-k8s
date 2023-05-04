@@ -1,7 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="d2c12026-77b3-4654-86cf-d4561b50585a" name="Changes" comment="" />
+    <list default="true" id="d2c12026-77b3-4654-86cf-d4561b50585a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/cygi-batch/src/main/java/com/allback/cygibatch/batch/BatchJobRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/generated/com/allback/cygipayment/mapper/ReservationMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/CygiPaymentApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/batch/MyJobConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/batch/ScheduleTask.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/client/ConcertServerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/client/UserServerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/config/SwaggerConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/config/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/config/security/WebSecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/controller/ReservationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/controller/SeatController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/AmountReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/KakaoPayApproveReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/KakaoPayReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/ReservationFillReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/ReservationReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/request/SeatStatusChangeReqDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/response/KakaoPayApproveResDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/response/KakaoPayResDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/response/ReservationResDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/response/kakao/Amount.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/dto/response/kakao/CardInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/entity/Balance.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/entity/BalanceState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/entity/Reservation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/init/ReservationInit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/mapper/ReservationMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/repository/BalanceRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/repository/BalanceStateRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/repository/ReservationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/KakaoPayService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/KakaoPayServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/ReservationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/ReservationServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/SeatService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/service/SeatServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/util/BaseTimeEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/util/Response.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/util/exception/BaseException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/util/exception/ErrorMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/java/com/allback/cygipayment/util/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/test/java/com/allback/cygipayment/CygiReservationApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cygi-payment/src/test/java/com/allback/cygipayment/entity/ReservationTest.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,6 +81,10 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -35,6 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1682470613031</updated>
       <workItem from="1682470615682" duration="22000" />
+      <workItem from="1683170137113" duration="682000" />
     </task>
     <servers />
   </component>

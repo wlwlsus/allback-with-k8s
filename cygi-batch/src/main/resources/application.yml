@@ -1,0 +1,33 @@
+server:
+  port: 8003
+  servlet:
+    context-path: /api/v1
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: false
+    show-sql: true
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+#     애플리케이션 실행할때 job을 실행
+      enabled: true
+#     Program argument로 넘어오는 job.name과 일치하는 job만 실행
+#      name: ${job.name:NONE}
+      name: batchJob
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssafy806_payment
+    username: ssafy806
+    password: ssafy806
+# user-service url
+user:
+  server:
+    url: http://localhost:8000
+    prefix: /api/v1/server-payment
+# concert-service url
+concert:
+  server:
+    url: http://localhost:8002
+    prefix: /api/v1/server-payment
