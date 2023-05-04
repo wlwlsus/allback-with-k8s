@@ -37,4 +37,10 @@ public class PaymentController {
 		userService.deductUserCash(userId, price);
 		return Response.makeResponse(HttpStatus.OK, "예약 결제 성공");
 	}
+
+	@GetMapping("/ping")
+	public String ping(){
+		return "pong!";
+	}
+
 }

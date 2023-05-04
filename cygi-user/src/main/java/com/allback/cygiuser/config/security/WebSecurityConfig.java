@@ -45,8 +45,9 @@ public class WebSecurityConfig {
         .and()
         .authorizeHttpRequests()
         .requestMatchers("/swagger-ui/**", "/v3/api" +
-            "-docs/**").permitAll()
-        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
+            "-docs/**").permitAll();
+//        .requestMatchers("/**").permitAll();
+//        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
 
     httpSecurity
         .oauth2Login()
