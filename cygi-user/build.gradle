@@ -42,7 +42,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
 
 	// eureka
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	// JWT
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
