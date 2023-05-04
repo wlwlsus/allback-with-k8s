@@ -46,9 +46,12 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
     List<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable).getContent();
+    return getReservationResDtos(reservationPage);
+  }
+
+  private List<ReservationResDto> getReservationResDtos(List<Reservation> reservationPage) {
     return reservationPage.stream()
         .map(reservation -> {
-          System.out.println(reservation.getConcertId() + "  : 콘서트버노!");
           String concert = concertServerClient.getConcertTitle(reservation.getConcertId()).getBody();
           return ReservationResDto.builder()
               .title(concert)
@@ -118,17 +121,6 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   public List<ReservationResDto> getAllReservations(Pageable pageable) {
     List<Reservation> reservationPage = reservationRepository.findAllBy(pageable).getContent();
-    return reservationPage.stream()
-        .map(reservation -> {
-          String concert = concertServerClient.getConcertTitle(reservation.getConcertId()).getBody();
-          return ReservationResDto.builder()
-              .title(concert)
-              .status(reservation.getStatus())
-              .price(reservation.getPrice())
-              .seat(reservation.getSeat())
-              .modifiedDate(String.valueOf(reservation.getModifiedDate()))
-              .build();
-        })
-        .collect(Collectors.toList());
+    return getReservationResDtos(reservationPage);
   }
 }
