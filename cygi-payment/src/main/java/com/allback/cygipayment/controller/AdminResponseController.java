@@ -25,7 +25,7 @@ public class AdminResponseController {
     @GetMapping("/reservations")
     ResponseEntity<Page<ReservationResDto>> getReservations(int page){
         System.out.println("reservations 진입");
-        Page<ReservationResDto> resPage = reservationService.getReservations(page);
+        Page<ReservationResDto> resPage = reservationService.getReservations(page - 1);
         return new ResponseEntity<Page<ReservationResDto>>(resPage, HttpStatus.OK);
     }
 }
