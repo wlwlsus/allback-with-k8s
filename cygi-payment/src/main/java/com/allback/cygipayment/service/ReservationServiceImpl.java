@@ -12,9 +12,6 @@ import com.allback.cygipayment.util.exception.BaseException;
 import com.allback.cygipayment.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,14 +43,15 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
     List<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable).getContent();
-    return getReservationResDtos(reservationPage);
+    return getReservationResDtoList(reservationPage);
   }
 
-  private List<ReservationResDto> getReservationResDtos(List<Reservation> reservationPage) {
+  private List<ReservationResDto> getReservationResDtoList(List<Reservation> reservationPage) {
     return reservationPage.stream()
         .map(reservation -> {
           String concert = concertServerClient.getConcertTitle(reservation.getConcertId()).getBody();
           return ReservationResDto.builder()
+              .reservationId(reservation.getReservationId())
               .title(concert)
               .status(reservation.getStatus())
               .price(reservation.getPrice())
@@ -121,6 +119,6 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   public List<ReservationResDto> getAllReservations(Pageable pageable) {
     List<Reservation> reservationPage = reservationRepository.findAllBy(pageable).getContent();
-    return getReservationResDtos(reservationPage);
+    return getReservationResDtoList(reservationPage);
   }
 }

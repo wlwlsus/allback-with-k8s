@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationResDto {
 
+  private long reservationId;
   private String title;
   private String status;
   private int price;
