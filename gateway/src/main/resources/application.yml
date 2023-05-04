@@ -15,22 +15,38 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8000/
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/api/v1/login/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
-#          filters:
-#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: payment-service
-          uri: http://localhost:8001/
+          uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/payment-service/**
-#          filters:
-#            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         - id : concert-service
-          uri: http://3.34.8.99:9200/
+          uri: http://localhost:8002/
           predicates:
             - Path=/concert-service/**
           filters:
-            - name: kafkaRequestFilter
+            - name: KafkaRequestFilter
               args:
                 topicName: concert-req
+
+jwt:
+  secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==
+
+kafka:
+  bootstrap-servers: 3.34.8.99:9092
