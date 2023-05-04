@@ -1,5 +1,6 @@
 package com.allback.cygipayment.service;
 
+import com.allback.cygipayment.client.ConcertServerClient;
 import com.allback.cygipayment.client.UserServerClient;
 import com.allback.cygipayment.dto.request.AmountReqDto;
 import com.allback.cygipayment.dto.request.ReservationFillReqDto;
@@ -12,11 +13,14 @@ import com.allback.cygipayment.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * author : cadqe13@gmail.com
@@ -29,6 +33,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
   private final UserServerClient userServerClient;
+
+  private final ConcertServerClient concertServerClient;
   private final ReservationRepository reservationRepository;
   private final ReservationMapper reservationMapper;
 
@@ -39,7 +45,19 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
     List<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable).getContent();
-    return reservationMapper.toDtoList(reservationPage);
+    return reservationPage.stream()
+        .map(reservation -> {
+          System.out.println(reservation.getConcertId() + "  : 콘서트버노!");
+          String concert = concertServerClient.getConcertTitle(reservation.getConcertId()).getBody();
+          return ReservationResDto.builder()
+              .title(concert)
+              .status(reservation.getStatus())
+              .price(reservation.getPrice())
+              .seat(reservation.getSeat())
+              .modifiedDate(String.valueOf(reservation.getModifiedDate()))
+              .build();
+        })
+        .collect(Collectors.toList());
   }
 
   @Override

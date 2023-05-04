@@ -51,13 +51,13 @@ public class ReservationController {
 		return Response.makeResponse(HttpStatus.OK, "유저 예약 목록 조회 성공", res);
 	}
 
-	@Operation(summary = "예약 세부 정보 조회")
-	@GetMapping(value = "/{reservationId}")
-	public ResponseEntity<?> getReservationInfo(@PathVariable long reservationId) {
-		ReservationResDto res = reservationService.getReservationById(reservationId);
-		log.info("예약 세부 정보 조회 : {}", res);
-		return Response.makeResponse(HttpStatus.OK, "예약 세부 정보 조회 성공", res);
-	}
+//	@Operation(summary = "예약 세부 정보 조회")
+//	@GetMapping(value = "/{reservationId}")
+//	public ResponseEntity<?> getReservationInfo(@PathVariable long reservationId) {
+//		ReservationResDto res = reservationService.getReservationById(reservationId);
+//		log.info("예약 세부 정보 조회 : {}", res);
+//		return Response.makeResponse(HttpStatus.OK, "예약 세부 정보 조회 성공", res);
+//	}
 
 	@Operation(summary = "환불")
 	@PutMapping(value = "/refund/{reservationId}")
