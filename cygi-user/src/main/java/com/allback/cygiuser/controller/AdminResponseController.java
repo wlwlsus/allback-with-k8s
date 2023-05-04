@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "server-admin", description = "어드민 서버와 통신하는 API")
 @RestController
@@ -27,7 +26,7 @@ public class AdminResponseController {
     ResponseEntity<Page<UserResDto>> getUsers(@RequestParam int page){
 
         System.out.println("회원 전체 목록 반환 controller 진입");
-        Page<UserResDto> resPage = userService.getAllUserInfo(page);
+        Page<UserResDto> resPage = userService.getAllUserInfo(page - 1);
 
         return new ResponseEntity<Page<UserResDto>>(resPage, HttpStatus.OK);
 

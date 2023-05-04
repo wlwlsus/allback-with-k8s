@@ -1,33 +1,34 @@
 package com.allback.cygiuser.service;
 
 import com.allback.cygiuser.dto.request.AmountRequest;
-import com.allback.cygiuser.dto.response.ReservationResDto;
 import com.allback.cygiuser.dto.response.UserResDto;
 import com.allback.cygiuser.entity.Passbook;
-import com.allback.cygiuser.entity.Reservation;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.repository.PassbookRepository;
 import com.allback.cygiuser.repository.UserRepository;
 import com.allback.cygiuser.util.exception.BaseException;
 import com.allback.cygiuser.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PassbookRepository passbookRepository;
+//	private final ReservationRepository reservationRepository;
 
 	@Override
 	@Transactional
@@ -76,17 +77,17 @@ public class UserServiceImpl implements UserService {
 //		System.out.println(list);
 
 		List<UserResDto> resList = list.stream().map(e -> UserResDto.builder()
-				.userId(e.getUserId())
-				.passbokId(e.getPassbookId())
-				.nickname(e.getNickname())
-				.email(e.getEmail())
-				.provider(e.getProviderType().name())
-				.profile(e.getProfile())
-				.uuid(e.getUuid())
-				.createDate(e.getCreatedDate())
-				.modifiedDate(e.getModifiedDate())
-				.role(e.getRole())
-				.build())
+						.userId(e.getUserId())
+						.passbokId(e.getPassbookId())
+						.nickname(e.getNickname())
+						.email(e.getEmail())
+						.provider(e.getProviderType().name())
+						.profile(e.getProfile())
+						.uuid(e.getUuid())
+						.createDate(e.getCreatedDate())
+						.modifiedDate(e.getModifiedDate())
+						.role(e.getRole())
+						.build())
 				.collect(Collectors.toList());
 
 		//		list to page
@@ -97,5 +98,16 @@ public class UserServiceImpl implements UserService {
 				pageRequestForList, resList.size());
 
 		return resPage;
+	}
+
+
+	@Transactional
+	public void updateCash(long userId, long cash) {
+		Users user = userRepository.findById(userId)
+			.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
+		Passbook passbook = user.getPassbookId();
+		log.info("[updateCash] : 기존 금액, cash : {}", passbook.getCash());
+		passbook.setCash(passbook.getCash()+cash);
+		log.info("[updateCash] : 바뀐 금액, cash : {}", passbook.getCash());
 	}
 }

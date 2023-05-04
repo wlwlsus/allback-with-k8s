@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -27,8 +28,12 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
+  private static final String NICKNAME_KEY = "nickname";
+  private static final String EMAIL_KEY = "email";
+  private static final String USER_ID = "userId";
+  private static final String CREATED_TIME = "createdTime";
   private static final String BEARER_TYPE = "Bearer";
-  private static final long ACCESS_TOKEN_EXPIRE_TIME = 24 * 60 * 60 * 1000L;          // 1일
+  private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000L;          // 30일
   private static final long REFRESH_TOKEN_EXPIRE_TIME = 90 * 24 * 60 * 60 * 1000L;    // 90일
   private static final int REFRESH_TOKEN_EXPIRE_TIME_COOKIE = Integer.MAX_VALUE;
 
@@ -39,12 +44,16 @@ public class JwtTokenProvider {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public UserTestResDto.TokenInfo generateToken(String id, String role) {
+  public UserTestResDto.TokenInfo generateToken(String uuId, long userId, String nickname, String email, String createdTime, String role) {
     long now = (new Date()).getTime();
     // Access Token 생성
     String accessToken = Jwts.builder()
-        .setSubject(id)
+        .setSubject(uuId)
+        .claim(USER_ID, userId)
+        .claim(NICKNAME_KEY, nickname)
+        .claim(EMAIL_KEY, email)
         .claim(AUTHORITIES_KEY, role)
+        .claim(CREATED_TIME, createdTime)
         .signWith(key, SignatureAlgorithm.HS256)
         .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
         .compact();
