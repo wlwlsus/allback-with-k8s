@@ -110,4 +110,14 @@ public class UserServiceImpl implements UserService {
 		passbook.setCash(passbook.getCash()+cash);
 		log.info("[updateCash] : 바뀐 금액, cash : {}", passbook.getCash());
 	}
+
+	@Override
+	public int getPoint(long userId) {
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
+		log.info("[getPoint] : 유저 정보 >>> {}", user);
+		int point = (int) user.getPassbookId().getCash();
+		log.info("[getPoint] : 보유 포인트 >>> {}", point);
+		return point;
+	}
 }

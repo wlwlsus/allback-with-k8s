@@ -14,4 +14,6 @@ public interface UserService {
   Page<UserResDto> getAllUserInfo(int page);
 
   void updateCash(long userId, long cash);
+
+  int getPoint(long userId);
 }
