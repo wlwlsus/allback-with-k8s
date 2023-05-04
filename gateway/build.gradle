@@ -22,6 +22,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// spring kafka
+	implementation 'org.springframework.kafka:spring-kafka:2.8.0'
 }
 
 dependencyManagement {

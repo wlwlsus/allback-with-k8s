@@ -26,3 +26,11 @@ spring:
             - Path=/payment-service/**
 #          filters:
 #            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+        - id : concert-service
+          uri: http://3.34.8.99:9200/
+          predicates:
+            - Path=/concert-service/**
+          filters:
+            - name: kafkaRequestFilter
+              args:
+                topicName: concert-req
