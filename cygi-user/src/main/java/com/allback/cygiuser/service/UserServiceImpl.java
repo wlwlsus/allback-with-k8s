@@ -1,14 +1,10 @@
 package com.allback.cygiuser.service;
 
-import ch.qos.logback.classic.Logger;
 import com.allback.cygiuser.dto.request.AmountRequest;
-import com.allback.cygiuser.dto.response.ReservationResDto;
 import com.allback.cygiuser.dto.response.UserResDto;
 import com.allback.cygiuser.entity.Passbook;
-import com.allback.cygiuser.entity.Reservation;
 import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.repository.PassbookRepository;
-import com.allback.cygiuser.repository.ReservationRepository;
 import com.allback.cygiuser.repository.UserRepository;
 import com.allback.cygiuser.util.exception.BaseException;
 import com.allback.cygiuser.util.exception.ErrorMessage;
@@ -17,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PassbookRepository passbookRepository;
-	private final ReservationRepository reservationRepository;
+//	private final ReservationRepository reservationRepository;
 
 	@Override
 	@Transactional
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserResDto> getAllUserInfo() {
+	public Page<UserResDto> getAllUserInfo(int page) {
 		System.out.println("회원 전체 목록 반환 service");
 
 		List<Users> list = userRepository.findAll();
@@ -78,40 +77,27 @@ public class UserServiceImpl implements UserService {
 //		System.out.println(list);
 
 		List<UserResDto> resList = list.stream().map(e -> UserResDto.builder()
-				.userId(e.getUserId())
-				.passbokId(e.getPassbookId())
-				.nickname(e.getNickname())
-				.email(e.getEmail())
-				.provider(e.getProviderType().name())
-				.profile(e.getProfile())
-				.uuid(e.getUuid())
-				.createDate(e.getCreatedDate())
-				.modifiedDate(e.getModifiedDate())
-				.role(e.getRole())
-				.build())
+						.userId(e.getUserId())
+						.passbokId(e.getPassbookId())
+						.nickname(e.getNickname())
+						.email(e.getEmail())
+						.provider(e.getProviderType().name())
+						.profile(e.getProfile())
+						.uuid(e.getUuid())
+						.createDate(e.getCreatedDate())
+						.modifiedDate(e.getModifiedDate())
+						.role(e.getRole())
+						.build())
 				.collect(Collectors.toList());
 
-		return resList;
-	}
+		//		list to page
+		PageRequest pageRequestForList = PageRequest.of(page, 10);
+		int start = (int) pageRequestForList.getOffset();
+		int end = Math.min((start + pageRequestForList.getPageSize()), resList.size());
+		Page<UserResDto> resPage = new PageImpl<>(resList.subList(start, end),
+				pageRequestForList, resList.size());
 
-	@Override
-	public List<ReservationResDto> getReservations() {
-		List<Reservation> list = reservationRepository.findAll();
-
-		List<ReservationResDto> resList = list.stream().map(e -> {
-			ReservationResDto dto = new ReservationResDto();
-			dto.setSeat(e.getSeat());
-			dto.setPrice(e.getPrice());
-			dto.setConcertId(e.getConcertId());
-			dto.setStatus(e.getStatus());
-			dto.setUserId(e.getUserId());
-			dto.setStageId(e.getStageId());
-			return dto;
-		}).collect(Collectors.toList());
-
-//		System.out.println(resList);
-
-		return resList;
+		return resPage;
 	}
 
 
@@ -123,5 +109,15 @@ public class UserServiceImpl implements UserService {
 		log.info("[updateCash] : 기존 금액, cash : {}", passbook.getCash());
 		passbook.setCash(passbook.getCash()+cash);
 		log.info("[updateCash] : 바뀐 금액, cash : {}", passbook.getCash());
+	}
+
+	@Override
+	public int getPoint(long userId) {
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
+		log.info("[getPoint] : 유저 정보 >>> {}", user);
+		int point = (int) user.getPassbookId().getCash();
+		log.info("[getPoint] : 보유 포인트 >>> {}", point);
+		return point;
 	}
 }

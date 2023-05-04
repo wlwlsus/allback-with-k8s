@@ -36,11 +36,12 @@ pipeline{
         stage('Build Docker'){
             steps{
                 script{
+                    sh 'ls'
                   // 도커 파일을 빌드
                   // 도커 빌드
                   // 이름설정 back-concert:${env.BUILD_NUMBER} -> 빌드넘버는 이미지 태그이다
                   // 경로는 cygi-concert/
-                    sh "docker build -t back-concert:${env.BUILD_NUMBER} cygi-concert/"
+                    sh "docker build -t back-user:${env.BUILD_NUMBER} cygi-user/"
                 }
             }
         }
@@ -49,9 +50,9 @@ pipeline{
             steps{
                 script{
                     // 도커가 실행중이면 중지 | 도커가 중지되면 삭제
-                    sh "docker stop back-concert || true && docker rm back-concert || true"
+                    sh "docker stop back-user || true && docker rm back-user || true"
                     // 로그 폴더를 호스트와 공유하기 | 도커 컨테이너의 이름은 back-concert | 8002:8090포트를 연결 후 도커 이미지 이름을 back-concert로 하고 태그로 빌드넘버를 붙임
-                    sh "docker run -v log-concert:/var/log/cygi --name back-concert -d -p 8002:8090 back-concert:${env.BUILD_NUMBER}"
+                    sh "docker run -v log-user:/var/log/cygi --name back-user -d -p 8000:8090 back-user:${env.BUILD_NUMBER}"
                     // 사용하지 않는 모든 이미지를 강제 삭제
                     sh "docker image prune -a -f || true"
                 }
