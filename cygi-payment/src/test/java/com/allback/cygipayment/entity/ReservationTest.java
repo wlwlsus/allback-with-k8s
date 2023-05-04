@@ -17,7 +17,6 @@ public class ReservationTest {
         for (int i = 0; i < 100; i++) {
             Reservation reservation = Reservation.builder()
                 .concertId(i%3)
-                .stageId(i%3)
                 .price(100)
                 .seat("A-" + i)
                 .build();

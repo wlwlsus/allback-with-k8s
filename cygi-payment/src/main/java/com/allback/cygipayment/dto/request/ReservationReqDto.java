@@ -24,8 +24,6 @@ public class ReservationReqDto {
 
 	private long concertId;
 
-	private long stageId;
-
 	private long userId;
 
 	private String status;

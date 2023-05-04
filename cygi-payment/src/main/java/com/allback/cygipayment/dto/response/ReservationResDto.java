@@ -18,7 +18,6 @@ import lombok.ToString;
 public class ReservationResDto {
 
   private long concertId;
-  private long stageId;
   private long userId;
   private String status;
   private int price;

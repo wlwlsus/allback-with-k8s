@@ -32,8 +32,9 @@ public class ReservationServiceImpl implements ReservationService {
   private final ReservationRepository reservationRepository;
   private final ReservationMapper reservationMapper;
 
-  private final String refundMessage = "Refund Complete";
-  private final String reserveMessage = "Reserve Complete";
+  private static final String REFUND_Message = "환불완료";
+  private static final String BALANCE_Message = "정산완료";
+  private static final String RESERVE_Message = "예약완료";
 
   @Override
   public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
@@ -59,10 +60,12 @@ public class ReservationServiceImpl implements ReservationService {
     Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
     Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
 
-    if (reservation.getStatus().equals(refundMessage)) throw new BaseException(ErrorMessage.ALREADY_REFUND);
+    if (reservation.getStatus().equals(BALANCE_Message)) throw new BaseException(ErrorMessage.ALREADY_BALANCE);
+
+    if (reservation.getStatus().equals(REFUND_Message)) throw new BaseException(ErrorMessage.ALREADY_REFUND);
 
     // 환불 로직 수행
-    reservation.setStatus(refundMessage);
+    reservation.setStatus(REFUND_Message);
     reservationRepository.save(reservation);
 
     // 환불 금액 되돌리기
@@ -79,17 +82,17 @@ public class ReservationServiceImpl implements ReservationService {
   public void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto) {
     Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
     Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
-    if (reservation.getStatus().equals(reserveMessage)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
+    if (reservation.getStatus().equals(BALANCE_Message)) throw new BaseException(ErrorMessage.ALREADY_BALANCE);
+    if (reservation.getStatus().equals(RESERVE_Message)) throw new BaseException(ErrorMessage.ALREADY_RESERVE);
 
     // 예약 정보에서 필요한 필드를 추출합니다.
-    long stageId = reservationFillReqDto.getStageId();
     long userId = reservationFillReqDto.getUserId();
     int price = reservationFillReqDto.getPrice();
 
     // 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
     userServerClient.deductUserCash(userId, price);
 
-    reservation.setReservation(stageId, userId, reserveMessage, price);
+    reservation.setReservation(userId, RESERVE_Message, price);
     reservationRepository.save(reservation);
   }
 }
