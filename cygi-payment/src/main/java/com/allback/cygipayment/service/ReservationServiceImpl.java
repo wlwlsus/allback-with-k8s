@@ -11,6 +11,9 @@ import com.allback.cygipayment.util.exception.BaseException;
 import com.allback.cygipayment.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +95,40 @@ public class ReservationServiceImpl implements ReservationService {
     // 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
     userServerClient.deductUserCash(userId, price);
 
+<<<<<<< HEAD
+		reservation.setReservation(stageId, userId, reserveMessage, price);
+		reservationRepository.save(reservation);
+	}
+
+	@Override
+	public Page<ReservationResDto> getReservations(int page) {
+
+		List<Reservation> list = reservationRepository.findAll();
+
+		List<ReservationResDto> resList = list.stream().map(e -> {
+			ReservationResDto dto = new ReservationResDto();
+			dto.setSeat(e.getSeat());
+			dto.setPrice(e.getPrice());
+			dto.setConcertId(e.getConcertId());
+			dto.setStatus(e.getStatus());
+			dto.setUserId(e.getUserId());
+			dto.setStageId(e.getStageId());
+			return dto;
+		}).toList();
+
+
+//		list to page
+		PageRequest pageRequestForList = PageRequest.of(page, 10);
+		int start = (int) pageRequestForList.getOffset();
+		int end = Math.min((start + pageRequestForList.getPageSize()), resList.size());
+		Page<ReservationResDto> resPage = new PageImpl<>(resList.subList(start, end),
+				pageRequestForList, resList.size());
+
+		return resPage;
+	}
+=======
     reservation.setReservation(userId, RESERVE_Message, price);
     reservationRepository.save(reservation);
   }
+>>>>>>> b1efe210ed7b05ac4d3f4932bab4225de29f8924
 }
