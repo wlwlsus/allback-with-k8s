@@ -18,6 +18,7 @@ public enum ErrorMessage {
 	ALREADY_REFUND(23, "이미 환불 처리되었습니다.", HttpStatus.BAD_REQUEST),
 
 	ALREADY_BALANCE(23, "정산 완료된 건입니다.", HttpStatus.BAD_REQUEST),
+	PROCESSING_RESERVE(23, "예약 중인 건은 처리할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
 	FAIL_PAYMENT(23, "결제 실패하였습니다.", HttpStatus.BAD_REQUEST),
 	// NOT_EXIST_ID(100, "서버에 존재하지 않는 아이디입니다.", HttpStatus.BAD_REQUEST),

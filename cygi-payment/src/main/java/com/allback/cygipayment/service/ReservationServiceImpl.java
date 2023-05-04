@@ -36,6 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
   private final ReservationRepository reservationRepository;
   private final ReservationMapper reservationMapper;
 
+  private static final String RESERVE_PROCESSING = "예약중";
   private static final String REFUND_MESSAGE = "환불완료";
   private static final String BALANCE_MESSAGE = "정산완료";
   private static final String RESERVE_MESSAGE = "예약완료";
@@ -81,7 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
     Reservation reservation = optionalReservation.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_RESERVATION_NUMBER));
 
     if (reservation.getStatus().equals(BALANCE_MESSAGE)) throw new BaseException(ErrorMessage.ALREADY_BALANCE);
-
+    if (reservation.getStatus().equals(RESERVE_PROCESSING)) throw new BaseException(ErrorMessage.PROCESSING_RESERVE);
     if (reservation.getStatus().equals(REFUND_MESSAGE)) throw new BaseException(ErrorMessage.ALREADY_REFUND);
 
     // 환불 로직 수행
