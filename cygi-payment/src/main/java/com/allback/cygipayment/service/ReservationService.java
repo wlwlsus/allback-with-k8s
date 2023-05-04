@@ -23,5 +23,5 @@ public interface ReservationService {
 
 	void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto);
 
-	Page<ReservationResDto> getReservations(int page);
+	List<ReservationResDto> getAllReservations(Pageable pageable);
 }

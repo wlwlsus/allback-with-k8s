@@ -21,5 +21,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Page<Reservation> findByUserId(long userId, Pageable pageable);
 
+    Page<Reservation> findAllBy(Pageable pageable);
+
     Optional<Reservation> findReservationByUserId(long userId);
 }
