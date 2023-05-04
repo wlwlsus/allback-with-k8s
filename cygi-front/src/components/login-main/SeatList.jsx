@@ -3,9 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import style from "./SeatList.module.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { history } from "./history";
-import { $_concert } from "util/axios";
-import axios from "axios";
-import { userNick, reservation } from "util/store";
+import { $_concert, $_payment } from "util/axios";
+import { userNick, reservation, userId, userPoint } from "util/store";
 import { useRecoilValue, useRecoilState } from "recoil";
 
 export default function SeatList() {
@@ -21,44 +20,49 @@ export default function SeatList() {
   const [isKakaoBtn, setIsKakaoBtn] = useState(false);
 
   const nickName = useRecoilValue(userNick);
+  const id = useRecoilValue(userId);
   const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
+  const [point, setPoint] = useRecoilState(userPoint);
 
   // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
 
-  // 결제 준비를 위한 함수
-  const paymentData = {
-    cid: "TC0ONETIME",
-    partner_order_id: reservationInfo.reservationId,
-    partner_user_id: nickName,
-    item_name: location.state.title,
-    quantity: 1,
-    total_amount: location.state.price,
-    tax_free_amount: 0,
-    approval_url: "http://localhost:3000/success",
-    cancel_url: "http://localhost:3000/home",
-    fail_url: "http://localhost:3000/home",
+  // API_PUT 함수
+  const res_put = () => {
+    return $_payment.put(`/reservation/${reservationInfo.reservationId}`, {
+      userId: id,
+      price: location.state.price,
+    });
   };
 
-  const preparePayment = async (paymentData) => {
-    const headers = {
-      "Content-Type": "application/json; charset=UTF-8",
-    };
-    const response = await axios.post(
-      "http://localhost:8001/api/v1/reservation/charge",
-      paymentData,
-      { headers }
-    );
+  const { mutate: onReserve } = useMutation(res_put, {
+    onSuccess: () => {
+      navigate("../../../complete", {
+        state: {
+          title: location.state.title,
+          reservationId: reservationInfo.reservationId,
+          seat: seat,
+          price: location.state.price,
+          endDate: location.state.endDate,
+        },
+      });
+    },
+  });
 
-    if (response.status === 200) {
-      // PC에서 결제 진행
-      const tid = response.data.result.tid;
-      localStorage.setItem("tid", tid);
-      window.location.href = response.data.result.next_redirect_pc_url;
+  const onPayCheck = () => {
+    // 포인트 충분하면 결제
+    if (point >= location.state.price) {
+      onReserve();
     } else {
-      alert("문제가 발생하였습니다.");
+      if (
+        window.confirm(
+          "포인트가 부족합니다. 마이페이지에서 포인트를 충전하시겠습니까?"
+        )
+      ) {
+        onDelete();
+        navigate("../../../mypage");
+      }
     }
-    return response.data;
   };
 
   // 해당 공연장의 좌석 조회
@@ -86,29 +90,14 @@ export default function SeatList() {
   const handleBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = "";
-    setReservationInfo({
-      title: "",
-      reservationId: "",
-      seat: "",
-      price: 0,
-      date: "",
-    });
+    onDelete();
   };
 
   // 뒤로가기 이벤트 감지
   useEffect(() => {
     const listenBackEvent = () => {
-      if (window.confirm("페이지를 나가시겠습니까?")) {
-        setReservationInfo({
-          title: "",
-          reservationId: "",
-          seat: "",
-          price: 0,
-          date: "",
-        });
-        onDelete();
-        navigate("/");
-      }
+      onDelete();
+      navigate("/");
     };
     const historyEvent = history.listen(({ action }) => {
       if (action === "POP") {
@@ -320,7 +309,7 @@ export default function SeatList() {
               <button
                 className={style.btn}
                 onClick={() => {
-                  preparePayment(paymentData);
+                  onPayCheck();
                 }}
               >
                 결제하기
@@ -337,38 +326,9 @@ export default function SeatList() {
             </div>
           </div>
           <div className={style.right_div}>
-            <div className={style.pay_type}>결제 수단</div>
+            <div className={style.pay_type}>잔여 포인트</div>
             <div className={style.btn_type}>
-              <div>
-                <input
-                  className={style.radio_btn}
-                  type="radio"
-                  name="pay_type"
-                  id="point"
-                  value="point"
-                  onClick={(e) => {
-                    onClickBtn(e.target.value);
-                  }}
-                />
-                <label className={style.radio_btn} htmlFor="point">
-                  포인트
-                </label>
-              </div>
-              <div>
-                <input
-                  className={style.radio_btn}
-                  type="radio"
-                  name="pay_type"
-                  id="kakao"
-                  value="kakao"
-                  onClick={(e) => {
-                    onClickBtn(e.target.value);
-                  }}
-                />
-                <label className={style.radio_btn} htmlFor="kakao">
-                  카카오페이
-                </label>
-              </div>
+              <div>{point}원</div>
             </div>
             <div className={style.contents}>
               <div className={style.name2}>

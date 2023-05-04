@@ -1,41 +1,28 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { userId, userNick, reservation } from "util/store";
-import { $_payment } from "util/axios";
+import { userId, userNick, reservation, userPoint } from "util/store";
+import { $_payment, $_user } from "util/axios";
 import axios from "axios";
-import { useRecoilValue } from "recoil";
-import { useMutation } from "@tanstack/react-query";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 function SuccessPage() {
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const id = useRecoilValue(userId);
   const nickName = useRecoilValue(userNick);
   const reservationInfo = useRecoilValue(reservation);
+  const [point, setPoint] = useRecoilState(userPoint);
 
-  // API_PUT 함수
-  const res_put = () => {
-    return $_payment.put(`/reservation/${reservationInfo.reservationId}`);
-  };
-
-  const { mutate: onReserve } = useMutation(res_put, {
-    onSuccess: () => {
-      navigate("../complete", {
-        state: {
-          title: reservationInfo.title,
-          reservationId: reservationInfo.reservationId,
-          seat: reservationInfo.seat,
-          price: reservationInfo.price,
-          date: reservationInfo.date,
-        },
-      });
-    },
-  });
+  // 포인트 갱신용
+  const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
+    $_user.get(`/user/point?id=${id}`)
+  );
 
   useEffect(() => {
-    console.log(id);
+    console.log(id, reservationInfo.price);
     // URL 파라미터에서 pg_token 값을 추출합니다.
     const searchParams = new URLSearchParams(location.search);
     const pg_token = searchParams.get("pg_token");
@@ -47,7 +34,7 @@ function SuccessPage() {
     const data = {
       cid: "TC0ONETIME",
       tid: tid,
-      partner_order_id: reservationInfo.reservationId,
+      partner_order_id: "1000",
       partner_user_id: nickName,
       pg_token: pg_token,
     };
@@ -58,16 +45,21 @@ function SuccessPage() {
       .then((response) => {
         if (response.status === 200) {
           // 결제 승인 성공 처리
-          alert("결제가 완료되었습니다!");
-          onReserve();
+          alert("충전이 완료되었습니다!");
+          $_user.get(`/user/point?id=${id}`).then((res) => {
+            setPoint(res.data);
+            window.location.href = "http://localhost:3000/mypage";
+          });
         } else {
           // 결제 승인 실패 처리
-          alert("결제를 실패하였습니다.");
+          alert("충전을 실패하였습니다.");
+          window.location.href = "http://localhost:3000/mypage";
         }
       })
       .catch((error) => {
         alert("문제가 발생하였습니다.");
         console.log(error);
+        window.location.href = "http://localhost:3000/mypage";
       });
   }, [location.search]);
 

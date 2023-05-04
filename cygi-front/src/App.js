@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import HeaderPage from "./pages/router-page/HeaderPage";
 import LoginMain from "./pages/LoginMain";
@@ -10,8 +10,23 @@ import Admin from "./pages/Admin";
 import Loading from "components/common/Loading";
 import Redirect from "components/oauth/Redirect";
 import SuccessPage from "components/oauth/SuccessPage";
+import { useEffect } from "react";
+import { history } from "components/login-main/history";
 
 function App() {
+  const navigate = useNavigate();
+  // 뒤로가기 이벤트 감지
+  useEffect(() => {
+    const listenBackEvent = () => {
+      window.location.href = "http://localhost:3000/";
+    };
+    const historyEvent = history.listen(({ action }) => {
+      if (action === "POP") {
+        listenBackEvent();
+      }
+    });
+    return historyEvent;
+  }, []);
   return (
     <>
       <Routes>

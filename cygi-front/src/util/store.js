@@ -1,4 +1,4 @@
-import { atom, selector } from "recoil";
+import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
@@ -21,6 +21,12 @@ export const userNick = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const userPoint = atom({
+  key: "userPoint",
+  default: 0,
+  effects_UNSTABLE: [persistAtom],
+});
+
 export const createdTime = atom({
   key: "createdTime",
   default: "",
@@ -29,6 +35,6 @@ export const createdTime = atom({
 
 export const reservation = atom({
   key: "reservation",
-  default: { title: "", reservationId: "", seat: "", price: 0, date: "" },
+  default: { title: "", reservationId: 0, seat: "", price: 0, date: "" },
   effects_UNSTABLE: [persistAtom],
 });

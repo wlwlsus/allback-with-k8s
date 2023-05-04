@@ -84,6 +84,17 @@
   font-weight: bold;
 }
 
+.user_mypage {
+  cursor: pointer;
+  color: #8888f3;
+  transition: all 0.3s;
+}
+
+.user_mypage:hover {
+  color: blue;
+  transition: all 0.3s;
+}
+
 .user_logout {
   cursor: pointer;
 }
