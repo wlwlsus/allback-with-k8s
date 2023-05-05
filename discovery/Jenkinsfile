@@ -15,7 +15,7 @@ pipeline{
         stage('Clone Repo'){
             steps{
                 git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                    credentialsId: 'swj', // Jenkins에서 설정한 credential의 ID
                     branch: 'deploy-back-discovery'
             }
         }
