@@ -13,6 +13,11 @@ spring:
     name: gateway-service
   cloud:
     gateway:
+      forwarded-headers:
+        enabled: true
+        header-names:
+          - X-Forwarded-For
+          - X-Forwarded-Port
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
@@ -38,6 +43,15 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+        - id: concert-service
+          uri: lb://CONCERT-SERVICE
+          predicates:
+            - Path=/concert-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/concert-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 
 jwt:
   secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==

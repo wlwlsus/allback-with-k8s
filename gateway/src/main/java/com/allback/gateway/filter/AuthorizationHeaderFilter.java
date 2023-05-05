@@ -1,8 +1,14 @@
 package com.allback.gateway.filter;
 
 import com.google.common.net.HttpHeaders;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
@@ -13,71 +19,69 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.security.Key;
+
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
-	Environment env;
 
-	public AuthorizationHeaderFilter(Environment env) {
-		super(Config.class);
-		this.env = env;
-	}
+  private static final String BEARER_TYPE = "Bearer";
+  private final Key key;
 
-	public static class Config {
-		// Put configuration properties here
-	}
+  public AuthorizationHeaderFilter(@Value("${jwt.secret}") String secretKey) {
+    super(Config.class);
+    byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    this.key = Keys.hmacShaKeyFor(keyBytes);
+  }
 
-	@Override
-	public GatewayFilter apply(Config config) {
-		return (exchange, chain) -> {
-			ServerHttpRequest request = exchange.getRequest();
 
-			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return onError(exchange, "No authorization header");
-			}
+  public static class Config {
+    // Put configuration properties here
+  }
 
-			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-			String jwt = authorizationHeader.replace("Bearer", "");
+  @Override
+  public GatewayFilter apply(Config config) {
+    return (exchange, chain) -> {
+      ServerHttpRequest request = exchange.getRequest();
 
-			// Create a cookie object
-//            ServerHttpResponse response = exchange.getResponse();
-//            ResponseCookie c1 = ResponseCookie.from("my_token", "test1234").maxAge(60 * 60 * 24).build();
-//            response.addCookie(c1);
+      if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+        return onError(exchange, "No authorization header");
+      }
 
-			if (!isJwtValid(jwt)) {
-				return onError(exchange, "JWT token is not valid");
-			}
+      String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+      String jwt = authorizationHeader.replace(BEARER_TYPE, "");
 
-			return chain.filter(exchange);
-		};
-	}
+      if (!validateToken(jwt)) {
+        return onError(exchange, "JWT token is not valid");
+      }
 
-	private Mono<Void> onError(ServerWebExchange exchange, String err) {
-		ServerHttpResponse response = exchange.getResponse();
-		response.setStatusCode(HttpStatus.UNAUTHORIZED);
+      return chain.filter(exchange);
+    };
+  }
 
-		log.error(err);
-		return response.setComplete();
-	}
+  private Mono<Void> onError(ServerWebExchange exchange, String err) {
+    ServerHttpResponse response = exchange.getResponse();
+    response.setStatusCode(HttpStatus.UNAUTHORIZED);
 
-	private boolean isJwtValid(String jwt) {
-		boolean returnValue = true;
+    log.error(err);
+    return response.setComplete();
+  }
 
-		String subject = null;
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      return true;
+    } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+      log.info("Invalid JWT Token", e);
+    } catch (ExpiredJwtException e) {
+      log.info("Expired JWT Token", e);
+    } catch (UnsupportedJwtException e) {
+      log.info("Unsupported JWT Token", e);
+    } catch (IllegalArgumentException e) {
+      log.info("JWT claims string is empty.", e);
+    }
+    return false;
+  }
 
-		try {
-			subject = Jwts.parser().setSigningKey(env.getProperty("jwt.secret"))
-					.parseClaimsJws(jwt).getBody()
-					.getSubject();
-		} catch (Exception ex) {
-			returnValue = false;
-		}
-
-		if (subject == null || subject.isEmpty()) {
-			returnValue = false;
-		}
-
-		return returnValue;
-	}
 
 }
