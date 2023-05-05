@@ -22,7 +22,7 @@ pipeline{
 
         stage('Gradle Build'){
             steps{
-                dir('discovery/'){
+                dir('gateway/'){
                     sh 'ls'
                     sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
