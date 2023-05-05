@@ -1,6 +1,8 @@
 # open jdk java 17 버전 환경
 FROM openjdk:17-jdk-slim-buster
 
+ENV eureka.client.service-url.defaultZone=http://back-discovery:8761/eureka
+
 # gradle 빌드 시 jar 파일 생성 경로
 ARG JAR_FILE=./build/libs/*.jar
 
