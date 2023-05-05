@@ -31,6 +31,8 @@ public class ReservationServiceImpl implements ReservationService {
 	private final UserServerClient userServerClient;
 	private final ReservationRepository reservationRepository;
 	private final ReservationMapper reservationMapper;
+
+//	CircuitBreakerFactory circuitBreakerFactory;
 	private final String refundMessage = "환불완료";
 	private final String reserveMessage = "예약완료";
 
@@ -74,7 +76,6 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 
-
 	@Override
 	@Transactional
 	public void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto) {
@@ -90,6 +91,13 @@ public class ReservationServiceImpl implements ReservationService {
 		try {
 			// 통장 테이블의 유저포인트에서 좌석 가격만큼 차감합니다.
 			userServerClient.deductUserCash(userId, price);
+//			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+
+//			        log.info("Before call orders microservice");
+//			circuitBreaker.run(() -> circuitBreakerFactory.getOrders(userId),
+//					throwable -> new ArrayList<>());
+//			log.info("After called orders microservice");
+
 		} catch (Exception e) {
 			log.error("에러 발생! : {}", e.getMessage());
 		}

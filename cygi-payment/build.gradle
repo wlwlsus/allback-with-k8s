@@ -56,7 +56,7 @@ dependencies {
 //    implementation 'org.springframework.kafka:spring-kafka'
 
     // Circuit breaker
-    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.0.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 }
 
 dependencyManagement {
