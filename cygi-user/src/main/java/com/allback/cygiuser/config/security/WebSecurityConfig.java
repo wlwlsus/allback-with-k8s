@@ -7,11 +7,11 @@ import com.allback.cygiuser.config.oauth.handler.OAuth2AuthenticationFailureHand
 import com.allback.cygiuser.config.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.allback.cygiuser.config.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.allback.cygiuser.config.oauth.service.CustomOAuth2UserService;
+import com.allback.cygiuser.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,6 +28,7 @@ public class WebSecurityConfig {
   private final CustomOAuth2UserService oAuth2UserService;
   private final JwtTokenProvider jwtTokenProvider;
   private final RedisTemplate<String, String> redisTemplate;
+  private final UserRepository userRepository;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws
@@ -44,9 +45,9 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeHttpRequests()
-        .requestMatchers("/swagger-ui/**", "/v3/api" +
-            "-docs/**").permitAll();
-//        .requestMatchers("/**").permitAll();
+//        .requestMatchers("/swagger-ui/**", "/v3/api" +
+//            "-docs/**").permitAll()
+        .requestMatchers("/**").permitAll();
 //        .requestMatchers("/**").hasAnyRole("USER", "ADMIN");
 
     httpSecurity
@@ -86,7 +87,8 @@ public class WebSecurityConfig {
     return new OAuth2AuthenticationSuccessHandler(
         oAuth2AuthorizationRequestBasedOnCookieRepository(),
         jwtTokenProvider,
-        redisTemplate);
+        redisTemplate,
+        userRepository);
   }
 
   /*

@@ -7,7 +7,9 @@ import com.allback.cygiuser.config.oauth.info.OAuth2UserInfoFactory;
 import com.allback.cygiuser.config.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.allback.cygiuser.config.oauth.util.CookieUtil;
 import com.allback.cygiuser.dto.response.UserTestResDto;
+import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.enums.RoleType;
+import com.allback.cygiuser.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +27,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -38,84 +43,96 @@ import static com.allback.cygiuser.config.oauth.repository.OAuth2AuthorizationRe
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-	@Value("${app.oauth2.authorizedRedirectUris}")
-	private String redirectUri;
-	private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
+  @Value("${app.oauth2.authorizedRedirectUris}")
+  private String redirectUri;
+  private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
-	private final JwtTokenProvider jwtTokenProvider;
+  private final JwtTokenProvider jwtTokenProvider;
 
-	private final RedisTemplate<String, String> redisTemplate;
+  private final RedisTemplate<String, String> redisTemplate;
 
-	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-		String targetUrl = determineTargetUrl(request, response, authentication);
+  private final UserRepository userRepository;
 
-		if (response.isCommitted()) {
-			log.error("Response has already been committed. Unable to redirect to " + targetUrl);
-			return;
-		}
+  @Override
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    String targetUrl = determineTargetUrl(request, response, authentication);
 
-		clearAuthenticationAttributes(request, response);
-		getRedirectStrategy().sendRedirect(request, response, targetUrl);
-	}
+    if (response.isCommitted()) {
+      log.error("Response has already been committed. Unable to redirect to " + targetUrl);
+      return;
+    }
 
-	protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		Optional<String> redirectUri = CookieUtil.getCookie(request, OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
-				.map(Cookie::getValue);
+    clearAuthenticationAttributes(request, response);
+    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+  }
 
-		if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-			log.error("determineTargetUrl - redirectUri : {} , 인증을 진행할 수 없습니다.", redirectUri);
-			throw new IllegalArgumentException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
-		}
+  protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    Optional<String> redirectUri = CookieUtil.getCookie(request, OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
+        .map(Cookie::getValue);
 
-		String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+    if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
+      log.error("determineTargetUrl - redirectUri : {} , 인증을 진행할 수 없습니다.", redirectUri);
+      throw new IllegalArgumentException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+    }
 
-		OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
-		ProviderType providerType = ProviderType.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
-		OidcUser user = ((OidcUser) authentication.getPrincipal());
-		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-		Collection<? extends GrantedAuthority> authorities = ((OidcUser) authentication.getPrincipal()).getAuthorities();
+    String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-		RoleType roleType = hasAuthority(authorities, RoleType.ROLE_ADMIN.name()) ? RoleType.ROLE_ADMIN : RoleType.ROLE_USER;
-		UserTestResDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(userInfo.getId(),
-				userInfo.getName(), userInfo.getEmail(), roleType.name());
+    OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+    ProviderType providerType = ProviderType.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
+    OidcUser user = ((OidcUser) authentication.getPrincipal());
+    OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
+    Collection<? extends GrantedAuthority> authorities = ((OidcUser) authentication.getPrincipal()).getAuthorities();
 
-		redisTemplate.opsForValue()
-				.set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+    RoleType roleType = hasAuthority(authorities, RoleType.ROLE_ADMIN.name()) ? RoleType.ROLE_ADMIN : RoleType.ROLE_USER;
+    Users localUser = userRepository.findUsersByUuid(userInfo.getId());
 
-		CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
-		CookieUtil.addCookie(response, REFRESH_TOKEN, tokenInfo.getRefreshToken(), getRefreshTokenExpireTimeCookie());
 
-		return UriComponentsBuilder.fromUriString(targetUrl)
-				.queryParam("accessToken", tokenInfo.getAccessToken())
-				.queryParam("refreshToken", tokenInfo.getRefreshToken())
-				.build().toUriString();
-	}
+    // 현재 시간을 LocalDateTime 객체로 가져옵니다.
+    LocalDateTime now = localUser.getCreatedDate();
 
-	protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
-		super.clearAuthenticationAttributes(request);
-		authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-	}
+    // LocalDateTime 객체를 문자열 형식으로 변환합니다.
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String formattedTime = now.format(formatter);
 
-	private boolean hasAuthority(Collection<? extends GrantedAuthority> authorities, String authority) {
-		if (authorities == null) {
-			return false;
-		}
+    UserTestResDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(localUser.getUuid(), localUser.getUserId(),
+        userInfo.getName(), userInfo.getEmail(), formattedTime, roleType.name());
 
-		for (GrantedAuthority grantedAuthority : authorities) {
-			if (authority.equals(grantedAuthority.getAuthority())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    redisTemplate.opsForValue()
+        .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-	private boolean isAuthorizedRedirectUri(String uri) {
-		URI clientRedirectUri = URI.create(uri);
-		URI authorizedUri = URI.create(redirectUri);
+    CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+    CookieUtil.addCookie(response, REFRESH_TOKEN, tokenInfo.getRefreshToken(), getRefreshTokenExpireTimeCookie());
 
-		return authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-				&& authorizedUri.getPort() == clientRedirectUri.getPort();
-	}
+    return UriComponentsBuilder.fromUriString(targetUrl)
+        .queryParam("accessToken", tokenInfo.getAccessToken())
+        .queryParam("refreshToken", tokenInfo.getRefreshToken())
+        .build().toUriString();
+  }
+
+  protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
+    super.clearAuthenticationAttributes(request);
+    authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+  }
+
+  private boolean hasAuthority(Collection<? extends GrantedAuthority> authorities, String authority) {
+    if (authorities == null) {
+      return false;
+    }
+
+    for (GrantedAuthority grantedAuthority : authorities) {
+      if (authority.equals(grantedAuthority.getAuthority())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean isAuthorizedRedirectUri(String uri) {
+    URI clientRedirectUri = URI.create(uri);
+    URI authorizedUri = URI.create(redirectUri);
+
+    return authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+        && authorizedUri.getPort() == clientRedirectUri.getPort();
+  }
 
 }
