@@ -1,31 +1,34 @@
-# Payment Server Portitelabel Error Page
 server:
   port: 0
   servlet:
     context-path: /api/v1
-
-# JPA Settings
 spring:
   jpa:
     hibernate:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
-
   application:
     name: payment-service
-
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      name: ${job.name:NONE}
   datasource:
     url: jdbc:mysql://localhost:3306/ssafy806_payment
     username: ssafy806
     password: ssafy806
-
 # user-service url
 #user:
 #  server:
 #    url: http://localhost:8000
-#    prefix: /api/v1/payment
-
+#    prefix: /api/v1/server-payment
+# concert-service url
+#concert:
+#  server:
+#    url: http://localhost:8002
+#    prefix: /api/v1/server-payment
 # Kakao Pay Setting
 kakao:
   host: https://kapi.kakao.com

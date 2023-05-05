@@ -2,6 +2,7 @@ package com.allback.cygipayment.client;
 
 import com.allback.cygipayment.dto.request.AmountReqDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,5 +19,11 @@ public interface UserServerClient {
 
 	@PutMapping("/deduct/{userId}")
 	void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam(name = "price") int price);
+
+	@PostMapping("/balace")
+	ResponseEntity<Void> getEndedConcert();
+
+	@PostMapping("/point")
+	ResponseEntity<Void> sendPoint(@RequestParam long receiverId, @RequestParam long point);
 }
 
