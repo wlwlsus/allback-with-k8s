@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-gateway || true && docker rm back-gateway || true"
-                    sh "docker run --name back-gateway -d -p 8090:8090 -e \"eureka.client.service-url.defaultZone=http://back-discovery:8761/eureka\" back-gateway:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-gateway -d -p 8090:8090 back-gateway:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
