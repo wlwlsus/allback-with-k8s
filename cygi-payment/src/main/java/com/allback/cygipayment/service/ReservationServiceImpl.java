@@ -12,10 +12,13 @@ import com.allback.cygipayment.util.exception.BaseException;
 import com.allback.cygipayment.util.exception.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +38,8 @@ public class ReservationServiceImpl implements ReservationService {
   private final ConcertServerClient concertServerClient;
   private final ReservationRepository reservationRepository;
   private final ReservationMapper reservationMapper;
+  private final CircuitBreakerFactory circuitBreakerFactory;
+
 
   private static final String RESERVE_PROCESSING = "예약중";
   private static final String REFUND_MESSAGE = "환불완료";
@@ -48,19 +53,28 @@ public class ReservationServiceImpl implements ReservationService {
   }
 
   private List<ReservationResDto> getReservationResDtoList(List<Reservation> reservationPage) {
-    return reservationPage.stream()
-        .map(reservation -> {
-          String concert = concertServerClient.getConcertTitle(reservation.getConcertId()).getBody();
-          return ReservationResDto.builder()
-              .reservationId(reservation.getReservationId())
-              .title(concert)
-              .status(reservation.getStatus())
-              .price(reservation.getPrice())
-              .seat(reservation.getSeat())
-              .modifiedDate(String.valueOf(reservation.getModifiedDate()))
-              .build();
-        })
-        .collect(Collectors.toList());
+    List<ReservationResDto> data;
+    try {
+      CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+      data = reservationPage.stream()
+          .map(reservation -> {
+            String concert = circuitBreaker.run(() -> concertServerClient.getConcertTitle(reservation.getConcertId()).getBody(),
+                throwable -> "Wait..");
+            return ReservationResDto.builder()
+                .reservationId(reservation.getReservationId())
+                .title(concert)
+                .status(reservation.getStatus())
+                .price(reservation.getPrice())
+                .seat(reservation.getSeat())
+                .modifiedDate(String.valueOf(reservation.getModifiedDate()))
+                .build();
+          })
+          .collect(Collectors.toList());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      throw new BaseException(ErrorMessage.ALREADY_RESERVE);
+    }
+    return data;
   }
 
   @Override

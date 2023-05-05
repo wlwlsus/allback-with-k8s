@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.*;
 //@FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
 @FeignClient("user-service")
 public interface UserServerClient {
-	@PutMapping("/amount")
-	void amount(@RequestBody AmountReqDto request);
+  @PutMapping("/amount")
+  void amount(@RequestBody AmountReqDto request);
 
-	@PutMapping("/deduct/{userId}")
-	void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam(name = "price") int price);
+  @PutMapping("/deduct/{userId}")
+  void deductUserCash(@PathVariable(value = "userId") long userId, @RequestParam(name = "price") int price);
 
-	@PostMapping("/balace")
-	ResponseEntity<Void> getEndedConcert();
+  @PostMapping("/balace")
+  ResponseEntity<Void> getEndedConcert();
 
-	@PostMapping("/point")
-	ResponseEntity<Void> sendPoint(@RequestParam long receiverId, @RequestParam long point);
+  @PostMapping("/point")
+  ResponseEntity<Void> sendPoint(@RequestParam long receiverId, @RequestParam long point);
+
+  @GetMapping("/")
+  ResponseEntity<String> testPing();
 }
 
