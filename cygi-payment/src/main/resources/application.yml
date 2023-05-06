@@ -16,8 +16,7 @@ spring:
     job:
       name: ${job.name:NONE}
   datasource:
-#    url: jdbc:mysql://localhost:3306/ssafy806_payment
-    url: jdbc:mysql://k8a806.p.ssafy.io:3307/ssafy806_payment
+    url: jdbc:mysql://localhost:3306/ssafy806_payment
     username: ssafy806
     password: ssafy806
 
