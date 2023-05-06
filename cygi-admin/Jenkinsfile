@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-admin || true && docker rm back-admin || true"
-                    sh "docker run --name back-admin -d -p 8090:8090 back-admin:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-admin -d --network connect-default back-admin:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
