@@ -16,7 +16,7 @@ pipeline{
             steps{
                 git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
                     credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
-                    branch: 'deploy-back-payment'
+                    branch: 'deploy-back-user'
             }
         }
 
