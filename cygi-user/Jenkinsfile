@@ -24,7 +24,6 @@ pipeline{
             steps{
                 dir('cygi-user/'){
                     sh 'ls'
-                    sh 'sed -i 's/\r$//' gradlew'
                     sh 'chmod +x ./gradlew'
                     sh './gradlew clean build'
                 }
