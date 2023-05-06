@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 0
   servlet:
     context-path: /api/v1
 
@@ -12,7 +12,7 @@ spring:
     generate-ddl: false
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_concert
+    url: jdbc:mysql://k8a806.p.ssafy.io:3308/ssafy806_concert
     username: ssafy806
     password: ssafy806
   servlet:
@@ -32,12 +32,6 @@ cloud:
     stack:
       auto: false
 
-logging:
-  level:
-    com:
-      allback:
-        cygiconcert: info
-  config: classpath:logback.xml
 concert:
   server:
     prefix: /api/v1/server-concert

@@ -20,9 +20,9 @@ import lombok.ToString;
 @ToString
 public class ConcertReqDto {
 
-    private Long userId;    // 주최자 ID
+    private long userId;    // 주최자 ID
 
-    private Long stageId;   // 공연장 ID
+    private long stageId;   // 공연장 ID
 
     private String title;   // 공연 이름
 

@@ -29,7 +29,7 @@ public class SeatServiceImpl implements SeatService {
     private final StageRepository stageRepository;
     private final PaymentServerClient paymentServerClient;
     @Override
-    public Map<String, Object> getStatus(Long concertId) throws Exception {
+    public Map<String, Object> getStatus(long concertId) throws Exception {
         //우선 해당 concertID가 존재하는 확인
         Concert concert = concertRepository.findById(concertId)
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
@@ -57,6 +57,7 @@ public class SeatServiceImpl implements SeatService {
         Concert concert = concertRepository.findById(seatStatusChangeReqDto.getConcertId())
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
 
+        //해당 좌석이 점유 되어있는지 확인
         //좌석정보를 바탕으로 결제 컨테이너의 reservation 테이블을 예약중으로 insert해야함
         ReservationReqDto reservationReqDto = ReservationReqDto.builder()
             .concertId(concert.getConcertId())
@@ -73,14 +74,14 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public void deleteReservationById(Long reservationId) {
+    public void deleteReservationById(long reservationId) {
         //결제컨테이너의 reservation 테이블 에서 resevationId기반으로 삭제
         paymentServerClient.deleteReservationById(reservationId);
         log.info("[deleteReservationById] : 예약중 삭제 성공");
     }
 
     @Override
-    public SeatRestCntResDto getRestSeatCnt(Long concertId) {
+    public SeatRestCntResDto getRestSeatCnt(long concertId) {
         //concertId가 있는지 확인
         Concert concert = concertRepository.findById(concertId)
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));

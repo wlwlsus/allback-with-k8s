@@ -38,14 +38,14 @@ public class SeatController {
 
     @Operation(summary = "진행중인 예약 삭제")
     @DeleteMapping("/delete/{reservationId}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<Void> cancelReservation(@PathVariable long reservationId) {
         seatService.deleteReservationById(reservationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "남은 좌석 조회")
     @GetMapping("/rest/{concertId}")
-    public ResponseEntity<SeatRestCntResDto> getSeatRestCnt(@PathVariable Long concertId)
+    public ResponseEntity<SeatRestCntResDto> getSeatRestCnt(@PathVariable long concertId)
         throws Exception {
         SeatRestCntResDto seatRestCntResDto = seatService.getRestSeatCnt(concertId);
         return new ResponseEntity<>(seatRestCntResDto, HttpStatus.OK);
@@ -53,7 +53,7 @@ public class SeatController {
 
     @Operation(summary = "좌석 정보 조회")
     @GetMapping("/{concertId}")
-    public ResponseEntity<Map<String, Object>> getSeatInfo(@PathVariable Long concertId)
+    public ResponseEntity<Map<String, Object>> getSeatInfo(@PathVariable long concertId)
         throws Exception {
         Map<String, Object> seatStatus = seatService.getStatus(concertId);
         return new ResponseEntity<>(seatStatus, HttpStatus.OK);

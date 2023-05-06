@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConcertPageResDto {
 
-    private Long concertId;  //  공연 ID
+    private long concertId;  //  공연 ID
 
     private String title;   // 공연 이름
 

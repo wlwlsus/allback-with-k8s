@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "payment-server", url = "${payment.server.url}", path = "${payment.server.prefix}")
-@Component
+
+@FeignClient(name = "payment-service", path = "${concert.server.prefix}")
 public interface PaymentServerClient {
 
     @PostMapping("/seat")
     ResponseEntity<Long> chageStatus(@RequestBody ReservationReqDto reservationReqDto);
 
     @DeleteMapping("/seat/{reservationId}")
-    ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId);
+    ResponseEntity<Void> deleteReservationById(@PathVariable long reservationId);
 
     @GetMapping("/rest/{concertId}")
-    ResponseEntity<Integer> getRestSeatCnt(@PathVariable Long concertId);
+    ResponseEntity<Integer> getRestSeatCnt(@PathVariable long concertId);
 
     @GetMapping("/seat/{concertId}")
-    ResponseEntity<List<String>> getSeatInfo(@PathVariable Long concertId);
+    ResponseEntity<List<String>> getSeatInfo(@PathVariable long concertId);
     @PostMapping("/rest")
     ResponseEntity<List<Integer>> getRestSeatCntList(@RequestBody List<Long> concertIdList);
 }
