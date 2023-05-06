@@ -35,4 +35,9 @@ public class PaymentServerController {
     userService.updateCash(receiverId, point);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
+
+  @GetMapping("/ping")
+  public String ping(){
+    return "pong!";
+  }
 }
