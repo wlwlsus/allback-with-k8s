@@ -25,6 +25,7 @@ pipeline{
                 dir('cygi-payment/'){
                     sh 'ls'
                     sh 'chmod +x ./gradlew'
+                    sh './gradlew clean'
                     sh './gradlew clean build'
                 }
             }
