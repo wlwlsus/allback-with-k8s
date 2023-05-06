@@ -69,6 +69,11 @@ dependencyManagement {
     }
 }
 
+bootJar {
+    exclude('**/*Test.class')
+}
+
+
 
 tasks.named('test') {
     useJUnitPlatform()
