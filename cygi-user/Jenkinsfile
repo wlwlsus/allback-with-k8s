@@ -23,8 +23,9 @@ pipeline{
         stage('Gradle Build'){
             steps{
                 dir('cygi-user/'){
-                    sh 'ls'
+                    sh 'ls -al'
                     sh 'chmod +x ./gradlew'
+                    sh 'pwd'
                     sh './gradlew clean build'
                 }
             }
