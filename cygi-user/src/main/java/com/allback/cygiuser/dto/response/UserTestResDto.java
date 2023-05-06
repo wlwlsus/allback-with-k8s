@@ -47,4 +47,6 @@ public class UserTestResDto {
     private String profile;
 
   }
+
+
 }

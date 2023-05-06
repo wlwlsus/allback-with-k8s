@@ -1,10 +1,11 @@
 package com.allback.cygiuser.service;
 
 import com.allback.cygiuser.dto.request.AmountRequest;
-import com.allback.cygiuser.dto.response.ReservationResDto;
+import com.allback.cygiuser.dto.request.UserTestReqDto;
 import com.allback.cygiuser.dto.response.UserResDto;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
@@ -12,8 +13,12 @@ public interface UserService {
 
   void deductUserCash(long userId, int price);
 
-  List<UserResDto> getAllUserInfo();
+  Page<UserResDto> getAllUserInfo(int page);
 
-  List<ReservationResDto> getReservations();
+  void updateCash(long userId, long cash);
+
+  int getPoint(long userId);
+
+  ResponseEntity<?> logout(UserTestReqDto.Logout logout);
 
 }

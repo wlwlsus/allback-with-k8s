@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
     OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-    Users savedUser = userRepository.findUserByUuid(userInfo.getId());
+    Users savedUser = userRepository.findUsersByUuid(userInfo.getId());
 
     if (savedUser != null) {
       updateUser(savedUser, userInfo);
@@ -59,7 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
   private Users createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
     Passbook newPassbook = Passbook.builder()
-        .cash(5000)
+        .cash(5000L)
         .build();
 
     passbookRepository.save(newPassbook);

@@ -28,7 +28,7 @@ public class Users extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-  private Long userId;
+  private long userId;
 
   @OneToOne(optional = false)
   @JoinColumn(name = "passbook_id", nullable = false)
