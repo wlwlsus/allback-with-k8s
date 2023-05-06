@@ -10,4 +10,4 @@ ARG JAR_FILE=./build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 
 # 시스템 진입점
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-jar","app.jar", "--spring.profiles.active=prod"]
