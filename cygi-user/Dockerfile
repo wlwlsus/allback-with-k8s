@@ -3,16 +3,6 @@ FROM openjdk:17-jdk-slim-buster
 
 ENV eureka.client.serviceUrl.defaultZone=http://back-discovery:8761/eureka
 
-
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar
-
-
 # gradle 빌드 시 jar 파일 생성 경로
 ARG JAR_FILE=./build/libs/*.jar
 
