@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@FeignClient(name = "user-server", url = "${user.server.url}", path = "${user.server.prefix}")
+@FeignClient(name = "user-server", path = "${admin.server.prefix}")
 @Component
 public interface UserServerClient {
     @GetMapping("/users")
