@@ -3,14 +3,14 @@ pipeline{
     agent any
     
     stages{
-        stage('Build Start'){
-            steps{
-                mattermostSend color: "#2A42EE", 
-                    message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
-                    endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
-                    channel: "all_back_jenkins"
-            }
-        }
+        // stage('Build Start'){
+        //     steps{
+        //         mattermostSend color: "#2A42EE", 
+        //             message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+        //             endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+        //             channel: "all_back_jenkins"
+        //     }
+        // }
 
         stage('Clone Repo'){
             steps{
