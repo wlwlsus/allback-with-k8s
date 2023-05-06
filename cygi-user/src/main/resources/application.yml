@@ -28,9 +28,14 @@ spring:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   application:
     name: user-service
-
 
   # MySQL DB Connection Info
   datasource:
