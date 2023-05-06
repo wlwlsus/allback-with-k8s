@@ -34,7 +34,7 @@ spring:
 
   # MySQL DB Connection Info
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_user
+    url: jdbc:mysql://k8a806.p.ssafy.io:3306/ssafy806_user
     username: ssafy806
     password: ssafy806
 
@@ -51,7 +51,7 @@ jwt:
 
 app:
   oauth2:
-    authorizedRedirectUris: http://localhost:3000/oauth/redirect
+    authorizedRedirectUris: http://3.34.8.99:3000/oauth/redirect
 
 ## Eureka Client
 eureka:
