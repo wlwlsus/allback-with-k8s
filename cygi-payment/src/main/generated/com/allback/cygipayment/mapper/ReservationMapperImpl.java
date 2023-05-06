@@ -1,7 +1,11 @@
 package com.allback.cygipayment.mapper;
 
+import com.allback.cygipayment.dto.request.ReservationReqDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
+import com.allback.cygipayment.dto.response.ReservationResDto.ReservationResDtoBuilder;
 import com.allback.cygipayment.entity.Reservation;
+import com.allback.cygipayment.entity.Reservation.ReservationBuilder;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -9,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-04-25T00:19:44+0900",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Amazon.com Inc.)"
+    date = "2023-05-05T15:02:41+0900",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.7 (Amazon.com Inc.)"
 )
 @Component
 public class ReservationMapperImpl implements ReservationMapper {
@@ -21,16 +25,34 @@ public class ReservationMapperImpl implements ReservationMapper {
             return null;
         }
 
-        ReservationResDto reservationResDto = new ReservationResDto();
+        ReservationResDtoBuilder reservationResDto = ReservationResDto.builder();
 
-        reservationResDto.setPrice( reservation.getPrice() );
-        reservationResDto.setConcertId( reservation.getConcertId() );
-        reservationResDto.setStageId( reservation.getStageId() );
-        reservationResDto.setUserId( reservation.getUserId() );
-        reservationResDto.setStatus( reservation.getStatus() );
-        reservationResDto.setSeat( reservation.getSeat() );
+        reservationResDto.price( reservation.getPrice() );
+        reservationResDto.reservationId( reservation.getReservationId() );
+        reservationResDto.status( reservation.getStatus() );
+        reservationResDto.seat( reservation.getSeat() );
+        if ( reservation.getModifiedDate() != null ) {
+            reservationResDto.modifiedDate( DateTimeFormatter.ISO_LOCAL_DATE_TIME.format( reservation.getModifiedDate() ) );
+        }
 
-        return reservationResDto;
+        return reservationResDto.build();
+    }
+
+    @Override
+    public Reservation toEntity(ReservationReqDto reservationReqDto) {
+        if ( reservationReqDto == null ) {
+            return null;
+        }
+
+        ReservationBuilder reservation = Reservation.builder();
+
+        reservation.price( reservationReqDto.getPrice() );
+        reservation.concertId( reservationReqDto.getConcertId() );
+        reservation.userId( reservationReqDto.getUserId() );
+        reservation.status( reservationReqDto.getStatus() );
+        reservation.seat( reservationReqDto.getSeat() );
+
+        return reservation.build();
     }
 
     @Override

@@ -5,29 +5,26 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @ToString
+@Builder
 @Table(name = "reservation")
 public class Reservation extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "reservation_id", nullable = false, length = 20, columnDefinition = "BIGINT UNSIGNED")
-  private Long reservationId;
+  private long reservationId;
 
   @Column(name = "concert_id", nullable = false, length = 20)
-  private Long concertId;
-
-  @Column(name = "stage_id", nullable = false, length = 20)
-  private Long stageId;
+  private long concertId;
 
   @Column(name = "user_id", nullable = false, length = 20)
-  private Long userId;
+  private long userId;
 
-  @Column(name = "status", nullable = false, length = 30)
+  @Column(name = "status", nullable = false, length = 150)
   private String status;
 
   @Column(name = "price", nullable = false)
@@ -36,4 +33,29 @@ public class Reservation extends BaseTimeEntity {
   @Column(name = "seat", nullable = false, length = 10)
   private String seat;
 
+  public void setReservation(long userId, String status, int price) {
+    this.userId = userId;
+    this.status = status;
+    this.price = price;
+  }
+
+  public void setConcertId(long concertId) {
+    this.concertId = concertId;
+  }
+
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public void setPrice(int price) {
+    this.price = price;
+  }
+
+  public void setSeat(String seat) {
+    this.seat = seat;
+  }
 }

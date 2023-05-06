@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 
-//@RestControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);

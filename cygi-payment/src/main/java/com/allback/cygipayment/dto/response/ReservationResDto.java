@@ -1,8 +1,8 @@
 package com.allback.cygipayment.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
  * author : cadqe13@gmail.com
@@ -13,12 +13,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class ReservationResDto {
 
-	private Long concertId;
-	private Long stageId;
-	private Long userId;
-	private String status;
-	private Integer price;
-	private String seat;
+  private long reservationId;
+  private String title;
+  private String status;
+  private int price;
+  private String seat;
+  private String modifiedDate;
 }
