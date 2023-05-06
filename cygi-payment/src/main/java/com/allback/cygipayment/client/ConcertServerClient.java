@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-//@FeignClient(name = "concert-server", url = "${concert.server.url}", path = "${concert.server.prefix}")
-@FeignClient(name = "concert-service")
+@FeignClient(name = "concert-service", path = "${payment.server.prefix}")
 public interface ConcertServerClient {
 
     @GetMapping("/endedConcert")
