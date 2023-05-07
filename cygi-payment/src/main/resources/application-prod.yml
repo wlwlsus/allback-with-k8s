@@ -45,4 +45,4 @@ springdoc:
     url: /payment-service/api/v1/v3/api-docs
     urls:
       - name: payment-service
-        url: http://gateway-service:8080/payment-service/api/v1/v3/api-docs
+        url: http://gateway-service:8081/payment-service/api/v1/v3/api-docs
