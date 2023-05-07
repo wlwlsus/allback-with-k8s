@@ -20,6 +20,7 @@ spring:
     username: ssafy806
     password: ssafy806
 
+
 payment:
   server:
     prefix: /api/v1/server-payment
@@ -37,3 +38,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+springdoc:
+  swagger-ui:
+    config-url: /payment-service/api/v1/v3/api-docs/swagger-config
