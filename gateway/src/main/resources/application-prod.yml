@@ -25,6 +25,15 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
+            - Path=/user-service/api/v1/swagger-ui/**
+            - Path=/user-service/api/v1/v3/api-docs/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
             - Path=/user-service/**
           filters:
             - RemoveRequestHeader=Cookie
@@ -34,11 +43,29 @@ spring:
         - id: payment-service
           uri: lb://PAYMENT-SERVICE
           predicates:
+            - Path=/payment-service/api/v1/swagger-ui/**
+            - Path=/payment-service/api/v1/v3/api-docs/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
+
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
             - Path=/payment-service/**
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter
+            - AuthorizationHeaderFilter
+
+        - id: concert-service
+          uri: lb://CONCERT-SERVICE
+          predicates:
+            - Path=/concert-service/api/v1/swagger-ui/**
+            - Path=/concert-service/api/v1/v3/api-docs/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/concert-service/(?<segment>.*), /$\{segment}
 
         - id: concert-service
           uri: lb://CONCERT-SERVICE
@@ -48,6 +75,16 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/concert-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/admin-service/api/v1/swagger-ui/**
+            - Path=/admin-service/api/v1/v3/api-docs/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin-service/(?<segment>.*), /$\{segment}
+
         - id: admin-service
           uri: lb://ADMIN-SERVICE
           predicates:
