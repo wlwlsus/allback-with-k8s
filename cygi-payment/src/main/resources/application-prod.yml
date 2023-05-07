@@ -33,7 +33,6 @@ kakao:
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    hostname: 3.34.8.99
   client:
     register-with-eureka: true
     fetch-registry: true
