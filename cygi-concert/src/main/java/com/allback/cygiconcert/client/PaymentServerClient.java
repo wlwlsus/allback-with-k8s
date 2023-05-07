@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "payment-server", url = "${payment.server.url}", path = "${payment.server.prefix}")
-@Component
+
+@FeignClient(name = "payment-service", path = "${concert.server.prefix}")
 public interface PaymentServerClient {
 
     @PostMapping("/seat")
