@@ -38,7 +38,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/payment-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
 
         - id: concert-service
           uri: lb://CONCERT-SERVICE
