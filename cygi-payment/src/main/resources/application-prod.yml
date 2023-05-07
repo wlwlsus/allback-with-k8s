@@ -33,6 +33,7 @@ kakao:
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    hostname: 3.34.8.99
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -43,6 +44,3 @@ springdoc:
   swagger-ui:
     config-url: /payment-service/api/v1/v3/api-docs/swagger-config
     url: /payment-service/api/v1/v3/api-docs
-    urls:
-      - name: payment-service
-        url: http://3.34.8.99:8081/payment-service/api/v1/v3/api-docs
