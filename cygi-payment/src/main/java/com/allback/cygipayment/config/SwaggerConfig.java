@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
         description = "CYGI Payment Service API 명세서"
     ),
     servers = {
-        @Server(url = "/payment-service")
+        @Server(url = "/payment-service/api/v1")
     }
 )
 public class SwaggerConfig {
@@ -24,7 +24,7 @@ public class SwaggerConfig {
   public GroupedOpenApi paymentServiceApi() {
     return GroupedOpenApi.builder()
         .group("payment-service")
-        .pathsToMatch("/api/v1/**")
+        .pathsToMatch("/**")
         .build();
   }
 
