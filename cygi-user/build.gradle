@@ -56,10 +56,10 @@ dependencies {
 //	implementation 'org.springframework.kafka:spring-kafka'
 
     //zipkin
-    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
-    //sleuth
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
 
+    //sleuth
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:3.1.8'
 
 
 }
