@@ -102,3 +102,27 @@
 .kakao_pay_btn {
   cursor: pointer;
 }
+
+.reservation_list {
+  background-color: #f7f6f6;
+  display: grid;
+  grid-template-columns: 24% 22% 8% 23% 10% 3% 10%;
+  text-align: center;
+  align-items: center;
+  font-size: 1.2em;
+  padding: 15px;
+}
+
+.cancel_btn {
+  cursor: pointer;
+  background-color: #bbbbf1;
+  border-radius: 20px;
+  color: white;
+  transition: all 0.3s;
+}
+
+.cancel_btn:hover {
+  cursor: pointer;
+  background-color: #8a8aed;
+  transition: all 0.3s;
+}

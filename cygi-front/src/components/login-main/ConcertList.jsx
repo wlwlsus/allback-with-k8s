@@ -3,17 +3,22 @@ import { useNavigate } from "react-router-dom";
 import style from "./ConcertList.module.css";
 import { $_concert } from "util/axios";
 import ListLoading from "gif/list_loading.gif";
+import { reservation } from "util/store";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function ConcertList() {
   const navigate = useNavigate();
   let nowTime = new Date();
 
-  const obsRef = useRef(null); //observer Element
   const [concertList, setConcertList] = useState([]);
 
   const [page, setPage] = useState(0); //현재 페이지
   const [load, setLoad] = useState(true); //로딩 스피너
+
+  const obsRef = useRef(null); //observer Element
   const preventRef = useRef(true); //옵저버 중복 실행 방지
+
+  const reservationInfo = useRecoilValue(reservation);
 
   useEffect(() => {
     //옵저버 생성
@@ -62,24 +67,22 @@ export default function ConcertList() {
       <div className={style.descript}>
         원하시는 공연을 선택하고 좌석을 예매해보세요. 모든 좌석이 매진되기 전에
         서두르세요! <br />
-        결제는 CAN YOU GET IT 포인트 또는 카카오 페이를 통해 이루어집니다.
+        결제는 CAN YOU GET IT 포인트로 이루어지며, <br />
+        카카오페이를 통해 포인트를 충전할 수 있습니다.
       </div>
       <div className={style.container}>
         {concertList &&
-          concertList.map((contents, index1) => {
-            console.log(concertList);
-            return contents.map((content, index2) => {
+          concertList.map((contents) => {
+            return contents.map((content) => {
               let date =
-                content.endDate.slice(0, 4) +
+                content.endDate.slice(2, 4) +
                 "/" +
                 content.endDate.slice(5, 7) +
                 "/" +
                 content.endDate.slice(8, 10) +
                 " " +
                 content.endDate.slice(11, 13) +
-                "시" +
-                content.endDate.slice(14, 16) +
-                "분";
+                "시";
               return (
                 <div
                   key={content.concertId}
@@ -123,7 +126,7 @@ export default function ConcertList() {
       </div>
       {load && (
         <div>
-          <img src={ListLoading} alt="" />
+          <img className={style.loading} src={ListLoading} alt="" />
         </div>
       )}
       <div ref={obsRef}>&nbsp;</div>

@@ -3,7 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import style from "./SeatList.module.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { history } from "./history";
-import { $_concert } from "util/axios";
+import { $_concert, $_payment } from "util/axios";
+import { userNick, reservation, userId, userPoint } from "util/store";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 export default function SeatList() {
   const navigate = useNavigate();
@@ -16,9 +18,52 @@ export default function SeatList() {
 
   const [isPointBtn, setIsPointBtn] = useState(false);
   const [isKakaoBtn, setIsKakaoBtn] = useState(false);
-  const [reservationId, setReservationId] = useState();
 
+  const nickName = useRecoilValue(userNick);
+  const id = useRecoilValue(userId);
+  const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
+  const [point, setPoint] = useRecoilState(userPoint);
+
+  // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
+
+  // API_PUT 함수
+  const res_put = () => {
+    return $_payment.put(`/reservation/${reservationInfo.reservationId}`, {
+      userId: id,
+      price: location.state.price,
+    });
+  };
+
+  const { mutate: onReserve } = useMutation(res_put, {
+    onSuccess: () => {
+      navigate("../../../complete", {
+        state: {
+          title: location.state.title,
+          reservationId: reservationInfo.reservationId,
+          seat: seat,
+          price: location.state.price,
+          endDate: location.state.endDate,
+        },
+      });
+    },
+  });
+
+  const onPayCheck = () => {
+    // 포인트 충분하면 결제
+    if (point >= location.state.price) {
+      onReserve();
+    } else {
+      if (
+        window.confirm(
+          "포인트가 부족합니다. 마이페이지에서 포인트를 충전하시겠습니까?"
+        )
+      ) {
+        onDelete();
+        navigate("../../../mypage");
+      }
+    }
+  };
 
   // 해당 공연장의 좌석 조회
   const { isLoading, data, refetch } = useQuery(
@@ -34,8 +79,8 @@ export default function SeatList() {
   // API_DELETE 함수
   const res_delete = () => {
     return $_concert.delete(
-      `/seat/delete/${reservationId}`,
-      location.state.reservationId
+      `/seat/delete/${reservationInfo.reservationId}`,
+      reservationInfo.reservationId
     );
   };
 
@@ -51,10 +96,8 @@ export default function SeatList() {
   // 뒤로가기 이벤트 감지
   useEffect(() => {
     const listenBackEvent = () => {
-      if (window.confirm("페이지를 나가시겠습니까?")) {
-        onDelete();
-        navigate("/");
-      }
+      onDelete();
+      navigate("/");
     };
     const historyEvent = history.listen(({ action }) => {
       if (action === "POP") {
@@ -80,7 +123,13 @@ export default function SeatList() {
   const { mutate: onSelect } = useMutation(res_post, {
     onSuccess: (res) => {
       setIsreserve(true);
-      setReservationId(res.data);
+      setReservationInfo({
+        title: location.state.title,
+        reservationId: res.data,
+        seat: seat,
+        price: location.state.price,
+        date: location.state.endDate,
+      });
     },
   });
 
@@ -176,7 +225,6 @@ export default function SeatList() {
       alert("좌석을 선택하여주세요.");
       return;
     }
-    console.log(nowTime >= new Date(data.data.endDate));
     if (nowTime >= new Date(data.data.endDate)) {
       alert("마감된 공연입니다.");
       navigate("/home");
@@ -261,14 +309,7 @@ export default function SeatList() {
               <button
                 className={style.btn}
                 onClick={() => {
-                  navigate("/complete", {
-                    state: {
-                      title: location.state.title,
-                      seat: location.state.seat,
-                      endDate: location.state.endDate,
-                      price: location.state.price,
-                    },
-                  });
+                  onPayCheck();
                 }}
               >
                 결제하기
@@ -285,38 +326,9 @@ export default function SeatList() {
             </div>
           </div>
           <div className={style.right_div}>
-            <div className={style.pay_type}>결제 수단</div>
+            <div className={style.pay_type}>잔여 포인트</div>
             <div className={style.btn_type}>
-              <div>
-                <input
-                  className={style.radio_btn}
-                  type="radio"
-                  name="pay_type"
-                  id="point"
-                  value="point"
-                  onClick={(e) => {
-                    onClickBtn(e.target.value);
-                  }}
-                />
-                <label className={style.radio_btn} htmlFor="point">
-                  포인트
-                </label>
-              </div>
-              <div>
-                <input
-                  className={style.radio_btn}
-                  type="radio"
-                  name="pay_type"
-                  id="kakao"
-                  value="kakao"
-                  onClick={(e) => {
-                    onClickBtn(e.target.value);
-                  }}
-                />
-                <label className={style.radio_btn} htmlFor="kakao">
-                  카카오페이
-                </label>
-              </div>
+              <div>{point}원</div>
             </div>
             <div className={style.contents}>
               <div className={style.name2}>
@@ -336,17 +348,16 @@ export default function SeatList() {
               <div className={style.date2}>
                 <div className={style.title2}>공연일</div>
                 <div className={style.content2}>
-                  {location.state.endDate.slice(0, 4)}년&nbsp;
+                  {location.state.endDate.slice(2, 4)}년&nbsp;
                   {location.state.endDate.slice(5, 7)}월&nbsp;
                   {location.state.endDate.slice(8, 10)}일&nbsp;
                   {location.state.endDate.slice(11, 13)}시&nbsp;
-                  {location.state.endDate.slice(14, 16)}분&nbsp;
                 </div>
               </div>
             </div>
             <div className={style.pay}>
-              <div className={style.title}>총 결제 금액</div>
-              <div className={style.content}>{location.state.price}원</div>
+              <div className={style.title2}>총 결제 금액</div>
+              <div className={style.content2}>{location.state.price}원</div>
             </div>
           </div>
         </div>

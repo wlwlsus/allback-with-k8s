@@ -1,13 +1,28 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { userId, userNick, reservation, userPoint } from "util/store";
+import { $_payment, $_user } from "util/axios";
 import axios from "axios";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 function SuccessPage() {
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const id = useRecoilValue(userId);
+  const nickName = useRecoilValue(userNick);
+  const reservationInfo = useRecoilValue(reservation);
+  const [point, setPoint] = useRecoilState(userPoint);
+
+  // 포인트 갱신용
+  const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
+    $_user.get(`/user/point?id=${id}`)
+  );
 
   useEffect(() => {
+    console.log(id, reservationInfo.price);
     // URL 파라미터에서 pg_token 값을 추출합니다.
     const searchParams = new URLSearchParams(location.search);
     const pg_token = searchParams.get("pg_token");
@@ -19,30 +34,32 @@ function SuccessPage() {
     const data = {
       cid: "TC0ONETIME",
       tid: tid,
-      partner_order_id: "1001",
-      partner_user_id: "user01",
+      partner_order_id: "1000",
+      partner_user_id: nickName,
       pg_token: pg_token,
     };
 
-    // 로그인한 사용자의 고유 식별자를 전달합니다.
-    const userId = 1; // 예시로 임의의 값을 사용합니다.
-
     // 결제 승인 API를 호출합니다.
     axios
-      .post(`http://localhost:8001/api/v1/reservation/approve/${userId}`, data)
+      .post(`http://localhost:8081/api/v1/reservation/approve/${id}`, data)
       .then((response) => {
         if (response.status === 200) {
           // 결제 승인 성공 처리
-          alert("결제가 완료되었습니다!");
-          navigate("../home");
+          alert("충전이 완료되었습니다!");
+          $_user.get(`/user/point?id=${id}`).then((res) => {
+            setPoint(res.data);
+            window.location.href = "http://localhost:3000/mypage";
+          });
         } else {
           // 결제 승인 실패 처리
-          alert("결제를 실패하였습니다.");
+          alert("충전을 실패하였습니다.");
+          window.location.href = "http://localhost:3000/mypage";
         }
       })
       .catch((error) => {
         alert("문제가 발생하였습니다.");
         console.log(error);
+        window.location.href = "http://localhost:3000/mypage";
       });
   }, [location.search]);
 
