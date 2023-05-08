@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -43,7 +40,9 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     @AllArgsConstructor
     static class JsonResponse {
         private String uuid;
-        private String time;
+        private Integer partition;
+        private Long offset;
+        private Long committedOffset;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             int partition;
 
             // 대기표를 가지고 있지 않다면 -> 최초 요청 -> kafka에 넣기
-            if (!request.getHeaders().containsKey("QUEUE")) {
+            if (!request.getHeaders().containsKey("KAFKA.UUID")) {
                 uuid = UUID.randomUUID().toString();
                 CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, uuid);
                 try {
@@ -71,29 +70,38 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             }
             // 대기표를 가지고 있다면
             else {
-                uuid = request.getHeaders().get("uuid").get(0);
-                partition = Integer.parseInt(request.getHeaders().get("partition").get(1));
-                offset = Long.parseLong(request.getHeaders().get("offset").get(2));
+                uuid = request.getHeaders().get("KAFKA.UUID").get(0);
+                partition = Integer.parseInt(request.getHeaders().get("KAFKA.PARTITION").get(1));
+                offset = Long.parseLong(request.getHeaders().get("KAFKA.OFFSET").get(2));
             }
 
-            // 대기열이 있다면 -> 토큰 반환하고 끝내기
-            // TODO : 대기열이 존재하는지 판단하는 로직 필요
-            //  Consumer가 제일 최근에 commit한 메시지의 offset < 나의 offset
 
             TopicPartition topicPartition = new TopicPartition(topic, partition);
             KafkaConsumer<String, String> consumer = createConsumer("concert-req");
             consumer.assign(Collections.singletonList(topicPartition));
-            consumer.poll(Duration.ZERO); // Trigger partition assignment
+            ConsumerRecords<String, String> record = consumer.poll(Duration.ZERO);// Trigger partition assignment
+            Optional<OffsetAndMetadata> committed = Optional.ofNullable(consumer.committed(topicPartition));
 
-            long committedOffset =  consumer.committed(topicPartition).offset();
+            long committedOffset = 0;
 
-            if (false){
+//            ConsumerRecords<String, String> records = consumer.poll(Duration.ZERO);// Trigger partition assignment
+//            Optional<OffsetAndMetadata> committed = Optional.ofNullable(consumer.committed(topicPartition));
+//
+//            long committedOffset = consumer.position(topicPartition);
+
+            if (committed.isPresent()) {
+                consumer.committed(topicPartition).offset();
+            }
+
+            // 대기열이 있다면 -> 토큰 반환하고 끝내기
+            if (committedOffset < offset) {
+//            if (false) {
                 // 클라이언트에게 보낼 응답 생성
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
                 response.getHeaders().add("Content-Type", "application/json");
 
-                JsonResponse jsonResponse = new JsonResponse(uuid, Long.toString(committedOffset));
+                JsonResponse jsonResponse = new JsonResponse(uuid, partition, offset, committedOffset);
 
                 // JSON 문자열로 변환
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -116,6 +124,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
             //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
+            //  파티션 번호!
 
             // 대기열이 없다면 -> 요청 처리하기
             return chain.filter(exchange);
@@ -126,16 +135,6 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     public static class Config {
         private String topicName;
     }
-
-//    @KafkaListener(topics = "concert-req", groupId = "concert-req")
-//    public void consumeMessage(ConsumerRecord<String, String> record) {
-//        String key = record.key();
-//        String value = record.value();
-//        long offset = record.offset();
-//        int partition = record.partition();
-//
-//        System.out.printf("Received record: key=%s, value=%s, partition=%d, offset=%d%n", key, value, partition, offset);
-//    }
 
     private KafkaConsumer<String, String> createConsumer(String consumerGroupId) {
         Properties properties = new Properties();
