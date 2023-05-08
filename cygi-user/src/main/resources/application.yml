@@ -55,7 +55,7 @@ jwt:
 
 app:
   oauth2:
-    authorizedRedirectUris: http://localhost:3000/oauth/redirect
+    authorizedRedirectUris: http://allback.site/oauth/redirect
 
 ## Eureka Client
 eureka:

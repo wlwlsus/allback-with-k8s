@@ -32,7 +32,7 @@ spring:
   data:
     redis:
       host: k8a806.p.ssafy.io
-      port: 6379
+      port: 3300
 
   zipkin:
     base-url: http://k8a806.p.ssafy.io:9411
@@ -64,7 +64,7 @@ jwt:
 
 app:
   oauth2:
-    authorizedRedirectUris: http://3.34.8.99:3000/oauth/redirect
+    authorizedRedirectUris: http://allback.site/oauth/redirect
 
 ## Eureka Client
 eureka:
