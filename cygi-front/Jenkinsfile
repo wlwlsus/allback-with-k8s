@@ -35,7 +35,7 @@ pipeline{
         stage('Finish'){
             steps{
                 script{
-                    sh "docker rmi -f \$(docker images -f "dangling=true" -q) || true"
+                    sh "docker rmi -f \$(docker images -f \"dangling=true\" -q) || true"
                 }
             }
         }
