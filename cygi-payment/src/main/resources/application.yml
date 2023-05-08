@@ -9,13 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
     generate-ddl: false
-    show-sql: true
-  zipkin:
-    base-url: http://k8a806.p.ssafy.io:9411
-    enabled: true
-  sleuth:
-    sampler:
-      probability: 1.0
+    show-sql: tru
   batch:
     jdbc:
       initialize-schema: always
