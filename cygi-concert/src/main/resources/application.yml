@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 0
   servlet:
     context-path: /api/v1
 
@@ -39,6 +39,15 @@ payment:
   server:
     url: http://localhost:8001
     prefix: /api/v1/server-concert
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 # logging:
 #   level:
