@@ -41,7 +41,7 @@ function SuccessPage() {
 
     // 결제 승인 API를 호출합니다.
     axios
-      .post(`http://localhost:8001/api/v1/reservation/approve/${id}`, data)
+      .post(`http://localhost:8081/api/v1/reservation/approve/${id}`, data)
       .then((response) => {
         if (response.status === 200) {
           // 결제 승인 성공 처리

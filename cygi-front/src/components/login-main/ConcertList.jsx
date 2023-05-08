@@ -126,7 +126,7 @@ export default function ConcertList() {
       </div>
       {load && (
         <div>
-          <img src={ListLoading} alt="" />
+          <img className={style.loading} src={ListLoading} alt="" />
         </div>
       )}
       <div ref={obsRef}>&nbsp;</div>

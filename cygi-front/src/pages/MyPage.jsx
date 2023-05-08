@@ -63,7 +63,7 @@ export default function MyPage() {
       "Content-Type": "application/json; charset=UTF-8",
     };
     const response = await axios.post(
-      "http://localhost:8001/api/v1/reservation/charge",
+      "http://localhost:8081/api/v1/reservation/charge",
       paymentData,
       { headers }
     );
