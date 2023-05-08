@@ -9,15 +9,16 @@ import com.allback.cygibatch.repository.BalanceRepository;
 import com.allback.cygibatch.repository.BalanceStateRepository;
 import jakarta.persistence.EntityManagerFactory;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
@@ -25,8 +26,6 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobScope;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -53,7 +52,7 @@ public class BatchJobConfig {
     private final ConcertServerClient concertServerClient;
     private final UserServerClient userServerClient;
     private int chunkSize = 10;
-    private static List<Long> concertList;
+    private static List<Long> concertList = new ArrayList<>();
     private class MyStep1Listener implements StepExecutionListener {
         @Override
         public void beforeStep(StepExecution stepExecution) {
@@ -61,7 +60,6 @@ public class BatchJobConfig {
         }
         @Override
         public ExitStatus afterStep(StepExecution stepExecution) {
-//            stepExecution.getExecutionContext().put("concertList", concertList);
             stepExecution.getJobExecution().getExecutionContext().put("concertList", concertList);
             return ExitStatus.COMPLETED;
         }
@@ -72,6 +70,9 @@ public class BatchJobConfig {
     public Job batchJob(JobRepository jobRepository, Step getConcertListStep, Step balanceStep, Step balanceStateStep) {
         return new JobBuilder("batchJob", jobRepository)
             .start(getConcertListStep)  // concertId 목록 가져오기
+                .on("FAILED")
+                .fail()
+            .from(getConcertListStep)
                 .on("STOPPED")
                 .end()
             .from(getConcertListStep)
@@ -84,11 +85,6 @@ public class BatchJobConfig {
                 .end()
             .end()
             .build();
-//        return new JobBuilder("batchJob", jobRepository)
-//            .start(getConcertListStep)  // concertId 목록 가져오기
-//            .next(balanceStep)  // reservation -> balance
-//            .next(balanceStateStep)  //balace -> balanceState
-//            .build();
     }
 
     @Bean
@@ -104,14 +100,12 @@ public class BatchJobConfig {
                 System.out.println("jobInstance.getInstanceId() : " + jobInstance.getInstanceId());
                 System.out.println("jobInstance.getJobName() : " + jobInstance.getJobName());
                 System.out.println("jobInstance.getJobVersion : " + jobInstance.getVersion());
-                JobParameters jobParameters = contribution.getStepExecution().getJobParameters();
-                System.out.println(jobParameters.getString("name"));
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 //오늘마감이 콘서트id리스트 불러오기
                 concertList = concertServerClient.getEndedConcert().getBody();
                 System.out.println(concertList);
                 if(concertList.size()==0 || concertList.isEmpty()) {
                     contribution.setExitStatus(ExitStatus.STOPPED);
-                    return RepeatStatus.FINISHED;
                 }
                 return RepeatStatus.FINISHED;
             }, transactionManager)
@@ -168,10 +162,6 @@ public class BatchJobConfig {
         PlatformTransactionManager transactionManager) {
         return new StepBuilder("balanceStateStep", jobRepository)
             .tasklet((contribution, chunkContext) -> {
-                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                System.out.println("balanceStateStep 배치 실행됨");
-                System.out.println(concertList);
-                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 for (int i = 0; i < concertList.size(); i++) {
                     Map<String, Object> state = balanceRepository.getBalanceByConcertId(concertList.get(i));
                     //state는 total, cnt

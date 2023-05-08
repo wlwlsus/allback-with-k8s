@@ -5,7 +5,7 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     generate-ddl: false
     show-sql: true
   batch:
@@ -19,6 +19,7 @@ spring:
       name: batchJob
   datasource:
     url: jdbc:mysql://localhost:3306/ssafy806_payment
+#    url: jdbc:mysql://k8A806.p.ssafy.io:3307/ssafy806_payment
     username: ssafy806
     password: ssafy806
 # user-service url
