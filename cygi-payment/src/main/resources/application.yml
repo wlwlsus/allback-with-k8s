@@ -3,13 +3,19 @@ server:
   servlet:
     context-path: /api/v1
 spring:
+  application:
+    name: payment-service
   jpa:
     hibernate:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
-  application:
-    name: payment-service
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
   batch:
     jdbc:
       initialize-schema: always

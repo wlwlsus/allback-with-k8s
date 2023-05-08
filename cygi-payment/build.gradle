@@ -59,6 +59,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     //Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+    //zipkin
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    //sleuth
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
 }
 
