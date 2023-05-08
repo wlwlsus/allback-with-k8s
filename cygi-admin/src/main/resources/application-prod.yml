@@ -10,6 +10,12 @@ admin:
 spring:
   application:
     name: admin-service
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
 
 eureka:
   instance:
