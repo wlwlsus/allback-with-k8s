@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-user || true && docker rm back-user || true"
-                    sh "docker run --name back-user -d --network connect-default back-user:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-user -d --network connect-default -p 8000:8000 back-user:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
