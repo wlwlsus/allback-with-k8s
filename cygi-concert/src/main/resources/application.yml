@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8002
   servlet:
     context-path: /api/v1
 
@@ -17,6 +17,16 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+  application:
+    name: concert-service
+  kafka:
+    consumer:
+      bootstrap-servers: 3.34.8.99:9092
+      group-id: concert-req
+      topic: concert-req
+      max-poll-interval-ms: 600000
+    listener:
+      type: SINGLE
 
 cloud:
   aws:
@@ -40,6 +50,7 @@ payment:
     url: http://localhost:8001
     prefix: /api/v1/server-concert
 
+## Eureka Client
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -48,6 +59,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+
 
 # logging:
 #   level:
