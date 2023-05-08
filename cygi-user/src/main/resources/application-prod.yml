@@ -34,6 +34,13 @@ spring:
       host: k8a806.p.ssafy.io
       port: 6379
 
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
+
   application:
     name: user-service
 

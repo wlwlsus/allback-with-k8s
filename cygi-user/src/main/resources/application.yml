@@ -28,7 +28,6 @@ spring:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
-
   data:
     redis:
       host: localhost
