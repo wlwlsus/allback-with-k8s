@@ -33,7 +33,7 @@ pipeline{
         stage('Finish'){
             steps{
                 script{
-                    sh "docker images -qf dangling=true | xargs -I{} docker rmi {}"
+                    sh "docker image prune -a -f || true"
                 }
             }
         }
