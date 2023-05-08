@@ -25,6 +25,8 @@ pipeline{
                 script{
                     sh "docker stop nginx || true && docker rm nginx || true"
                     sh "docker stop client || true && docker rm client || true"
+                    sh "docker-compose -f pull"
+                    sh "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f up --build -d"
                     sh "docker compose up -d"
                 }
             }
@@ -33,7 +35,7 @@ pipeline{
         stage('Finish'){
             steps{
                 script{
-                    sh "docker image prune -a -f || true"
+                    sh "docker rmi -f $(docker images -f "dangling=true" -q) || true"
                 }
             }
         }
