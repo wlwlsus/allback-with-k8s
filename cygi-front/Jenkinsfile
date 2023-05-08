@@ -26,9 +26,9 @@ pipeline{
                     sh "ls"
                     sh "docker stop nginx || true && docker rm nginx || true"
                     sh "docker stop client || true && docker rm client || true"
-                    sh "docker compose -f pull"
+                    sh "docker-compose -f docker-compose.yml pull"
                     sh "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1"
-                    sh "docker compose up -d"
+                    sh "docker-compose up -d"
                 }
             }
         }
