@@ -1,0 +1,89 @@
+.container {
+  position: relative;
+}
+
+.concert_background {
+  opacity: 0.3;
+}
+
+.concert_background > img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.details {
+  position: absolute;
+  top: 50%;
+  margin-right: 25%;
+  margin-left: 25%;
+}
+
+.top_details {
+  display: flex;
+}
+
+.top_detail_img > img {
+  border-radius: 20px;
+  box-shadow: 1px 4px 2px 2px #43434180;
+}
+
+.poster_detail {
+  width: 330px;
+  height: 500px;
+}
+
+.detail_story {
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.reserve_btn {
+  text-align: center;
+  margin-bottom: 10%;
+}
+
+.reserve_btn > button {
+  width: 300px;
+  height: 60px;
+  border: none;
+  background-color: #75a4ff;
+  color: white;
+  font-size: 2em;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.reserve_btn > button:hover {
+  background-color: #1b4aa7;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.contents {
+  margin-top: 10%;
+  margin-left: 10%;
+}
+
+.contents > * {
+  display: flex;
+  margin-bottom: 5%;
+}
+
+.concert_title {
+  font-size: 4em;
+  font-weight: bold;
+  margin-bottom: 30%;
+}
+
+.title {
+  width: 150px;
+  font-weight: 600;
+}
+
+.content {
+  width: 300px;
+  font-weight: 500;
+}
