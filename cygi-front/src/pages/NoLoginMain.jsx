@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 export default function NoLoginMain() {
   const navigate = useNavigate();
 
-  const redirectUri = "http://localhost:3000/oauth/redirect";
+  const redirectUri = "http://allback.site/oauth/redirect";
 
   const goSocialLogin = (socialType) => {
-    const url = `http://localhost:8000/api/v1/oauth2/authorization/${socialType}?redirect_uri=${redirectUri}`;
+    const url = `http://allback.site/api/v1/oauth2/authorization/${socialType}?redirect_uri=${redirectUri}`;
     window.location.href = url;
   };
 
