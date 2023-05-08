@@ -64,6 +64,20 @@ public class BatchJobConfig {
             return ExitStatus.COMPLETED;
         }
     }
+    public class MyJobListener implements JobExecutionListener {
+
+        @Override
+        public void beforeJob(JobExecution jobExecution) {
+            // do something before the job starts
+        }
+
+        @Override
+        public void afterJob(JobExecution jobExecution) {
+            if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
+                System.exit(0);
+            }
+        }
+    }
 
     @Bean
     @Primary
@@ -84,6 +98,7 @@ public class BatchJobConfig {
                 .on("*")
                 .end()
             .end()
+            .listener(new MyJobListener())
             .build();
     }
 
