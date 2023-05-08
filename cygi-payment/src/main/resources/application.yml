@@ -9,7 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
     generate-ddl: false
-    show-sql: tru
+    show-sql: true
   batch:
     jdbc:
       initialize-schema: always
