@@ -37,7 +37,7 @@ spring:
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
         - id : concert-service
-          uri: http://localhost:8002/
+          uri: lb://CONCERT-SERVICE
           predicates:
             - Path=/concert-service/**
           filters:
