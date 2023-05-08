@@ -53,9 +53,9 @@ export default function MyPage() {
     quantity: 1,
     total_amount: 100000,
     tax_free_amount: 0,
-    approval_url: "http://localhost:3000/success",
-    cancel_url: "http://localhost:3000/home",
-    fail_url: "http://localhost:3000/home",
+    approval_url: "http://allback.site/success",
+    cancel_url: "http://allback.site/home",
+    fail_url: "http://allback.site/home",
   };
 
   const preparePayment = async (paymentData) => {
@@ -63,7 +63,7 @@ export default function MyPage() {
       "Content-Type": "application/json; charset=UTF-8",
     };
     const response = await axios.post(
-      "http://localhost:8081/api/v1/reservation/charge",
+      "http://allback.site:8081/api/v1/reservation/charge",
       paymentData,
       { headers }
     );
