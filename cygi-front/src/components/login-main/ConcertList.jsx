@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./ConcertList.module.css";
-import { $_concert } from "util/axios";
+import { $ } from "util/axios";
 import ListLoading from "gif/list_loading.gif";
 import { reservation } from "util/store";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -42,13 +42,11 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
-    await $_concert(`/concert-service/api/v1/concert?page=${page}`).then(
-      (res) => {
-        setConcertList((prev) => [...prev, res.data]);
-        preventRef.current = true;
-        setLoad(false);
-      }
-    );
+    await $(`/concert-service/api/v1/concert?page=${page}`).then((res) => {
+      setConcertList((prev) => [...prev, res.data]);
+      preventRef.current = true;
+      setLoad(false);
+    });
   }, [page]);
 
   useEffect(() => {

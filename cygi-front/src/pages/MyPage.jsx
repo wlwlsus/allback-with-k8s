@@ -7,7 +7,7 @@ import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { userId, userNick, createdTime, userPoint } from "../util/store";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { $_payment, $_user } from "util/axios";
+import { $ } from "util/axios";
 import { useNavigate } from "react-router-dom";
 import { history } from "components/login-main/history";
 
@@ -23,16 +23,12 @@ export default function MyPage() {
 
   //예약 목록 조회
   const { isLoading, data, refetch } = useQuery(["mypage"], () =>
-    $_payment.get(
-      `/payment-service/api/v1/reservation/id/${id}?size=10&page=${page}`
-    )
+    $.get(`/payment-service/api/v1/reservation/id/${id}?size=10&page=${page}`)
   );
 
   // API_PUT 함수
   const res_put = () => {
-    return $_payment.put(
-      `/payment-service/api/v1/reservation/refund/${reservationId}`
-    );
+    return $.put(`/payment-service/api/v1/reservation/refund/${reservationId}`);
   };
 
   // 예약 취소 & 환불
@@ -52,7 +48,7 @@ export default function MyPage() {
   const paymentData = {
     cid: "TC0ONETIME",
     partner_order_id: "1000",
-    partner_user_id: nickName,
+    partner_id: nickName,
     item_name: "포인트충전",
     quantity: 1,
     total_amount: 100000,
