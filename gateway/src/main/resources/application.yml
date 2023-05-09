@@ -61,6 +61,9 @@ spring:
           predicates:
             - Path=/concert-service/**
           filters:
+            - name: KafkaRequestFilter
+              args:
+                topicName: concert-req
             - RemoveRequestHeader=Cookie
             - RewritePath=/concert-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
@@ -73,15 +76,8 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/admin-service/(?<segment>.*), /$\{segment}
 
-        - id: admin-service
-          uri: lb://ADMIN-SERVICE
-          predicates:
-            - Path=/admin-service/**
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/admin-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-
 jwt:
   secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==
+
+kafka:
+  bootstrap-servers: 3.34.8.99:9092
