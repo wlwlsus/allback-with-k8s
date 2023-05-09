@@ -4,11 +4,6 @@ export const $ = axios.create({
   baseURL: "http://allback.site:8080/",
   headers: {
     "Content-Type": "application/json",
+    Authorization: sessionStorage.getItem("accessToken"),
   },
-});
-
-// 헤더에 토큰추가
-$.interceptors.request.use((config) => {
-  config.headers["AccessToken"] = sessionStorage.getItem("accessToken");
-  return config;
 });

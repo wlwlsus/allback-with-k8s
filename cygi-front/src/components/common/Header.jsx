@@ -26,7 +26,7 @@ export default function Header() {
     data: pointData,
     refetch,
   } = useQuery(["getPoint"], () =>
-    $.get(`/user-service/api/v1/user/point?id=${id}`)
+    $.get(`/user-service/api/v1/user/point/${id}`)
   );
 
   const onLogout = () => {
@@ -122,19 +122,19 @@ export default function Header() {
         </div>
       )}
       {!isLoading && userId !== "kjskjs356@naver.com" && (
-        <div className={style.header}>
+        <div className={style.header_user}>
           <div>
             <div
               onClick={() => {
                 navigate("home");
               }}
-              className={style.header_left}
+              className={style.header_left_user}
             >
               <img className={style.logo} src={logo} alt="" />{" "}
               <p className={style.logo_name}>CAN YOU GET IT</p>
             </div>
           </div>
-          <div className={style.header_right}>
+          <div className={style.header_right_user}>
             <div className={style.user_name}>{nickName}님 환영합니다.</div>
             <div
               className={style.user_mypage}

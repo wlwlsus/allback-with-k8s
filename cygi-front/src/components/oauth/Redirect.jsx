@@ -6,11 +6,11 @@ import { userId, userRole, userNick, createdTime } from "../../util/store";
 
 export default function Redirect() {
   const navigate = useNavigate();
-  const [serchParams] = useSearchParams();
-  const accessToken = serchParams.get("accessToken");
-  const refreshToken = serchParams.get("refreshToken");
+  const [searchParams] = useSearchParams();
+  const accessToken = searchParams.get("accessToken");
+  const refreshToken = searchParams.get("refreshToken");
   sessionStorage.setItem("isSocial", JSON.stringify(true));
-  const error = serchParams.get("error");
+  const error = searchParams.get("error");
 
   const [id, setId] = useRecoilState(userId);
   const [role, setRole] = useRecoilState(userRole);
