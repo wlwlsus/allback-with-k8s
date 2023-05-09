@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import style from "./ConcertDetail.module.css";
 import PosterBackground from "img/poster.png";
 import { useQuery } from "@tanstack/react-query";
-import { $_concert } from "util/axios";
+import { $ } from "util/axios";
 
 export default function ConcertDetail() {
   const navigate = useNavigate();
@@ -13,23 +13,20 @@ export default function ConcertDetail() {
 
   const { isLoading, data } = useQuery(
     [`concert_${location.state.concertId}`],
-    () =>
-      $_concert.get(
-        `/concert-service/api/v1/concert/${location.state.concertId}`
-      )
+    () => $.get(`/concert-service/api/v1/concert/${location.state.concertId}`)
   );
 
   const onCheck = () => {
-    $_concert
-      .get(`/concert-service/api/v1seat/rest/${location.state.concertId}`)
-      .then((res) => {
+    $.get(`/concert-service/api/v1seat/rest/${location.state.concertId}`).then(
+      (res) => {
         if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
           alert("마감되었습니다. 다른 공연을 예매해주세요.");
           navigate("/home");
         } else {
           onSelect(data.data.concertId);
         }
-      });
+      }
+    );
   };
 
   const onSelect = (id) => {

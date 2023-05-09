@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { userId, userNick, reservation, userPoint } from "util/store";
-import { $_payment, $_user } from "util/axios";
+import { $ } from "util/axios";
 import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ function SuccessPage() {
 
   // 포인트 갱신용
   const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
-    $_user.get(`/user-service/api/v1/user/point?id=${id}`)
+    $.get(`/user-service/api/v1/user/point?id=${id}`)
   );
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function SuccessPage() {
       cid: "TC0ONETIME",
       tid: tid,
       partner_order_id: "1000",
-      partner_user_id: nickName,
+      partner_id: nickName,
       pg_token: pg_token,
     };
 
@@ -49,7 +49,7 @@ function SuccessPage() {
         if (response.status === 200) {
           // 결제 승인 성공 처리
           alert("충전이 완료되었습니다!");
-          $_user.get(`/user-service/api/v1/user/point?id=${id}`).then((res) => {
+          $.get(`/user-service/api/v1/user/point?id=${id}`).then((res) => {
             setPoint(res.data);
             window.location.href = "http://allback.site/mypage";
           });

@@ -10,7 +10,7 @@ import {
   userPoint,
   createdTime,
 } from "../../util/store";
-import { $_user } from "util/axios";
+import { $ } from "util/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function Header() {
@@ -26,7 +26,7 @@ export default function Header() {
     data: pointData,
     refetch,
   } = useQuery(["getPoint"], () =>
-    $_user.get(`/user-service/api/v1/user/point?id=${id}`)
+    $.get(`/user-service/api/v1/user/point?id=${id}`)
   );
 
   const onLogout = () => {
@@ -41,7 +41,7 @@ export default function Header() {
 
   // API_POST 함수
   // const res_put = () => {
-  //   return $_user.put("/user/lgout", {
+  //   return $.put("/user/lgout", {
   //     accessToken: sessionStorage.getItem("accessToken"),
   //     refreshToken: sessionStorage.getItem("refreshToken"),
   //   });
@@ -122,19 +122,19 @@ export default function Header() {
         </div>
       )}
       {!isLoading && userId !== "kjskjs356@naver.com" && (
-        <div className={style.header_user}>
+        <div className={style.header}>
           <div>
             <div
               onClick={() => {
                 navigate("../home");
               }}
-              className={style.header_left_user}
+              className={style.header_left}
             >
               <img className={style.logo} src={logo} alt="" />{" "}
               <p className={style.logo_name}>CAN YOU GET IT</p>
             </div>
           </div>
-          <div className={style.header_right_user}>
+          <div className={style.header_right}>
             <div className={style.user_name}>{nickName}님 환영합니다.</div>
             <div
               className={style.user_mypage}

@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import style from "./SeatList.module.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { history } from "./history";
-import { $_concert, $_payment } from "util/axios";
+import { $ } from "util/axios";
 import { userNick, reservation, userId, userPoint } from "util/store";
 import { useRecoilValue, useRecoilState } from "recoil";
 
@@ -29,7 +29,7 @@ export default function SeatList() {
 
   // API_PUT 함수
   const res_put = () => {
-    return $_payment.put(
+    return $.put(
       `/payment-service/api/v1/reservation/${reservationInfo.reservationId}`,
       {
         userId: id,
@@ -71,8 +71,7 @@ export default function SeatList() {
   // 해당 공연장의 좌석 조회
   const { isLoading, data, refetch } = useQuery(
     [`seat-list_${location.state.concertId}`],
-    () =>
-      $_concert.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
+    () => $.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
   );
 
   const newData = {
@@ -82,7 +81,7 @@ export default function SeatList() {
 
   // API_DELETE 함수
   const res_delete = () => {
-    return $_concert.delete(
+    return $.delete(
       `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
       reservationInfo.reservationId
     );
@@ -120,7 +119,7 @@ export default function SeatList() {
 
   //API_POST 함수
   const res_post = () => {
-    return $_concert.post(`/concert-service/api/v1/seat`, newData);
+    return $.post(`/concert-service/api/v1/seat`, newData);
   };
 
   // 예매하기 클릭 시 이벤트 발생
