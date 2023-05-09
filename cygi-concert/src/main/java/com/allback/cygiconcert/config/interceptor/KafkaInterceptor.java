@@ -61,10 +61,14 @@ public class KafkaInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
+        // 대기열 시스템이 필요없는 애들은 넘기기
+        if (request.getHeader("KAFKA.UUID") == null || response.getStatus() >= 300) {
+            return ;
+        }
+
         // 10초 대기 (일부러 성능 떨어뜨리기)
         Thread.sleep(5000);
 
-        // TODO : request의 Header를 보고, Kafka 대기표 끊은 애들만!
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
@@ -75,11 +79,10 @@ public class KafkaInterceptor implements HandlerInterceptor {
 
         // 레코드 읽어오기
         // TODO : Offset 안 올라갈 때가 가끔 있음. 에러 해결해야됨
-//        consumer.poll(Duration.ZERO);
         ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
-        System.out.println("----- " + consumer.position(partition));
+        System.out.println("committedOffset :::: " + consumer.position(partition));
         currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
 
         // 읽은 메시지 commit 하기 (Offset 증가)
