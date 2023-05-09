@@ -19,16 +19,20 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins: "*"
+            allow-credentials: true   #추가
+            allowedHeaders:
+              - x-requested-with
+              - authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
             allowedMethods:
-              - GET
               - POST
+              - GET
               - PUT
-              - DELETE
-              - PATCH
               - OPTIONS
-            allowedHeaders: "*""
-            allow-credentials: true
-            maxAge: 3600
+              - DELETE
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
