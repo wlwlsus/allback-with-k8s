@@ -46,6 +46,7 @@ logging:
       allback:
         cygiconcert: info
   config: classpath:logback.xml
+
 concert:
   server:
     prefix: /api/v1/server-concert
