@@ -1,7 +1,6 @@
 package com.allback.cygiconcert.service;
 
 import com.allback.cygiconcert.client.PaymentServerClient;
-import com.allback.cygiconcert.client.UserServerClient;
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
@@ -35,16 +34,12 @@ public class ConcertServiceImpl implements ConcertService {
     private final ConcertRepository concertRepository;
     private final StageRepository stageRepository;
     private final ConcertMapper concertMapper;
-    private final UserServerClient userServerClient;
     private final PaymentServerClient paymentServerClient;
     private final S3Upload s3Upload;
 
     @Override
     public void registConcert(ConcertReqDto concertReqDto, MultipartFile image) throws Exception {
         //주최자 id 있는지 확인
-//        if (!userServerClient.checkUserId(concertReqDto.getUserId())) {
-//            throw new BaseException(ErrorMessage.USER_NOT_FOUND);
-//        }
         log.info("[registConcert] : 주최자id 조회 성공, userId : {}", concertReqDto.getStageId());
 
         //공연장 id 있는지 확인
@@ -116,6 +111,14 @@ public class ConcertServiceImpl implements ConcertService {
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
         log.info("[getUserId] : 주최자 id 조회 성공, userId : {}", concert.getUserId());
         return concert.getUserId();
+    }
+
+    @Override
+    public String getConcertTitle(long concertId) {
+        Concert concert = concertRepository.findById(concertId)
+            .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
+        log.info("[getTitle] : 콘서트 title 조회 성공, title : {}", concert.getTitle());
+        return concert.getTitle();
     }
 
     private String getImgLink(MultipartFile image) throws Exception {

@@ -20,4 +20,6 @@ public interface ConcertService {
     List<Long> getEndedConcert(LocalDate now);
 
     Long getUserId(long concertId);
+
+    String getConcertTitle(long concertId);
 }

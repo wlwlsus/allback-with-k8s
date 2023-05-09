@@ -58,7 +58,6 @@ public class SeatServiceImpl implements SeatService {
             .orElseThrow(() -> new BaseException(ErrorMessage.CONCERT_NOT_FOUND));
 
         //해당 좌석이 점유 되어있는지 확인
-
         //좌석정보를 바탕으로 결제 컨테이너의 reservation 테이블을 예약중으로 insert해야함
         ReservationReqDto reservationReqDto = ReservationReqDto.builder()
             .concertId(concert.getConcertId())

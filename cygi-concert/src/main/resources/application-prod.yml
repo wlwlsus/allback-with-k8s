@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 0
   servlet:
     context-path: /api/v1
 
@@ -11,22 +11,20 @@ spring:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_concert
+    url: jdbc:mysql://k8a806.p.ssafy.io:3308/ssafy806_concert
     username: ssafy806
     password: ssafy806
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
-  kafka:
-    consumer:
-      bootstrap-servers: 3.34.8.99:9092
-      group-id: concert-req
-      topic: concert-req
-      max-poll-interval-ms: 600000
-    listener:
-      type: SINGLE
 
 cloud:
   aws:
@@ -40,12 +38,6 @@ cloud:
     stack:
       auto: false
 
-logging:
-  level:
-    com:
-      allback:
-        cygiconcert: info
-  config: classpath:logback.xml
 concert:
   server:
     prefix: /api/v1/server-concert
