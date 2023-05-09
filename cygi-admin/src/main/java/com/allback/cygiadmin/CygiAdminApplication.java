@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableFeignClients
-@EnableDiscoveryClient
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class CygiAdminApplication {
 
