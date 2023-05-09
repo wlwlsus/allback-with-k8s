@@ -42,7 +42,7 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
-    await $(`/concert-service/api/v1/concert?page=${page}`).then((res) => {
+    await $.get(`/concert-service/api/v1/concert?page=${page}`).then((res) => {
       setConcertList((prev) => [...prev, res.data]);
       preventRef.current = true;
       setLoad(false);
