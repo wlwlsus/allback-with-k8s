@@ -12,20 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(
-    servers = {
-        @Server(url = "/admin-service/api/v1")
-    }
-)
 public class SwaggerConfig {
-
-    @Bean
-    public GroupedOpenApi paymentServiceApi() {
-        return GroupedOpenApi.builder()
-            .group("admin-service")
-            .pathsToMatch("/**")
-            .build();
-    }
 
     @Bean
     public OpenAPI openAPI() {
