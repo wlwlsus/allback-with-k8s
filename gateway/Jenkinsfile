@@ -33,7 +33,7 @@ pipeline{
         stage('Build Docker'){
             steps{
                 script{
-                    sh "docker build -t back-gateway:${env.BUILD_NUMBER} gateway/"
+                    sh "docker build --no-cache -t back-gateway:${env.BUILD_NUMBER} gateway/"
                 }
             }
         }
@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh "docker stop back-gateway || true && docker rm back-gateway || true"
-                    sh "docker run --name back-gateway -d -p 8090:8090 --network connect-default back-gateway:${env.BUILD_NUMBER}"
+                    sh "docker run --name back-gateway -d -p 8080:8080 --network connect-default back-gateway:${env.BUILD_NUMBER}"
                     sh "docker image prune -a -f || true"
                 }
             }
