@@ -25,7 +25,9 @@ export default function Header() {
     isLoading,
     data: pointData,
     refetch,
-  } = useQuery(["getPoint"], () => $_user.get(`/user/point?id=${id}`));
+  } = useQuery(["getPoint"], () =>
+    $_user.get(`/user-service/api/v1/user/point?id=${id}`)
+  );
 
   const onLogout = () => {
     sessionStorage.clear();

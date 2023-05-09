@@ -17,7 +17,7 @@ export default function ReserveComplete() {
   const [point, setPoint] = useRecoilState(userPoint);
 
   const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
-    $_user.get(`/user/point?id=${id}`)
+    $_user.get(`/user-service/api/v1/user/point?id=${id}`)
   );
 
   useEffect(() => {

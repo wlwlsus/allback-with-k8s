@@ -42,11 +42,13 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
-    await $_concert(`concert?page=${page}`).then((res) => {
-      setConcertList((prev) => [...prev, res.data]);
-      preventRef.current = true;
-      setLoad(false);
-    });
+    await $_concert(`/concert-service/api/v1/concert?page=${page}`).then(
+      (res) => {
+        setConcertList((prev) => [...prev, res.data]);
+        preventRef.current = true;
+        setLoad(false);
+      }
+    );
   }, [page]);
 
   useEffect(() => {
