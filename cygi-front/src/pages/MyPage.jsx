@@ -63,7 +63,7 @@ export default function MyPage() {
       "Content-Type": "application/json; charset=UTF-8",
     };
     const response = await axios.post(
-      "http://allback.site:8081/payment-service/api/v1/reservation/charge",
+      "http://allback.site:8080/payment-service/api/v1/reservation/charge",
       paymentData,
       { headers }
     );
