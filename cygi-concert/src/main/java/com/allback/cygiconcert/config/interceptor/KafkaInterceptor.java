@@ -40,6 +40,12 @@ public class KafkaInterceptor implements HandlerInterceptor {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    /**
+     * Kafka Consumer 생성 메서드
+     *
+     * @param consumerGroupId
+     * @return Kafka Consumer
+     */
     private KafkaConsumer<String, String> createConsumer(String consumerGroupId) {
         Properties properties = new Properties();
         properties.setProperty(BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -54,8 +60,11 @@ public class KafkaInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        // 응답 완료 후 처리할 작업 구현
-        System.out.println("요청 처리 했음");
+
+        // 10초 대기 (일부러 성능 떨어뜨리기)
+        Thread.sleep(5000);
+
+        // TODO : request의 Header를 보고, Kafka 대기표 끊은 애들만!
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
@@ -63,14 +72,17 @@ public class KafkaInterceptor implements HandlerInterceptor {
         // consume할 topic과 particion
         TopicPartition partition = new TopicPartition(topic, 2);
         consumer.assign(Collections.singletonList(partition));
-        consumer.poll(Duration.ZERO); // Trigger partition assignment
 
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        // 레코드 읽어오기
+        // TODO : Offset 안 올라갈 때가 가끔 있음. 에러 해결해야됨
+//        consumer.poll(Duration.ZERO);
+        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
-
         System.out.println("----- " + consumer.position(partition));
         currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
+
+        // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
     }
 
