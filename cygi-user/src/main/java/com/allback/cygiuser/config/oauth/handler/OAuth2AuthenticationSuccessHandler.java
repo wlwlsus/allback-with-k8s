@@ -45,6 +45,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
   @Value("${app.oauth2.authorizedRedirectUris}")
   private String redirectUri;
+
+  @Value("${app.oauth2.authorizedRedirectUrisLocal}")
+  private String redirectUriLocal;
   private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
   private final JwtTokenProvider jwtTokenProvider;
@@ -130,9 +133,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
   private boolean isAuthorizedRedirectUri(String uri) {
     URI clientRedirectUri = URI.create(uri);
     URI authorizedUri = URI.create(redirectUri);
+    URI authorizedUriLocal = URI.create(redirectUriLocal);
 
-    return authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-        && authorizedUri.getPort() == clientRedirectUri.getPort();
+    return (authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+        && authorizedUri.getPort() == clientRedirectUri.getPort())
+        ||
+        (authorizedUriLocal.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+        && authorizedUriLocal.getPort() == clientRedirectUri.getPort());
   }
 
 }
