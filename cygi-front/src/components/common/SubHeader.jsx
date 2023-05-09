@@ -19,7 +19,6 @@ export default function Header() {
   const [role, setRole] = useRecoilState(userRole);
   const [nickName, setNickName] = useRecoilState(userNick);
   const [point, setPoint] = useRecoilState(userPoint);
-  const [createTime, setCreateTime] = useRecoilState(createdTime);
 
   const {
     isLoading,
@@ -29,34 +28,24 @@ export default function Header() {
     $.get(`/user-service/api/v1/user/point/${id}`)
   );
 
-  const onLogout = () => {
-    sessionStorage.clear();
-    setId("");
-    setRole("");
-    setNickName("");
-    setCreateTime("");
-    setPoint(0);
-    navigate("../../");
+  // API_POST 함수
+  const res_put = () => {
+    return $.put("/user/lgout", {
+      accessToken: sessionStorage.getItem("accessToken"),
+      refreshToken: sessionStorage.getItem("refreshToken"),
+    });
   };
 
-  // API_POST 함수
-  // const res_put = () => {
-  //   return $.put("/user/lgout", {
-  //     accessToken: sessionStorage.getItem("accessToken"),
-  //     refreshToken: sessionStorage.getItem("refreshToken"),
-  //   });
-  // };
-
   // 로그아웃 함수
-  // const { mutate: onLogout } = useMutation(res_put, {
-  //   onSuccess: () => {
-  //     sessionStorage.clear();
-  //     setId("");
-  //     setRole("");
-  //     setNickName("");
-  //     navigate("/");
-  //   },
-  // });
+  const { mutate: onLogout } = useMutation(res_put, {
+    onSuccess: () => {
+      sessionStorage.clear();
+      setId("");
+      setRole("");
+      setNickName("");
+      navigate("../");
+    },
+  });
 
   useEffect(() => {
     if (!isLoading) setPoint(pointData.data);
