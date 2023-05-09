@@ -9,6 +9,6 @@ export const $ = axios.create({
 
 // 헤더에 토큰추가
 $.interceptors.request.use((config) => {
-  config.headers["Access-Token"] = sessionStorage.getItem("access-token");
+  config.headers["AccessToken"] = sessionStorage.getItem("accessToken");
   return config;
 });
