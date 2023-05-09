@@ -30,7 +30,7 @@ export default function Header() {
 
   // API_POST 함수
   const res_put = () => {
-    return $.put("/user/lgout", {
+    return $.put("/user/logout", {
       accessToken: sessionStorage.getItem("accessToken"),
       refreshToken: sessionStorage.getItem("refreshToken"),
     });
