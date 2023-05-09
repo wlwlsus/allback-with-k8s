@@ -56,7 +56,6 @@ dependencies {
 
 	//sleuth
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.8.RELEASE'
-
 }
 
 dependencyManagement {
