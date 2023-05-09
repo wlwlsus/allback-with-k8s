@@ -18,6 +18,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -53,11 +54,20 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
+
+            // 콘서트 목록 조회 api는 대기열 시스템 거치지 않게 하기
+            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+            if (queryParams.containsKey("page")) {
+                return chain.filter(exchange);
+            }
+
             ServerHttpRequest request = exchange.getRequest();
 
             String uuid = null;
             long offset;
             int partition;
+
+
 
             // 대기표를 가지고 있지 않다면 -> 최초 요청 -> kafka에 넣기
             if (!request.getHeaders().containsKey("KAFKA.UUID")) {
@@ -98,6 +108,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // Consumer가 마지막으로 읽은 레코드의 Offset 값 알아내기
             long committedOffset = getCommittedOffset(partition);
+            System.out.println("header :::: " + request.getHeaders().get("KAFKA.OFFSET"));
             System.out.println("committedOffset :::: " + committedOffset);
             System.out.println("offset :::: " + offset);
 
