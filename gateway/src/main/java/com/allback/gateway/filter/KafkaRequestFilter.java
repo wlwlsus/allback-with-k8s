@@ -9,6 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -17,6 +18,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -59,12 +61,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // 대기표를 가지고 있지 않다면 -> 최초 요청 -> kafka에 넣기
             if (!request.getHeaders().containsKey("KAFKA.UUID")) {
-//            if (false) {
                 uuid = UUID.randomUUID().toString();
 
                 // TODO : 변경해야 됨
 //                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, uuid);
-                // test용으로 partition 2번만 쓰겠음
                 CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, 2, null, uuid);
 
                 try {
@@ -77,6 +77,16 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+                HttpHeaders headers = new HttpHeaders();
+                headers.addAll(exchange.getRequest().getHeaders());
+                headers.add("KAFKA.UUID", uuid);
+                headers.add("KAFKA.PARTITION", Integer.toString(partition));
+                headers.add("KAFKA.OFFSET", Long.toString(offset));
+
+                // 변경된 header로 request를 갱신
+                ServerHttpRequest request2 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
+                exchange = exchange.mutate().request(request2).build();
+
             }
 
             // 대기표를 가지고 있다면
@@ -84,25 +94,16 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 uuid = request.getHeaders().get("KAFKA.UUID").get(0);
                 partition = Integer.parseInt(request.getHeaders().get("KAFKA.PARTITION").get(0));
                 offset = Long.parseLong(request.getHeaders().get("KAFKA.OFFSET").get(0));
-//                uuid = "abc";
-//                partition = 2;
-//                offset = -1;
             }
 
             // Consumer가 마지막으로 읽은 레코드의 Offset 값 알아내기
-            TopicPartition topicPartition = new TopicPartition(topic, partition);
-            KafkaConsumer<String, String> consumer = createConsumer("concert-req");
-
-            consumer.assign(Collections.singletonList(topicPartition));
-
-            long committedOffset = consumer.position(topicPartition);
+            long committedOffset = getCommittedOffset(partition);
             System.out.println("committedOffset :::: " + committedOffset);
             System.out.println("offset :::: " + offset);
 
 
             // 대기열이 있다면 -> 토큰 반환하고 끝내기
             if (committedOffset < offset) {
-//            if (false) {
                 // 클라이언트에게 보낼 응답 생성
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
@@ -129,13 +130,27 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 return response.writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(responseBytes)));
             }
 
-            // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
-            //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
-            //  파티션 번호!
-
             // 대기열이 없다면 -> 요청 처리하기
-            return chain.filter(exchange);
+            else {
+                // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
+                //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
+                //  파티션 번호!
+                return chain.filter(exchange);
+            }
         };
+    }
+
+    /**
+     * 특정 파티션에서, Consumer가 제일 최근에 commit한 메시지의 offset 값 알아내기
+     *
+     * @param partition
+     * @return
+     */
+    private long getCommittedOffset(int partition) {
+        TopicPartition topicPartition = new TopicPartition(topic, partition);
+        KafkaConsumer<String, String> consumer = createConsumer("concert-req");
+        consumer.assign(Collections.singletonList(topicPartition));
+        return consumer.position(topicPartition);
     }
 
     @Data
