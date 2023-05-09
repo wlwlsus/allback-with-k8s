@@ -29,10 +29,13 @@ export default function SeatList() {
 
   // API_PUT 함수
   const res_put = () => {
-    return $_payment.put(`/reservation/${reservationInfo.reservationId}`, {
-      userId: id,
-      price: location.state.price,
-    });
+    return $_payment.put(
+      `/payment-service/api/v1/reservation/${reservationInfo.reservationId}`,
+      {
+        userId: id,
+        price: location.state.price,
+      }
+    );
   };
 
   const { mutate: onReserve } = useMutation(res_put, {
@@ -68,7 +71,8 @@ export default function SeatList() {
   // 해당 공연장의 좌석 조회
   const { isLoading, data, refetch } = useQuery(
     [`seat-list_${location.state.concertId}`],
-    () => $_concert.get(`/seat/${location.state.concertId}`)
+    () =>
+      $_concert.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
   );
 
   const newData = {
@@ -79,7 +83,7 @@ export default function SeatList() {
   // API_DELETE 함수
   const res_delete = () => {
     return $_concert.delete(
-      `/seat/delete/${reservationInfo.reservationId}`,
+      `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
       reservationInfo.reservationId
     );
   };
@@ -116,7 +120,7 @@ export default function SeatList() {
 
   //API_POST 함수
   const res_post = () => {
-    return $_concert.post(`/seat`, newData);
+    return $_concert.post(`/concert-service/api/v1/seat`, newData);
   };
 
   // 예매하기 클릭 시 이벤트 발생

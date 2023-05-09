@@ -23,12 +23,16 @@ export default function MyPage() {
 
   //예약 목록 조회
   const { isLoading, data, refetch } = useQuery(["mypage"], () =>
-    $_payment.get(`/reservation/id/${id}?size=10&page=${page}`)
+    $_payment.get(
+      `/payment-service/api/v1/reservation/id/${id}?size=10&page=${page}`
+    )
   );
 
   // API_PUT 함수
   const res_put = () => {
-    return $_payment.put(`/reservation/refund/${reservationId}`);
+    return $_payment.put(
+      `/payment-service/api/v1/reservation/refund/${reservationId}`
+    );
   };
 
   // 예약 취소 & 환불

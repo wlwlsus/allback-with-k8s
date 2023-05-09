@@ -13,18 +13,23 @@ export default function ConcertDetail() {
 
   const { isLoading, data } = useQuery(
     [`concert_${location.state.concertId}`],
-    () => $_concert.get(`/concert/${location.state.concertId}`)
+    () =>
+      $_concert.get(
+        `/concert-service/api/v1/concert/${location.state.concertId}`
+      )
   );
 
   const onCheck = () => {
-    $_concert.get(`seat/rest/${location.state.concertId}`).then((res) => {
-      if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
-        alert("마감되었습니다. 다른 공연을 예매해주세요.");
-        navigate("/home");
-      } else {
-        onSelect(data.data.concertId);
-      }
-    });
+    $_concert
+      .get(`/concert-service/api/v1seat/rest/${location.state.concertId}`)
+      .then((res) => {
+        if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
+          alert("마감되었습니다. 다른 공연을 예매해주세요.");
+          navigate("/home");
+        } else {
+          onSelect(data.data.concertId);
+        }
+      });
   };
 
   const onSelect = (id) => {
