@@ -11,16 +11,7 @@ spring:
   application:
     name: admin-service
 
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-
-springdoc:
-  swagger-ui:
-    config-url: /admin-service/api/v1/v3/api-docs/swagger-config
-    url: /admin-service/api/v1/v3/api-docs
+#springdoc:
+#  swagger-ui:
+#    config-url: /admin-service/api/v1/v3/api-docs/swagger-config
+#    url: /admin-service/api/v1/v3/api-docs
