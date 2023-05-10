@@ -49,6 +49,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         private Integer partition;
         private Long offset;
         private Long committedOffset;
+        private Long endOffset;
     }
 
     @Override
@@ -56,10 +57,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         return (exchange, chain) -> {
 
             // 콘서트 목록 조회 api는 대기열 시스템 거치지 않게 하기
-//            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-//            if (queryParams.containsKey("page")) {
-//                return chain.filter(exchange);
-//            }
+            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+            if (queryParams.containsKey("page")) {
+                return chain.filter(exchange);
+            }
 
             ServerHttpRequest request = exchange.getRequest();
 
@@ -108,8 +109,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // Consumer가 마지막으로 읽은 레코드의 Offset 값 알아내기
             long committedOffset = getCommittedOffset(partition);
+            long endOffset = getEndOffset(partition);
             System.out.println("header :::: " + request.getHeaders().get("KAFKA.OFFSET"));
             System.out.println("committedOffset :::: " + committedOffset);
+            System.out.println("endOffset :::: " + endOffset);
             System.out.println("offset :::: " + offset);
 
 
@@ -120,7 +123,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
                 response.getHeaders().add("Content-Type", "application/json");
 
-                JsonResponse jsonResponse = new JsonResponse(uuid, partition, offset, committedOffset);
+                JsonResponse jsonResponse = new JsonResponse(uuid, partition, offset, committedOffset, endOffset);
 
                 // JSON 문자열로 변환
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -161,6 +164,14 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         TopicPartition topicPartition = new TopicPartition(topic, partition);
         KafkaConsumer<String, String> consumer = createConsumer("concert-req");
         consumer.assign(Collections.singletonList(topicPartition));
+        return consumer.position(topicPartition);
+    }
+
+    private long getEndOffset(int partition) {
+        TopicPartition topicPartition = new TopicPartition(topic, partition);
+        KafkaConsumer<String, String> consumer = createConsumer("concert-req");
+        consumer.assign(Collections.singletonList(topicPartition));
+        consumer.seekToEnd(Collections.singletonList(topicPartition));
         return consumer.position(topicPartition);
     }
 
