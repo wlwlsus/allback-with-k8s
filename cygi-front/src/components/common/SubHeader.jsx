@@ -82,7 +82,7 @@ export default function Header() {
                 navigate("../login");
               }}
             >
-              비로그인 메인페이지 {id}
+              비로그인 메인페이지
             </div>
             <div
               className={style.login}

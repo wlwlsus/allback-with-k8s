@@ -6,6 +6,7 @@ import { history } from "./history";
 import { $ } from "util/axios";
 import { userNick, reservation, userId, userPoint } from "util/store";
 import { useRecoilValue, useRecoilState } from "recoil";
+import Loading from "components/common/Loading";
 
 export default function SeatList() {
   const navigate = useNavigate();
@@ -23,6 +24,15 @@ export default function SeatList() {
   const id = useRecoilValue(userId);
   const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
   const [point, setPoint] = useRecoilState(userPoint);
+
+  const [check, setCheck] = useState(false);
+  const [data, setData] = useState();
+
+  // 대기열창 모달 & 순서 계산용 변수
+  const [modalOpen, setModalOpen] = useState(false);
+  const [offset, setOffset] = useState();
+  const [committedOffset, setCommittedOffset] = useState();
+  const [endOffset, setEndOffset] = useState();
 
   // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
@@ -68,10 +78,43 @@ export default function SeatList() {
     }
   };
 
-  // 해당 공연장의 좌석 조회
-  const { isLoading, data, refetch } = useQuery(
+  // 해당 공연장의 좌석 조회(트래픽 많을 경우 대기열 생성)
+  const { isLoading, refetch } = useQuery(
     [`seat-list_${location.state.concertId}`],
-    () => $.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
+    () =>
+      $.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
+        .then((res) => {
+          setCheck(true);
+          setData(res);
+          setModalOpen(false);
+        })
+        .catch((err) => {
+          setModalOpen(true);
+          setOffset(err.response.data.offset);
+          setCommittedOffset(err.response.data.committedOffset);
+          setEndOffset(err.response.data.endOffset);
+
+          let interval = setInterval(() => {
+            $.get(`/concert-service/api/v1/seat/${location.state.concertId}`, {
+              headers: {
+                "KAFKA.UUID": err.response.data.uuid,
+                "KAFKA.PARTITION": err.response.data.partition,
+                "KAFKA.OFFSET": err.response.data.offset,
+              },
+            })
+              .then((res) => {
+                setCheck(true);
+                setData(res);
+                setModalOpen(false);
+                clearInterval(interval);
+              })
+              .catch((err) => {
+                setCommittedOffset(err.response.data.committedOffset);
+                setEndOffset(err.response.data.endOffset);
+                console.log(err);
+              });
+          }, 1000);
+        })
   );
 
   const newData = {
@@ -84,7 +127,39 @@ export default function SeatList() {
     return $.delete(
       `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
       reservationInfo.reservationId
-    );
+    )
+      .then(() => {
+        setCheck(true);
+        setModalOpen(false);
+      })
+      .catch((err) => {
+        setModalOpen(true);
+        setOffset(err.response.data.offset);
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
+
+        let interval = setInterval(() => {
+          $.get(
+            `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
+            {
+              headers: {
+                "KAFKA.UUID": err.response.data.uuid,
+                "KAFKA.PARTITION": err.response.data.partition,
+                "KAFKA.OFFSET": err.response.data.offset,
+              },
+            }
+          )
+            .then(() => {
+              setCheck(true);
+              setModalOpen(false);
+              clearInterval(interval);
+            })
+            .catch((err) => {
+              setCommittedOffset(err.response.data.committedOffset);
+              setEndOffset(err.response.data.endOffset);
+            });
+        }, 1000);
+      });
   };
 
   // 페이지 벗어날 시 이벤트 발생
@@ -119,7 +194,36 @@ export default function SeatList() {
 
   //API_POST 함수
   const res_post = () => {
-    return $.post(`/concert-service/api/v1/seat`, newData);
+    return $.post(`/concert-service/api/v1/seat`, newData)
+      .then(() => {
+        setCheck(true);
+        setModalOpen(false);
+      })
+      .catch((err) => {
+        setModalOpen(true);
+        setOffset(err.response.data.offset);
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
+
+        let interval = setInterval(() => {
+          $.get(`/concert-service/api/v1/seat`, {
+            headers: {
+              "KAFKA.UUID": err.response.data.uuid,
+              "KAFKA.PARTITION": err.response.data.partition,
+              "KAFKA.OFFSET": err.response.data.offset,
+            },
+          })
+            .then(() => {
+              setCheck(true);
+              setModalOpen(false);
+              clearInterval(interval);
+            })
+            .catch((err) => {
+              setCommittedOffset(err.response.data.committedOffset);
+              setEndOffset(err.response.data.endOffset);
+            });
+        }, 1000);
+      });
   };
 
   // 예매하기 클릭 시 이벤트 발생
@@ -364,6 +468,14 @@ export default function SeatList() {
             </div>
           </div>
         </div>
+      )}
+      {modalOpen && (
+        <Loading
+          setModalOpen={setModalOpen}
+          offset={offset}
+          committedOffset={committedOffset}
+          endOffset={endOffset}
+        />
       )}
     </>
   );
