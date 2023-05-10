@@ -35,7 +35,7 @@ function SuccessPage() {
       cid: "TC0ONETIME",
       tid: tid,
       partner_order_id: "1000",
-      partner_id: nickName,
+      partner_user_id: nickName,
       pg_token: pg_token,
     };
 

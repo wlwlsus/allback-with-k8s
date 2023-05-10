@@ -48,7 +48,7 @@ export default function MyPage() {
   const paymentData = {
     cid: "TC0ONETIME",
     partner_order_id: "1000",
-    partner_id: nickName,
+    partner_user_id: nickName,
     item_name: "포인트충전",
     quantity: 1,
     total_amount: 100000,
