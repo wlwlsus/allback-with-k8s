@@ -56,10 +56,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         return (exchange, chain) -> {
 
             // 콘서트 목록 조회 api는 대기열 시스템 거치지 않게 하기
-            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-            if (queryParams.containsKey("page")) {
-                return chain.filter(exchange);
-            }
+//            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+//            if (queryParams.containsKey("page")) {
+//                return chain.filter(exchange);
+//            }
 
             ServerHttpRequest request = exchange.getRequest();
 
@@ -75,7 +75,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 // TODO : 변경해야 됨
 //                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, uuid);
-                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, 2, null, uuid);
+                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, 3, null, uuid);
 
                 try {
                     SendResult<String, String> sendResult = send.get();
