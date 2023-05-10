@@ -17,7 +17,7 @@ export default function ConcertDetail() {
   );
 
   const onCheck = () => {
-    $.get(`/concert-service/api/v1seat/rest/${location.state.concertId}`).then(
+    $.get(`/concert-service/api/v1/seat/rest/${location.state.concertId}`).then(
       (res) => {
         if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
           alert("마감되었습니다. 다른 공연을 예매해주세요.");
