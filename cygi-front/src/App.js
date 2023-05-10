@@ -19,6 +19,7 @@ function App() {
   useEffect(() => {
     const listenBackEvent = () => {
       window.location.href = "http://allback.site/";
+      // window.location.href = "http://localhost:3000/";
     };
     const historyEvent = history.listen(({ action }) => {
       if (action === "POP") {
