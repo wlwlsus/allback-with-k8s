@@ -5,7 +5,7 @@ import logo from "img/logo.png";
 import { useRecoilState } from "recoil";
 import {
   userId,
-  userRole,
+  userAuth,
   userNick,
   userPoint,
   createdTime,
@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 export default function Header() {
   const navigate = useNavigate();
   const [id, setId] = useRecoilState(userId);
-  const [role, setRole] = useRecoilState(userRole);
+  const [auth, setAuth] = useRecoilState(userAuth);
   const [nickName, setNickName] = useRecoilState(userNick);
   const [point, setPoint] = useRecoilState(userPoint);
 
@@ -29,23 +29,32 @@ export default function Header() {
   );
 
   // API_POST 함수
-  const res_put = () => {
-    return $.put("/user/logout", {
-      accessToken: sessionStorage.getItem("accessToken"),
-      refreshToken: sessionStorage.getItem("refreshToken"),
-    });
-  };
+  // const res_put = () => {
+  //   return $.put("/user/logout", {
+  //     accessToken: sessionStorage.getItem("accessToken"),
+  //     refreshToken: sessionStorage.getItem("refreshToken"),
+  //   });
+  // };
 
   // 로그아웃 함수
-  const { mutate: onLogout } = useMutation(res_put, {
-    onSuccess: () => {
-      sessionStorage.clear();
-      setId("");
-      setRole("");
-      setNickName("");
-      navigate("../");
-    },
-  });
+  // const { mutate: onLogout } = useMutation(res_put, {
+  //   onSuccess: () => {
+  //     sessionStorage.clear();
+  //     setId("");
+  //     setAuth("");
+  //     setNickName("");
+  //     navigate("../");
+  //   },
+  // });
+
+  // 로그아웃 함수(back 통신 X)
+  const onLogout2 = () => {
+    sessionStorage.clear();
+    setId("");
+    setAuth("");
+    setNickName("");
+    navigate("/");
+  };
 
   useEffect(() => {
     if (!isLoading) setPoint(pointData.data);
@@ -53,7 +62,7 @@ export default function Header() {
 
   return (
     <>
-      {!isLoading && userId === "kjskjs356@naver.com" && (
+      {!isLoading && userAuth === "ROLE_USER" && (
         <div className={style.header_admin}>
           <div>
             <div
@@ -110,7 +119,7 @@ export default function Header() {
           </div>
         </div>
       )}
-      {!isLoading && userId !== "kjskjs356@naver.com" && (
+      {!isLoading && userAuth !== "ROLE_USER" && (
         <div className={style.header_user}>
           <div>
             <div
@@ -135,7 +144,7 @@ export default function Header() {
               마이페이지
             </div>
             <div className={style.user_point}>{point}원</div>
-            <div className={style.user_logout} onClick={() => onLogout()}>
+            <div className={style.user_logout} onClick={() => onLogout2()}>
               로그아웃
             </div>
           </div>

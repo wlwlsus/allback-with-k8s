@@ -40,11 +40,7 @@ function SuccessPage() {
     };
 
     // 결제 승인 API를 호출합니다.
-    axios
-      .post(
-        `http://allback.site:8080/payment-service/api/v1/reservation/approve/${id}`,
-        data
-      )
+    $.post(`/payment-service/api/v1/reservation/approve/${id}`, data)
       .then((response) => {
         if (response.status === 200) {
           // 결제 승인 성공 처리

@@ -9,8 +9,8 @@ export const userId = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const userRole = atom({
-  key: "userRole",
+export const userAuth = atom({
+  key: "userAuth",
   default: "",
   effects_UNSTABLE: [persistAtom],
 });

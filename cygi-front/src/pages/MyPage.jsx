@@ -59,13 +59,9 @@ export default function MyPage() {
   };
 
   const preparePayment = async (paymentData) => {
-    const headers = {
-      "Content-Type": "application/json; charset=UTF-8",
-    };
-    const response = await axios.post(
-      "http://allback.site:8080/payment-service/api/v1/reservation/charge",
-      paymentData,
-      { headers }
+    const response = await $.post(
+      "/payment-service/api/v1/reservation/charge",
+      paymentData
     );
 
     if (response.status === 200) {
