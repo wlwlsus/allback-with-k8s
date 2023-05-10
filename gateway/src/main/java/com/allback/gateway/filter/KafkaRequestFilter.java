@@ -56,10 +56,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         return (exchange, chain) -> {
 
             // 콘서트 목록 조회 api는 대기열 시스템 거치지 않게 하기
-//            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-//            if (queryParams.containsKey("page")) {
-//                return chain.filter(exchange);
-//            }
+            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+            if (queryParams.containsKey("page")) {
+                return chain.filter(exchange);
+            }
 
             ServerHttpRequest request = exchange.getRequest();
 
