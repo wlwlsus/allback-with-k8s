@@ -1,5 +1,6 @@
 package com.allback.cygiadmin.client;
 
+import com.allback.cygiadmin.dto.response.ReservationListResDto;
 import com.allback.cygiadmin.dto.response.ReservationResDto;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,5 +18,5 @@ import java.util.List;
 @Component
 public interface PaymentServerClient {
     @GetMapping("/reservations")
-    ResponseEntity<List<ReservationResDto>> getReservations(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
+    ResponseEntity<ReservationListResDto> getReservations(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
 }
