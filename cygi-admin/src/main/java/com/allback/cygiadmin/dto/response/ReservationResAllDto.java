@@ -8,11 +8,12 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationResDto {
+public class ReservationResAllDto {
     private long reservationId;
     private String title;
     private String status;
     private int price;
     private String seat;
     private String modifiedDate;
+    private long userId;
 }

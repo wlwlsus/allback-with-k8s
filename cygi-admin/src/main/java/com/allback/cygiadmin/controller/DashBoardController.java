@@ -1,7 +1,7 @@
 package com.allback.cygiadmin.controller;
 
 import com.allback.cygiadmin.dto.response.BalanceResDto;
-import com.allback.cygiadmin.dto.response.ReservationResDto;
+import com.allback.cygiadmin.dto.response.ReservationListResAllDto;
 import com.allback.cygiadmin.dto.response.UserResDto;
 import com.allback.cygiadmin.service.DashBoardServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,9 +33,9 @@ public class DashBoardController {
     }
     @Operation(summary = "전체 예매내역 조회")
     @GetMapping("/reservation")
-    public ResponseEntity<List<ReservationResDto>> getReservations(@RequestParam int page, @RequestParam int size, @Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam int page, @RequestParam int size, @Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
 //        System.out.println("예매 내역 조회 Controller");
-        List<ReservationResDto> reservationResDtoPage = dashBoardService.getReservations(page, size, authorization);
+        ReservationListResAllDto reservationResDtoPage = dashBoardService.getReservations(page, size, authorization);
         return new ResponseEntity<>(reservationResDtoPage, HttpStatus.OK);
     }
     @Operation(summary = "정산 내역 조회")
