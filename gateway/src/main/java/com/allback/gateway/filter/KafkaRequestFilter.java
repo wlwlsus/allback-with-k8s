@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -29,6 +31,8 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaRequestFilter.Config> {
+
+    private static final Logger logger = LoggerFactory.getLogger(KafkaRequestFilter.class);
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String topic = "concert-req";
     @Value("${kafka.bootstrap-servers}")
@@ -110,10 +114,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // Consumer가 마지막으로 읽은 레코드의 Offset 값 알아내기
             long committedOffset = getCommittedOffset(partition);
             long endOffset = getEndOffset(partition);
-            System.out.println("header :::: " + request.getHeaders().get("KAFKA.OFFSET"));
-            System.out.println("committedOffset :::: " + committedOffset);
-            System.out.println("endOffset :::: " + endOffset);
-            System.out.println("offset :::: " + offset);
+            logger.info("[header] " + request.getHeaders().get("KAFKA.OFFSET"));
+            logger.info("[committedOffset] " + committedOffset);
+            logger.info("[endOffset] " + endOffset);
+            logger.info("[offset] " + offset);
 
 
             // 대기열이 있다면 -> 토큰 반환하고 끝내기
