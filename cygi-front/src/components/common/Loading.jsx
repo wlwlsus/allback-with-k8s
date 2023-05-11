@@ -8,6 +8,7 @@ export default function Loading({
   offset,
   committedOffset,
   endOffset,
+  interval,
 }) {
   const navigate = useNavigate();
   return (
@@ -27,7 +28,14 @@ export default function Loading({
       <span className={style.warning}>
         ※재접속 시, 대기시간이 더 길어집니다.
       </span>
-      <button className={style.btn} onClick={() => navigate("/home")}>
+      <button
+        className={style.btn}
+        onClick={() => {
+          setModalOpen(false);
+          clearInterval(interval);
+          console.log("모달 종료");
+        }}
+      >
         요청중지
       </button>
     </div>

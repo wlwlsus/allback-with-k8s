@@ -30,7 +30,7 @@
 }
 
 .header_right_admin {
-  width: 70%;
+  width: 40%;
   display: flex;
   justify-content: space-evenly;
 }
@@ -77,7 +77,7 @@
 }
 
 .header_right_user {
-  width: 30%;
+  width: 50%;
   display: flex;
   justify-content: space-evenly;
   font-size: 1.3em;

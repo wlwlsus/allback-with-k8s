@@ -92,6 +92,10 @@ export default function MyPage() {
   //   return historyEvent;
   // }, []);
 
+  useEffect(() => {
+    if (!isLoading) console.log(data);
+  }, [isLoading]);
+
   return (
     <div className={style.container}>
       <SubHeader />
@@ -133,7 +137,7 @@ export default function MyPage() {
               <div className={style.cancel}>예약 취소</div>
             </div>
             {!isLoading &&
-              data.data.result.map((content) => {
+              data.data.reservationResAllDtoPage.map((content) => {
                 let date =
                   content.modifiedDate.slice(0, 4) +
                   "." +

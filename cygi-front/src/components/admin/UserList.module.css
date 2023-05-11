@@ -22,8 +22,20 @@
 .user_header {
   background-color: #d3d1d1;
   display: grid;
-  grid-template-columns: 20% 20% 35% 25%;
+  grid-template-columns: 30% 20% 30% 24%;
   text-align: center;
   align-items: center;
   font-size: 1.2em;
+  font-weight: bold;
+  font-weight: bold;
+}
+
+.user_body {
+  background-color: #e9e7e7;
+  display: grid;
+  grid-template-columns: 30% 20% 30% 25%;
+  text-align: center;
+  align-items: center;
+  font-size: 1.2em;
+  padding: 10px;
 }

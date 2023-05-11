@@ -37,6 +37,9 @@ export default function SeatList() {
   // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
 
+  // 대기열 체크용 함수
+  let interval;
+
   // API_PUT 함수
   const res_put = () => {
     return $.put(
@@ -94,7 +97,7 @@ export default function SeatList() {
           setCommittedOffset(err.response.data.committedOffset);
           setEndOffset(err.response.data.endOffset);
 
-          let interval = setInterval(() => {
+          interval = setInterval(() => {
             $.get(`/concert-service/api/v1/seat/${location.state.concertId}`, {
               headers: {
                 "KAFKA.UUID": err.response.data.uuid,
@@ -106,7 +109,6 @@ export default function SeatList() {
                 setCheck(true);
                 setData(res);
                 setModalOpen(false);
-                clearInterval(interval);
               })
               .catch((err) => {
                 setCommittedOffset(err.response.data.committedOffset);
@@ -123,7 +125,7 @@ export default function SeatList() {
   };
 
   // API_DELETE 함수
-  const res_delete = () => {
+  const onDelete = () => {
     return $.delete(
       `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
       reservationInfo.reservationId
@@ -138,7 +140,7 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        let interval = setInterval(() => {
+        interval = setInterval(() => {
           $.get(
             `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
             {
@@ -152,7 +154,6 @@ export default function SeatList() {
             .then(() => {
               setCheck(true);
               setModalOpen(false);
-              clearInterval(interval);
             })
             .catch((err) => {
               setCommittedOffset(err.response.data.committedOffset);
@@ -161,9 +162,6 @@ export default function SeatList() {
         }, 1000);
       });
   };
-
-  // 페이지 벗어날 시 이벤트 발생
-  const { mutate: onDelete } = useMutation(res_delete);
 
   const handleBeforeUnload = (e) => {
     e.preventDefault();
@@ -193,11 +191,19 @@ export default function SeatList() {
   }, []);
 
   //API_POST 함수
-  const res_post = () => {
+  const onSelect = () => {
     return $.post(`/concert-service/api/v1/seat`, newData)
-      .then(() => {
+      .then((res) => {
         setCheck(true);
         setModalOpen(false);
+        setIsreserve(true);
+        setReservationInfo({
+          title: location.state.title,
+          reservationId: res.data,
+          seat: seat,
+          price: location.state.price,
+          date: location.state.endDate,
+        });
       })
       .catch((err) => {
         setModalOpen(true);
@@ -227,18 +233,18 @@ export default function SeatList() {
   };
 
   // 예매하기 클릭 시 이벤트 발생
-  const { mutate: onSelect } = useMutation(res_post, {
-    onSuccess: (res) => {
-      setIsreserve(true);
-      setReservationInfo({
-        title: location.state.title,
-        reservationId: res.data,
-        seat: seat,
-        price: location.state.price,
-        date: location.state.endDate,
-      });
-    },
-  });
+  // const { mutate } = useMutation(res_post, {
+  //   onSuccess: (res) => {
+  //     setIsreserve(true);
+  //     setReservationInfo({
+  //       title: location.state.title,
+  //       reservationId: res.data,
+  //       seat: seat,
+  //       price: location.state.price,
+  //       date: location.state.endDate,
+  //     });
+  //   },
+  // });
 
   const rowNo = [
     "",
@@ -263,16 +269,6 @@ export default function SeatList() {
     "S",
     "T",
   ];
-
-  const onClickBtn = (e) => {
-    if (e === "point") {
-      if (isKakaoBtn) setIsKakaoBtn(false);
-      setIsPointBtn(!isPointBtn);
-    } else {
-      if (isPointBtn) setIsPointBtn(false);
-      setIsKakaoBtn(!isKakaoBtn);
-    }
-  };
 
   const onClicked = (e) => {
     if (e === seat) setSeat();
@@ -353,6 +349,12 @@ export default function SeatList() {
       setRows(data.data.row);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!modalOpen) {
+      clearInterval(interval);
+    }
+  }, [modalOpen]);
 
   return (
     <>

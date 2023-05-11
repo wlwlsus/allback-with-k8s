@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import style from "./ConcertDetail.module.css";
 import PosterBackground from "img/poster.png";
@@ -19,8 +19,12 @@ export default function ConcertDetail() {
   const [offset, setOffset] = useState();
   const [committedOffset, setCommittedOffset] = useState();
   const [endOffset, setEndOffset] = useState();
+  const [onoff, setOnoff] = useState(false);
 
   let nowTime = new Date();
+
+  // 대기열 체크용 함수
+  let interval;
 
   // 공연정보 조회(트래픽 많을 경우 대기열 생성)
   const { isLoading } = useQuery([`concert_${location.state.concertId}`], () =>
@@ -37,10 +41,7 @@ export default function ConcertDetail() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        if (check) {
-          console.log("재요청 성공");
-        }
-        let interval = setInterval(() => {
+        interval = setInterval(() => {
           console.log("재요정 감지");
           $.get(`/concert-service/api/v1/concert/${location.state.concertId}`, {
             headers: {
@@ -55,7 +56,6 @@ export default function ConcertDetail() {
               console.log(res.data);
               setData(res);
               setModalOpen(false);
-              clearInterval(interval);
             })
             .catch((err) => {
               setCommittedOffset(err.response.data.committedOffset);
@@ -85,7 +85,7 @@ export default function ConcertDetail() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        let interval = setInterval(() => {
+        interval = setInterval(() => {
           $.get(
             `/concert-service/api/v1/seat/rest/${location.state.concertId}`,
             {
@@ -108,7 +108,6 @@ export default function ConcertDetail() {
               } else {
                 onSelect(data.data.concertId);
               }
-              clearInterval(interval);
             })
             .catch((err) => {
               setCommittedOffset(err.response.data.committedOffset);
@@ -130,6 +129,14 @@ export default function ConcertDetail() {
       },
     });
   };
+
+  useEffect(() => {
+    if (!modalOpen) {
+      console.log(interval);
+      clearInterval(interval);
+      navigate("../../");
+    }
+  }, [modalOpen]);
 
   return (
     <>
@@ -199,9 +206,11 @@ export default function ConcertDetail() {
       {modalOpen && (
         <Loading
           setModalOpen={setModalOpen}
+          setOnoff={setOnoff}
           offset={offset}
           committedOffset={committedOffset}
           endOffset={endOffset}
+          interval={interval}
         />
       )}
     </>

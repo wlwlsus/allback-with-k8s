@@ -22,8 +22,19 @@
 .reservation_header {
   background-color: #d3d1d1;
   display: grid;
-  grid-template-columns: 40% 15% 15% 15% 15%;
+  grid-template-columns: 35% 15% 15% 15% 15%;
   text-align: center;
   align-items: center;
   font-size: 1.2em;
+  font-weight: bold;
+}
+
+.reservation_body {
+  background-color: #e9e7e7;
+  display: grid;
+  grid-template-columns: 35% 15% 15% 15% 15%;
+  text-align: center;
+  align-items: center;
+  font-size: 1.2em;
+  padding: 10px;
 }
