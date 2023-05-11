@@ -1,6 +1,7 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.dto.request.ReservationFillReqDto;
+import com.allback.cygipayment.dto.response.ReservationListResAllDto;
 import com.allback.cygipayment.dto.response.ReservationListResDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import org.springframework.data.domain.Pageable;
@@ -21,5 +22,5 @@ public interface ReservationService {
 
 	void reserve(long reservationId, ReservationFillReqDto reservationFillReqDto);
 
-	ReservationListResDto getAllReservations(Pageable pageable);
+	ReservationListResAllDto getAllReservations(Pageable pageable);
 }
