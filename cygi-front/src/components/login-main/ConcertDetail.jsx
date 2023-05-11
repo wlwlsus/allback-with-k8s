@@ -132,13 +132,13 @@ export default function ConcertDetail() {
     });
   };
 
-  useEffect(() => {
-    if (!modalOpen) {
-      console.log(interval);
-      clearInterval(interval);
-      navigate("../../");
-    }
-  }, [modalOpen]);
+  // useEffect(() => {
+  //   if (!modalOpen) {
+  //     console.log(interval);
+  //     clearInterval(interval);
+  //     navigate("../../");
+  //   }
+  // }, [modalOpen]);
 
   return (
     <>
