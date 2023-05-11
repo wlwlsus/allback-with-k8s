@@ -6,6 +6,7 @@ import com.allback.cygipayment.dto.request.KakaoPayReqDto;
 import com.allback.cygipayment.dto.request.ReservationFillReqDto;
 import com.allback.cygipayment.dto.response.KakaoPayApproveResDto;
 import com.allback.cygipayment.dto.response.KakaoPayResDto;
+import com.allback.cygipayment.dto.response.ReservationListResDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.service.KakaoPayService;
 import com.allback.cygipayment.service.ReservationService;
@@ -46,7 +47,7 @@ public class ReservationController {
 			@RequestParam
 			int page
 	) {
-		List<ReservationResDto> res = reservationService.getReservationList(userId, pageable);
+		ReservationListResDto res = reservationService.getReservationList(userId, pageable);
 		log.info("예약 목록 조회 데이터 : {}", res);
 		return Response.makeResponse(HttpStatus.OK, "유저 예약 목록 조회 성공", res);
 	}
