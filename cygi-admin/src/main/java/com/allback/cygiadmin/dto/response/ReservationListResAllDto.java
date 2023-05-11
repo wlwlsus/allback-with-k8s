@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
-public class ReservationListResDto {
+public class ReservationListResAllDto {
 
     private int totalPages;
-    private List<ReservationResDto> reservationResDtoPage;
+    private List<ReservationResAllDto> reservationResAllDtoPage;
 }

@@ -3,8 +3,7 @@ package com.allback.cygiadmin.service;
 import com.allback.cygiadmin.client.PaymentServerClient;
 import com.allback.cygiadmin.client.UserServerClient;
 import com.allback.cygiadmin.dto.response.BalanceResDto;
-import com.allback.cygiadmin.dto.response.ReservationListResDto;
-import com.allback.cygiadmin.dto.response.ReservationResDto;
+import com.allback.cygiadmin.dto.response.ReservationListResAllDto;
 import com.allback.cygiadmin.dto.response.UserResDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public class DashBoardServiceImpl implements DashBoardService {
     }
 
     @Override
-    public ReservationListResDto getReservations(int page, int size, String authorization) {
+    public ReservationListResAllDto getReservations(int page, int size, String authorization) {
 //        System.out.println("dashboard impl get reservations");
 //        System.out.println(paymentServerClient.getReservations());
         return paymentServerClient.getReservations(page, size, authorization).getBody();
