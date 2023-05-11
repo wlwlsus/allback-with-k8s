@@ -62,7 +62,7 @@ export default function Header() {
 
   return (
     <>
-      {!isLoading && userAuth === "ROLE_USER" && (
+      {!isLoading && auth !== "ROLE_USER" && (
         <div className={style.header_admin}>
           <div>
             <div
@@ -77,49 +77,20 @@ export default function Header() {
           </div>
           <div className={style.header_right_admin}>
             <div
-              className={style.nologin}
-              onClick={() => {
-                navigate("../login");
-              }}
-            >
-              비로그인 메인페이지 {id}
-            </div>
-            <div
-              className={style.login}
-              onClick={() => {
-                navigate("../home");
-              }}
-            >
-              로그인 메인페이지
-            </div>
-            <div
-              className={style.mypage}
-              onClick={() => {
-                navigate("../mypage");
-              }}
-            >
-              유저 마이페이지
-            </div>
-            <div
               className={style.admin}
               onClick={() => {
-                navigate("../admin/total");
+                navigate("admin/total");
               }}
             >
               관리자페이지
             </div>
-            <div
-              className={style.loading}
-              onClick={() => {
-                navigate("../loading");
-              }}
-            >
-              로딩스피너 확인용
+            <div className={style.user_logout} onClick={() => onLogout2()}>
+              로그아웃
             </div>
           </div>
         </div>
       )}
-      {!isLoading && userAuth !== "ROLE_USER" && (
+      {!isLoading && auth === "ROLE_USER" && (
         <div className={style.header_user}>
           <div>
             <div
@@ -139,7 +110,6 @@ export default function Header() {
               onClick={() => {
                 navigate("../mypage");
               }}
-              k
             >
               마이페이지
             </div>

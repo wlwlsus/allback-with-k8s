@@ -3,9 +3,11 @@
   width: 800px;
   height: 500px;
   border: 1px solid black;
+  background-color: white;
   border-radius: 20px;
+  z-index: 99;
   top: 20%;
-  left: 10%;
+  left: 30%;
   text-align: center;
 }
 
@@ -24,6 +26,18 @@
   white-space: pre-line;
   font-size: 1.2em;
   margin-bottom: 5%;
+}
+
+.prev_cnt {
+  color: #0000ff;
+  text-decoration: underline;
+  font-size: 1.3em;
+}
+
+.next_cnt {
+  color: #eb7c7c;
+  text-decoration: underline;
+  font-size: 1.3em;
 }
 
 .warning {

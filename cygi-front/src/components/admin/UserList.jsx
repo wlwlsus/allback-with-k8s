@@ -1,12 +1,12 @@
 import React from "react";
 import style from "./UserList.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $ } from "util/axios";
+import { $_admin } from "util/axios";
 
 export default function UserList() {
   // 사용자 목록 조회
-  const { isLoading, data } = useQuery(["user"], () =>
-    $.get(`/dashboard/user`)
+  const { data: user } = useQuery(["user"], () =>
+    $_admin.get(`/dashboard/user?page=${1}`)
   );
 
   return (
@@ -19,8 +19,32 @@ export default function UserList() {
           <div className={style.user_id}>아이디</div>
           <div className={style.nickname}>닉네임</div>
           <div className={style.signup_date}>가입일</div>
-          <div className={style.role}>역할</div>
+          <div className={style.role}>권한</div>
         </div>
+        {user &&
+          user.data.content.map((content) => {
+            let date =
+              content.createDate.slice(0, 4) +
+              "." +
+              content.createDate.slice(5, 7) +
+              "." +
+              content.createDate.slice(8, 10) +
+              "." +
+              content.createDate.slice(11, 13) +
+              ":" +
+              content.createDate.slice(14, 16) +
+              "";
+            return (
+              <div className={style.user_body} key={content.uuid}>
+                <div className={style.user_id}>{content.email}</div>
+                <div className={style.nickname}>{content.nickname}</div>
+                <div className={style.signup_date}>{date}</div>
+                <div className={style.role}>
+                  {content.role === "ROLE_USER" ? "일반" : "관리자"}
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
