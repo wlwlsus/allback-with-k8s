@@ -1,5 +1,7 @@
 package com.allback.cygipayment.controller;
 
+import com.allback.cygipayment.dto.response.ReservationListResAllDto;
+import com.allback.cygipayment.dto.response.ReservationListResDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.service.ReservationService;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,7 +27,7 @@ public class AdminResponseController {
   private final ReservationService reservationService;
 
   @GetMapping("/reservations")
-  ResponseEntity<List<ReservationResDto>> getReservations(
+  ResponseEntity<ReservationListResAllDto> getReservations(
       @Schema(hidden = true)
       Pageable pageable,
       @Schema(description = "페이지 별 개수", example = "10")
@@ -36,7 +38,7 @@ public class AdminResponseController {
       int page
   ) {
     System.out.println("reservations 진입");
-    List<ReservationResDto> resPage = reservationService.getAllReservations(pageable);
+    ReservationListResAllDto resPage = reservationService.getAllReservations(pageable);
     return ResponseEntity.status(HttpStatus.OK).body(resPage);
   }
 }
