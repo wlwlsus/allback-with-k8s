@@ -4,6 +4,9 @@ import com.allback.cygipayment.client.ConcertServerClient;
 import com.allback.cygipayment.client.UserServerClient;
 import com.allback.cygipayment.dto.request.AmountReqDto;
 import com.allback.cygipayment.dto.request.ReservationFillReqDto;
+import com.allback.cygipayment.dto.response.ReservationListResAllDto;
+import com.allback.cygipayment.dto.response.ReservationListResDto;
+import com.allback.cygipayment.dto.response.ReservationResAllDto;
 import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.entity.Reservation;
 import com.allback.cygipayment.mapper.ReservationMapper;
@@ -14,11 +17,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,9 +52,36 @@ public class ReservationServiceImpl implements ReservationService {
   private static final String RESERVE_MESSAGE = "예약완료";
 
   @Override
-  public List<ReservationResDto> getReservationList(long userId, Pageable pageable) {
-    List<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable).getContent();
-    return getReservationResDtoList(reservationPage);
+  public ReservationListResDto getReservationList(long userId, Pageable pageable) {
+    Page<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable);
+    int totalPages = reservationPage.getTotalPages();
+    List<ReservationResDto> reservationResDtoPage = getReservationResDtoList(reservationPage.getContent());
+
+    ReservationListResDto reservationListResDto = ReservationListResDto.builder()
+            .totalPages(totalPages)
+            .reservationResDtoPage(reservationResDtoPage)
+            .build();
+
+    return reservationListResDto;
+  }
+
+  @Override
+  public ReservationListResAllDto getAllReservations(Pageable pageable) {
+
+    // 정렬
+    Sort sort = Sort.by(Sort.Direction.DESC, "modifiedDate");
+    pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+    Page<Reservation> reservationPage = reservationRepository.findAllBy(pageable);
+    int totalPages = reservationPage.getTotalPages();
+    List<ReservationResAllDto> reservationResAllDtoPage = getReservationResAllDtoList(reservationPage.getContent());
+
+    ReservationListResAllDto reservationListResDto = ReservationListResAllDto.builder()
+            .totalPages(totalPages)
+            .reservationResAllDtoPage(reservationResAllDtoPage)
+            .build();
+
+    return reservationListResDto;
   }
 
   private List<ReservationResDto> getReservationResDtoList(List<Reservation> reservationPage) {
@@ -70,6 +102,32 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
           })
           .collect(Collectors.toList());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      throw new BaseException(ErrorMessage.ALREADY_RESERVE);
+    }
+    return data;
+  }
+
+  private List<ReservationResAllDto> getReservationResAllDtoList(List<Reservation> reservationPage) {
+    List<ReservationResAllDto> data;
+    try {
+      CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+      data = reservationPage.stream()
+              .map(reservation -> {
+                String concert = circuitBreaker.run(() -> concertServerClient.getConcertTitle(reservation.getConcertId()).getBody(),
+                        throwable -> "Wait..");
+                return ReservationResAllDto.builder()
+                        .reservationId(reservation.getReservationId())
+                        .title(concert)
+                        .status(reservation.getStatus())
+                        .price(reservation.getPrice())
+                        .seat(reservation.getSeat())
+                        .modifiedDate(String.valueOf(reservation.getModifiedDate()))
+                        .userId(reservation.getUserId())
+                        .build();
+              })
+              .collect(Collectors.toList());
     } catch (Exception ex) {
       ex.printStackTrace();
       throw new BaseException(ErrorMessage.ALREADY_RESERVE);
@@ -131,9 +189,4 @@ public class ReservationServiceImpl implements ReservationService {
     reservationRepository.save(reservation);
   }
 
-  @Override
-  public List<ReservationResDto> getAllReservations(Pageable pageable) {
-    List<Reservation> reservationPage = reservationRepository.findAllBy(pageable).getContent();
-    return getReservationResDtoList(reservationPage);
-  }
 }

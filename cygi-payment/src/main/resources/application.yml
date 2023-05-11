@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /api/v1
 spring:
+  profiles:
+    active: default
   application:
     name: payment-service
   jpa:
