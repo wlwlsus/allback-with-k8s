@@ -1,4 +1,4 @@
-package com.allback.cygiadmin.sevice;
+package com.allback.cygiadmin.service;
 
 import com.allback.cygiadmin.dto.response.TokenResDto;
 import lombok.RequiredArgsConstructor;

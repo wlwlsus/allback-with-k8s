@@ -1,4 +1,4 @@
-package com.allback.cygiadmin.sevice;
+package com.allback.cygiadmin.service;
 
 import com.allback.cygiadmin.dto.response.BalanceResDto;
 import com.allback.cygiadmin.dto.response.ReservationResDto;
@@ -10,9 +10,9 @@ import java.util.List;
 public interface DashBoardService {
 
 
-    Page<UserResDto> getUsers(int page);
+    Page<UserResDto> getUsers(int page, String authorization);
 
-    Page<ReservationResDto> getReservations(int page);
+    List<ReservationResDto> getReservations(int page, int size, String authorization);
 
-    List<BalanceResDto> getBalances();
+    List<BalanceResDto> getBalances(String authorization);
 }
