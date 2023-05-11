@@ -56,6 +56,7 @@ export default function ConcertDetail() {
               console.log(res.data);
               setData(res);
               setModalOpen(false);
+              clearInterval(interval);
             })
             .catch((err) => {
               setCommittedOffset(err.response.data.committedOffset);
@@ -99,6 +100,7 @@ export default function ConcertDetail() {
             .then((res) => {
               setCheck(true);
               setModalOpen(false);
+              clearInterval(interval);
               if (
                 res.data.rest === 0 ||
                 nowTime >= new Date(data.data.endDate)
