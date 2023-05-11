@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
 		Page<UserResDto> resPage = original.map(user -> UserResDto.builder()
 				.userId(user.getUserId())
-				.passbokId(user.getPassbookId())
+				.passbookId(user.getPassbookId())
 				.nickname(user.getNickname())
 				.email(user.getEmail())
 				.provider(user.getProviderType().name())

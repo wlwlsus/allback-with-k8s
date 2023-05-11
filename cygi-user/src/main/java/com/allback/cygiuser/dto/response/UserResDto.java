@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserResDto {
     private long userId;
-    private Passbook passbokId;
+    private Passbook passbookId;
     private String nickname;
     private String email;
     private RoleType role;
