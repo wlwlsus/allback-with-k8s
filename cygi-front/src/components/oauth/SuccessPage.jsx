@@ -3,9 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { userId, userNick, reservation, userPoint } from "util/store";
 import { $ } from "util/axios";
-import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
 function SuccessPage() {
   const location = useLocation();
@@ -15,11 +13,6 @@ function SuccessPage() {
   const nickName = useRecoilValue(userNick);
   const reservationInfo = useRecoilValue(reservation);
   const [point, setPoint] = useRecoilState(userPoint);
-
-  // 포인트 갱신용
-  const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
-    $.get(`/user-service/api/v1/user/point?id=${id}`)
-  );
 
   useEffect(() => {
     console.log(id, reservationInfo.price);
@@ -45,7 +38,7 @@ function SuccessPage() {
         if (response.status === 200) {
           // 결제 승인 성공 처리
           alert("충전이 완료되었습니다!");
-          $.get(`/user-service/api/v1/user/point?id=${id}`).then((res) => {
+          $.get(`/user-service/api/v1/user/point/${id}`).then((res) => {
             setPoint(res.data);
             window.location.href = "http://allback.site/mypage";
           });
