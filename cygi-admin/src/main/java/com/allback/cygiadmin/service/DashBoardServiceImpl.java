@@ -1,4 +1,4 @@
-package com.allback.cygiadmin.sevice;
+package com.allback.cygiadmin.service;
 
 import com.allback.cygiadmin.client.PaymentServerClient;
 import com.allback.cygiadmin.client.UserServerClient;
@@ -20,25 +20,26 @@ public class DashBoardServiceImpl implements DashBoardService {
 
     private final UserServerClient userServerClient;
     private final PaymentServerClient paymentServerClient;
+//    private final String authorization = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY4NTYzNDQ4OX0.NJMI5o7XlD2LCQ7FFbkQDiDnk2FghZ05lBtO_WNCeoo";
 
     @Override
-    public Page<UserResDto> getUsers(int page) {
+    public Page<UserResDto> getUsers(int page, String authorization) {
         System.out.println("dashboard impl get users");
-        Page<UserResDto> r = userServerClient.getUsers(page).getBody();
+        Page<UserResDto> r = userServerClient.getUsers(page, authorization).getBody();
         System.out.println("success!!!!!!!!!!!!!!!!!");
 //        System.out.println(userServerClient.getUsers());
         return r;
     }
 
     @Override
-    public Page<ReservationResDto> getReservations(int page) {
+    public List<ReservationResDto> getReservations(int page, int size, String authorization) {
 //        System.out.println("dashboard impl get reservations");
 //        System.out.println(paymentServerClient.getReservations());
-        return paymentServerClient.getReservations(page).getBody();
+        return paymentServerClient.getReservations(page, size, authorization).getBody();
     }
 
     @Override
-    public List<BalanceResDto> getBalances() {
+    public List<BalanceResDto> getBalances(String authorization) {
 //        System.out.println("dashboard impl get balances");
 //        System.out.println(paymentServerClient.getReservations());
         return null;
