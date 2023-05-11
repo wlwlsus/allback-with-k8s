@@ -21,7 +21,7 @@ import java.util.Map;
 public class UserResDto {
 
     private Long userId;
-    private Map<String, Object> passbokId;
+    private Map<String, Object> passbookId;
     private String nickname;
     private String email;
     private RoleType role;
