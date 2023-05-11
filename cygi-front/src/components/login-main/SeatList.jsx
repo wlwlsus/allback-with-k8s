@@ -352,11 +352,11 @@ export default function SeatList() {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    if (!modalOpen) {
-      clearInterval(interval);
-    }
-  }, [modalOpen]);
+  // useEffect(() => {
+  //   if (!modalOpen) {
+  //     clearInterval(interval);
+  //   }
+  // }, [modalOpen]);
 
   return (
     <>
