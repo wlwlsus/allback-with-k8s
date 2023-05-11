@@ -28,7 +28,7 @@ public class AdminResponseController {
         System.out.println("회원 전체 목록 반환 controller 진입");
         Page<UserResDto> resPage = userService.getAllUserInfo(page - 1);
 
-        return new ResponseEntity<Page<UserResDto>>(resPage, HttpStatus.OK);
+        return new ResponseEntity<>(resPage, HttpStatus.OK);
 
     }
 }
