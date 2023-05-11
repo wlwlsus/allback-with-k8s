@@ -3,16 +3,12 @@ import SubHeader from "../components/common/SubHeader";
 import style from "./MyPage.module.css";
 import Profile from "img/profile.png";
 import KakaoPay from "img/payment_icon_yellow_small.png";
-import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { userId, userNick, createdTime, userPoint } from "../util/store";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { $ } from "util/axios";
-import { useNavigate } from "react-router-dom";
-import { history } from "components/login-main/history";
 
 export default function MyPage() {
-  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [reservationId, setReservationId] = useState();
 
@@ -92,10 +88,6 @@ export default function MyPage() {
   //   return historyEvent;
   // }, []);
 
-  useEffect(() => {
-    if (!isLoading) console.log(data);
-  }, [isLoading]);
-
   return (
     <div className={style.container}>
       <SubHeader />
@@ -137,7 +129,7 @@ export default function MyPage() {
               <div className={style.cancel}>예약 취소</div>
             </div>
             {!isLoading &&
-              data.data.reservationResAllDtoPage.map((content) => {
+              data.data.result.reservationResDtoPage.map((content) => {
                 let date =
                   content.modifiedDate.slice(0, 4) +
                   "." +

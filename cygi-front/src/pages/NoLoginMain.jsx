@@ -1,11 +1,8 @@
 import React from "react";
 import style from "./NoLoginMain.module.css";
 import Kakao from "img/kakao_login_medium_narrow.png";
-import { useNavigate } from "react-router-dom";
 
 export default function NoLoginMain() {
-  const navigate = useNavigate();
-
   const redirectUri = "http://allback.site/oauth/redirect";
   // const redirectUri = "http://localhost:3000/oauth/redirect";
 
