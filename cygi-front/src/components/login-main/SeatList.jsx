@@ -109,6 +109,7 @@ export default function SeatList() {
                 setCheck(true);
                 setData(res);
                 setModalOpen(false);
+                clearInterval(interval);
               })
               .catch((err) => {
                 setCommittedOffset(err.response.data.committedOffset);
@@ -154,6 +155,7 @@ export default function SeatList() {
             .then(() => {
               setCheck(true);
               setModalOpen(false);
+              clearInterval(interval);
             })
             .catch((err) => {
               setCommittedOffset(err.response.data.committedOffset);
