@@ -43,8 +43,11 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
-
-    await $.get(`/concert-service/api/v1/concert?page=${page}`).then((res) => {
+    await $.get(`/concert-service/api/v1/concert?page=${page}`, {
+      headers: {
+        "KAFKA.PASS": "pass",
+      },
+    }).then((res) => {
       setConcertList((prev) => [...prev, res.data]);
       setTimeout(() => {
         preventRef.current = true;

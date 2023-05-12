@@ -38,3 +38,12 @@ export const reservation = atom({
   default: { title: "", reservationId: 0, seat: "", price: 0, date: "" },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const kafka = atom({
+  key: "kafka",
+  default: {
+    uuid: "",
+    partition: 0,
+    offset: 0,
+  },
+});
