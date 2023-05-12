@@ -67,8 +67,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         }
 
         // 10초 대기 (일부러 성능 떨어뜨리기)
-//        Thread.sleep(5000);
-
+        Thread.sleep(5000);
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
@@ -78,10 +77,20 @@ public class KafkaInterceptor implements HandlerInterceptor {
         consumer.assign(Collections.singletonList(partition));
 
         // 레코드 읽어오기
-        // TODO : Offset 안 올라갈 때가 가끔 있음. 에러 해결해야됨
 //        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
-        long committedOffset = Long.parseLong(request.getHeader("KAFKA.OFFSET")) + 1;
+        Enumeration<String> headers = request.getHeaders("KAFKA.OFFSET");
+        long lastValue = -1;
+        while (headers.hasMoreElements()) {
+            String value = headers.nextElement();
+            if (value != null) {
+                lastValue = Long.parseLong(value);
+            }
+        }
+
+        long offset = lastValue;
+        long committedOffset = offset + 1;
+
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
 //        System.out.println("committedOffset :::: " + consumer.position(partition));
