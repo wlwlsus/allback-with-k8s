@@ -56,11 +56,9 @@ export default function ConcertDetail() {
         setEndOffset(err.response.data.endOffset);
         console.log(modalOpen);
 
-        if (modalOpen) {
-          setTimeout(() => {
-            onCheck2(err);
-          }, 1000);
-        }
+        setTimeout(() => {
+          onCheck2(err);
+        }, 1000);
       });
   };
 
@@ -87,11 +85,9 @@ export default function ConcertDetail() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        if (modalOpen) {
-          setTimeout(() => {
-            onCheck2(err);
-          }, [1000]);
-        }
+        setTimeout(() => {
+          onCheck2(err);
+        }, [1000]);
       });
   };
 
@@ -111,10 +107,6 @@ export default function ConcertDetail() {
   useEffect(() => {
     getConcert();
   }, []);
-
-  useEffect(() => {
-    console.log(modalOpen);
-  }, [modalOpen]);
 
   return (
     <>
