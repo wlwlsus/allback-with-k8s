@@ -40,7 +40,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-springdoc:
-  swagger-ui:
-    config-url: /payment-service/api/v1/v3/api-docs/swagger-config
-    url: /payment-service/api/v1/v3/api-docs
+#springdoc:
+#  swagger-ui:
+#    config-url: /payment-service/api/v1/v3/api-docs/swagger-config
+#    url: /payment-service/api/v1/v3/api-docs

@@ -1,8 +1,8 @@
 package com.allback.cygipayment.controller;
 
+import com.allback.cygipayment.dto.response.BalanceStateResDto;
 import com.allback.cygipayment.dto.response.ReservationListResAllDto;
-import com.allback.cygipayment.dto.response.ReservationListResDto;
-import com.allback.cygipayment.dto.response.ReservationResDto;
+import com.allback.cygipayment.service.BalanceServiceImpl;
 import com.allback.cygipayment.service.ReservationService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Tag(name = "server-admin", description = "관리자 서버와 통신하는 API")
 @RestController
 @RequestMapping("/server-admin")
@@ -25,6 +23,7 @@ import java.util.List;
 public class AdminResponseController {
 
   private final ReservationService reservationService;
+  private final BalanceServiceImpl balanceService;
 
   @GetMapping("/reservations")
   ResponseEntity<ReservationListResAllDto> getReservations(
@@ -40,5 +39,17 @@ public class AdminResponseController {
     System.out.println("reservations 진입");
     ReservationListResAllDto resPage = reservationService.getAllReservations(pageable);
     return ResponseEntity.status(HttpStatus.OK).body(resPage);
+  }
+  @GetMapping("/balances")
+  ResponseEntity<Page<BalanceStateResDto>> getBalances(
+      @Schema(description = "페이지", example = "0")
+      @RequestParam
+      int page,
+      @Schema(description = "페이지 별 개수", example = "10")
+      @RequestParam
+      int size
+  ) {
+      Page<BalanceStateResDto> balanceState = balanceService.getBalances(page, size);
+      return new ResponseEntity<>(balanceState, HttpStatus.OK);
   }
 }
