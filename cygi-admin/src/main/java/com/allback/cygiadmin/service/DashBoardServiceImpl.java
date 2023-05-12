@@ -39,9 +39,8 @@ public class DashBoardServiceImpl implements DashBoardService {
     }
 
     @Override
-    public List<BalanceResDto> getBalances(String authorization) {
-//        System.out.println("dashboard impl get balances");
-//        System.out.println(paymentServerClient.getReservations());
-        return null;
+    public Page<BalanceResDto> getBalances(int page, int size) {
+        log.info("[getBalances] : 정산내역조회");
+        return paymentServerClient.getBalances(page, size).getBody();
     }
 }

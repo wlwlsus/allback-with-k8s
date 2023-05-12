@@ -40,8 +40,8 @@ public class DashBoardController {
     }
     @Operation(summary = "정산 내역 조회")
     @GetMapping("/balance")
-    public ResponseEntity<List<BalanceResDto>> getBalances(@Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
-        List<BalanceResDto> balansceList = dashBoardService.getBalances(authorization);
-        return new ResponseEntity<>(balansceList, HttpStatus.OK);
+    public ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam int page, @RequestParam int size) {
+        Page<BalanceResDto> balanceList = dashBoardService.getBalances(page, size);
+        return new ResponseEntity<>(balanceList, HttpStatus.OK);
     }
 }
