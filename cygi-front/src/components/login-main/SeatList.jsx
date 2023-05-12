@@ -215,6 +215,8 @@ export default function SeatList() {
 
         let interval = setInterval(() => {
           $.get(`/concert-service/api/v1/seat`, {
+            concertId: location.state.concertId,
+            seat: seat,
             headers: {
               "KAFKA.UUID": err.response.data.uuid,
               "KAFKA.PARTITION": err.response.data.partition,
