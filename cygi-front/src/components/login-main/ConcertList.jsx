@@ -17,13 +17,14 @@ export default function ConcertList() {
 
   const obsRef = useRef(null); //observer Element
   const preventRef = useRef(true); //옵저버 중복 실행 방지
+  const endRef = useRef(null);
 
   const reservationInfo = useRecoilValue(reservation);
 
   useEffect(() => {
     //옵저버 생성
     const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 });
-    if (obsRef.current) observer.observe(obsRef.current);
+    if (obsRef.current) observer.observe(endRef.current);
     return () => {
       observer.disconnect();
     };
@@ -42,10 +43,13 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
+
     await $.get(`/concert-service/api/v1/concert?page=${page}`).then((res) => {
       setConcertList((prev) => [...prev, res.data]);
-      preventRef.current = true;
-      setLoad(false);
+      setTimeout(() => {
+        preventRef.current = true;
+        setLoad(false);
+      }, [500]);
     });
   }, [page]);
 
@@ -72,8 +76,8 @@ export default function ConcertList() {
       </div>
       <div className={style.container}>
         {concertList &&
-          concertList.map((contents) => {
-            return contents.map((content) => {
+          concertList.map((contents, idx1) => {
+            return contents.map((content, idx2) => {
               let date =
                 content.endDate.slice(2, 4) +
                 "/" +
@@ -124,12 +128,18 @@ export default function ConcertList() {
             });
           })}
       </div>
+      <div
+        ref={endRef}
+        className={!load ? style.blank : style.observer_hidden}
+      ></div>
       {load && (
-        <div>
-          <img className={style.loading} src={ListLoading} alt="" />
+        <div className={style.loading}>
+          <img className={style.loading_img} src={ListLoading} alt="" />
         </div>
       )}
-      <div ref={obsRef}>&nbsp;</div>
+      <div ref={obsRef} className={load ? style.observer_hidden : null}>
+        &nbsp;
+      </div>
     </div>
   );
 }
