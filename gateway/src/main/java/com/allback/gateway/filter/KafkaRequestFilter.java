@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -19,6 +22,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +33,11 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaRequestFilter.Config> {
+
+    private static final Logger logger = LoggerFactory.getLogger(KafkaRequestFilter.class);
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String topic = "concert-req";
+    private PriorityQueue<Long> priorityQueue = new PriorityQueue<>();
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -92,7 +99,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 headers.addAll(exchange.getRequest().getHeaders());
                 headers.add("KAFKA.UUID", uuid);
                 headers.add("KAFKA.PARTITION", Integer.toString(partition));
-                headers.add("KAFKA.OFFSET", Long.toString(offset));
+//                headers.add("KAFKA.OFFSET", Long.toString(offset));
 
                 // 변경된 header로 request를 갱신
                 ServerHttpRequest request2 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
@@ -110,13 +117,36 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // Consumer가 마지막으로 읽은 레코드의 Offset 값 알아내기
             long committedOffset = getCommittedOffset(partition);
             long endOffset = getEndOffset(partition);
-            System.out.println("header :::: " + request.getHeaders().get("KAFKA.OFFSET"));
-            System.out.println("committedOffset :::: " + committedOffset);
-            System.out.println("endOffset :::: " + endOffset);
-            System.out.println("offset :::: " + offset);
+            logger.info("[header] " + request.getHeaders().get("KAFKA.OFFSET"));
+            logger.info("[committedOffset] " + committedOffset);
+            logger.info("[endOffset] " + endOffset);
+            logger.info("[offset] " + offset);
 
+            // 대기 취소라면
+            if (request.getHeaders().containsKey("KAFKA.QUIT")) {
+
+                priorityQueue.add(offset);
+
+                // 응답 만들기
+                ServerHttpResponse response = exchange.getResponse();
+
+                // 200 상태 코드로 응답 설정
+                response.setStatusCode(HttpStatus.OK);
+
+                // 응답 본문에 메시지 설정
+                String message = "waiting is successfully canceled";
+                DataBuffer buffer = response.bufferFactory().wrap(message.getBytes());
+                return response.writeWith(Mono.just(buffer))
+                        .flatMap(Void -> Mono.error(new ResponseStatusException(HttpStatus.OK, message)));
+            }
 
             // 대기열이 있다면 -> 토큰 반환하고 끝내기
+            // committedOffset >= offset이어야 됨
+            while (priorityQueue.size() > 0 && offset > priorityQueue.peek()) {
+                priorityQueue.poll();
+                committedOffset++;
+            }
+
             if (committedOffset < offset) {
                 // 클라이언트에게 보낼 응답 생성
                 ServerHttpResponse response = exchange.getResponse();
@@ -146,9 +176,28 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // 대기열이 없다면 -> 요청 처리하기
             else {
+                while (priorityQueue.size() > 0 && offset <= endOffset && offset + 1 == priorityQueue.peek()) {
+                    System.out.println(offset + 1 + " record delete");
+                    offset++;
+                    priorityQueue.poll();
+                }
+
+                HttpHeaders headers3 = new HttpHeaders();
+                headers3.addAll(exchange.getRequest().getHeaders());
+                if (headers3.containsKey("KAFKA.OFFSET"))
+                    headers3.replace("KAFKA.OFFSET", Collections.singletonList(Long.toString(offset)));
+                else
+                    headers3.add("KAFKA.OFFSET", Long.toString(offset));
+
+                // 변경된 header로 request를 갱신
+                ServerHttpRequest request3 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers3)).build();
+                exchange = exchange.mutate().request(request3).build();
+
                 // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
                 //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
                 //  파티션 번호!
+
+                System.out.println("offset in header :::: " + exchange.getRequest().getHeaders().get("KAFKA.OFFSET"));
                 return chain.filter(exchange);
             }
         };
