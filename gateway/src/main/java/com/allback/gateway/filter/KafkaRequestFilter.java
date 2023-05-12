@@ -63,13 +63,12 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
 
-            // 콘서트 목록 조회 api는 대기열 시스템 거치지 않게 하기
-            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-            if (queryParams.containsKey("page")) {
+            ServerHttpRequest request = exchange.getRequest();
+
+            // 대기열을 거치지 않는 요청은 header에 'KAFKA.PASS'라는 key가 존재한다.
+            if (request.getHeaders().containsKey("KAFKA.PASS")) {
                 return chain.filter(exchange);
             }
-
-            ServerHttpRequest request = exchange.getRequest();
 
             String uuid = null;
             long offset;
