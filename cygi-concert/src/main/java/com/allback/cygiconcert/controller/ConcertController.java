@@ -3,6 +3,7 @@ package com.allback.cygiconcert.controller;
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
+import com.allback.cygiconcert.service.ConcertService;
 import com.allback.cygiconcert.service.ConcertServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ConcertController {
 
-    private final ConcertServiceImpl concertService;
+    private final ConcertService concertService;
 
     @Operation(summary = "공연 등록")
     @PostMapping("")
