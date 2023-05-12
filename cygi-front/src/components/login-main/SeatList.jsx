@@ -17,9 +17,6 @@ export default function SeatList() {
   const [cols, setCols] = useState();
   const [rows, setRows] = useState();
 
-  const [isPointBtn, setIsPointBtn] = useState(false);
-  const [isKakaoBtn, setIsKakaoBtn] = useState(false);
-
   const nickName = useRecoilValue(userNick);
   const id = useRecoilValue(userId);
   const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
@@ -27,6 +24,7 @@ export default function SeatList() {
 
   const [check, setCheck] = useState(false);
   const [data, setData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   // 대기열창 모달 & 순서 계산용 변수
   const [modalOpen, setModalOpen] = useState(false);
@@ -37,33 +35,67 @@ export default function SeatList() {
   // 좌석선택 페이지 or 예매화면 페이지 변환용 변수
   const [isreserve, setIsreserve] = useState(false);
 
-  // 대기열 체크용 함수
-  let interval;
-
-  // API_PUT 함수
-  const res_put = () => {
+  // 예약 API
+  const onReserve = () => {
     return $.put(
       `/payment-service/api/v1/reservation/${reservationInfo.reservationId}`,
       {
         userId: id,
         price: location.state.price,
       }
-    );
+    )
+      .then(() => {
+        navigate("../../../complete", {
+          state: {
+            title: location.state.title,
+            reservationId: reservationInfo.reservationId,
+            seat: seat,
+            price: location.state.price,
+            endDate: location.state.endDate,
+          },
+        });
+      })
+      .catch((err) => {
+        setModalOpen(true);
+        setOffset(err.response.data.offset);
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
+
+        setTimeout(() => {
+          onReserve2(err);
+        }, [1000]);
+      });
   };
 
-  const { mutate: onReserve } = useMutation(res_put, {
-    onSuccess: () => {
-      navigate("../../../complete", {
-        state: {
-          title: location.state.title,
-          reservationId: reservationInfo.reservationId,
-          seat: seat,
-          price: location.state.price,
-          endDate: location.state.endDate,
-        },
+  const onReserve2 = (val) => {
+    return $.put(
+      `/payment-service/api/v1/reservation/${reservationInfo.reservationId}`,
+      {
+        userId: id,
+        price: location.state.price,
+      }
+    )
+      .then(() => {
+        navigate("../../../complete", {
+          state: {
+            title: location.state.title,
+            reservationId: reservationInfo.reservationId,
+            seat: seat,
+            price: location.state.price,
+            endDate: location.state.endDate,
+          },
+        });
+      })
+      .catch((err) => {
+        setOffset(err.response.data.offset);
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
+
+        setTimeout(() => {
+          onReserve2(err);
+        }, [1000]);
       });
-    },
-  });
+  };
 
   const onPayCheck = () => {
     // 포인트 충분하면 결제
@@ -81,44 +113,19 @@ export default function SeatList() {
     }
   };
 
-  // 해당 공연장의 좌석 조회(트래픽 많을 경우 대기열 생성)
-  const { isLoading, refetch } = useQuery(
-    [`seat-list_${location.state.concertId}`],
-    () =>
-      $.get(`/concert-service/api/v1/seat/${location.state.concertId}`)
-        .then((res) => {
-          setCheck(true);
-          setData(res);
-          setModalOpen(false);
-        })
-        .catch((err) => {
-          setModalOpen(true);
-          setOffset(err.response.data.offset);
-          setCommittedOffset(err.response.data.committedOffset);
-          setEndOffset(err.response.data.endOffset);
-
-          interval = setInterval(() => {
-            $.get(`/concert-service/api/v1/seat/${location.state.concertId}`, {
-              headers: {
-                "KAFKA.UUID": err.response.data.uuid,
-                "KAFKA.PARTITION": err.response.data.partition,
-                "KAFKA.OFFSET": err.response.data.offset,
-              },
-            })
-              .then((res) => {
-                setCheck(true);
-                setData(res);
-                setModalOpen(false);
-                clearInterval(interval);
-              })
-              .catch((err) => {
-                setCommittedOffset(err.response.data.committedOffset);
-                setEndOffset(err.response.data.endOffset);
-                console.log(err);
-              });
-          }, 1000);
-        })
-  );
+  // 해당 공연장의 좌석 조회
+  const getSeat = () => {
+    setIsLoading(true);
+    $.get(`/concert-service/api/v1/seat/${location.state.concertId}`, {
+      headers: {
+        "KAFKA.PASS": "pass",
+      },
+    }).then((res) => {
+      setData(res);
+      console.log(res);
+      setIsLoading(false);
+    });
+  };
 
   const newData = {
     concertId: location.state.concertId,
@@ -132,7 +139,6 @@ export default function SeatList() {
       reservationInfo.reservationId
     )
       .then(() => {
-        setCheck(true);
         setModalOpen(false);
       })
       .catch((err) => {
@@ -141,62 +147,40 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        interval = setInterval(() => {
-          $.get(
-            `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
-            {
-              headers: {
-                "KAFKA.UUID": err.response.data.uuid,
-                "KAFKA.PARTITION": err.response.data.partition,
-                "KAFKA.OFFSET": err.response.data.offset,
-              },
-            }
-          )
-            .then(() => {
-              setCheck(true);
-              setModalOpen(false);
-              clearInterval(interval);
-            })
-            .catch((err) => {
-              setCommittedOffset(err.response.data.committedOffset);
-              setEndOffset(err.response.data.endOffset);
-            });
-        }, 1000);
+        setTimeout(() => {
+          onDelete2(err);
+        }, [1000]);
       });
   };
 
-  const handleBeforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = "";
-    onDelete();
-  };
-
-  // 뒤로가기 이벤트 감지
-  useEffect(() => {
-    const listenBackEvent = () => {
-      onDelete();
-      navigate("/");
-    };
-    const historyEvent = history.listen(({ action }) => {
-      if (action === "POP") {
-        listenBackEvent();
+  const onDelete2 = (val) => {
+    $.get(
+      `/concert-service/api/v1/seat/delete/${reservationInfo.reservationId}`,
+      {
+        headers: {
+          "KAFKA.UUID": val.response.data.uuid,
+          "KAFKA.PARTITION": val.response.data.partition,
+          "KAFKA.OFFSET": val.response.data.offset,
+        },
       }
-    });
-    return historyEvent;
-  }, []);
+    )
+      .then(() => {
+        setModalOpen(false);
+      })
+      .catch((err) => {
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+        setTimeout(() => {
+          onDelete2(err);
+        }, [1000]);
+      });
+  };
 
   //API_POST 함수
   const onSelect = () => {
     return $.post(`/concert-service/api/v1/seat`, newData)
       .then((res) => {
-        setCheck(true);
         setModalOpen(false);
         setIsreserve(true);
         setReservationInfo({
@@ -213,42 +197,40 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        let interval = setInterval(() => {
-          $.get(`/concert-service/api/v1/seat`, {
-            concertId: location.state.concertId,
-            seat: seat,
-            headers: {
-              "KAFKA.UUID": err.response.data.uuid,
-              "KAFKA.PARTITION": err.response.data.partition,
-              "KAFKA.OFFSET": err.response.data.offset,
-            },
-          })
-            .then(() => {
-              setCheck(true);
-              setModalOpen(false);
-              clearInterval(interval);
-            })
-            .catch((err) => {
-              setCommittedOffset(err.response.data.committedOffset);
-              setEndOffset(err.response.data.endOffset);
-            });
-        }, 1000);
+        setTimeout(() => {
+          onSelect2(err);
+        }, [1000]);
       });
   };
 
-  // 예매하기 클릭 시 이벤트 발생
-  // const { mutate } = useMutation(res_post, {
-  //   onSuccess: (res) => {
-  //     setIsreserve(true);
-  //     setReservationInfo({
-  //       title: location.state.title,
-  //       reservationId: res.data,
-  //       seat: seat,
-  //       price: location.state.price,
-  //       date: location.state.endDate,
-  //     });
-  //   },
-  // });
+  const onSelect2 = (val) => {
+    $.post(`/concert-service/api/v1/seat`, newData, {
+      headers: {
+        "KAFKA.UUID": val.response.data.uuid,
+        "KAFKA.PARTITION": val.response.data.partition,
+        "KAFKA.OFFSET": val.response.data.offset,
+      },
+    })
+      .then((res) => {
+        setModalOpen(false);
+        setIsreserve(true);
+        setReservationInfo({
+          title: location.state.title,
+          reservationId: res.data,
+          seat: seat,
+          price: location.state.price,
+          date: location.state.endDate,
+        });
+      })
+      .catch((err) => {
+        setCommittedOffset(err.response.data.committedOffset);
+        setEndOffset(err.response.data.endOffset);
+
+        setTimeout(() => {
+          onSelect2(err);
+        }, [1000]);
+      });
+  };
 
   const rowNo = [
     "",
@@ -337,7 +319,7 @@ export default function SeatList() {
       navigate("/home");
     }
     // 좌석 한번 더 갱신
-    refetch();
+    getSeat();
     const key = getKeyByValue(data.data.seatList, seat);
     if (key === undefined) {
       onSelect();
@@ -347,6 +329,33 @@ export default function SeatList() {
     }
   };
 
+  const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+    onDelete();
+  };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  // 뒤로가기 이벤트 감지
+  useEffect(() => {
+    const listenBackEvent = () => {
+      onDelete();
+      navigate("/");
+    };
+    const historyEvent = history.listen(({ action }) => {
+      if (action === "POP") {
+        listenBackEvent();
+      }
+    });
+    return historyEvent;
+  }, []);
+
   useEffect(() => {
     if (!isLoading) {
       setCols(data.data.col);
@@ -354,11 +363,9 @@ export default function SeatList() {
     }
   }, [isLoading]);
 
-  // useEffect(() => {
-  //   if (!modalOpen) {
-  //     clearInterval(interval);
-  //   }
-  // }, [modalOpen]);
+  useEffect(() => {
+    getSeat();
+  }, []);
 
   return (
     <>
@@ -369,11 +376,10 @@ export default function SeatList() {
             <div className={style.information}>
               <div className={style.name}>공연일</div>
               <div className={style.content}>
-                {location.state.endDate.slice(0, 4)}년&nbsp;
+                {location.state.endDate.slice(2, 4)}년&nbsp;
                 {location.state.endDate.slice(5, 7)}월&nbsp;
                 {location.state.endDate.slice(8, 10)}일&nbsp;
                 {location.state.endDate.slice(11, 13)}시&nbsp;
-                {location.state.endDate.slice(14, 16)}분&nbsp;
               </div>
               <div className={style.name}>공연장소</div>
               <div className={style.content}>{location.state.location}</div>
