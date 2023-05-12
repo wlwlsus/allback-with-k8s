@@ -98,7 +98,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 headers.add("KAFKA.UUID", uuid);
                 headers.add("KAFKA.PARTITION", Integer.toString(partition));
-//                headers.add("KAFKA.OFFSET", Long.toString(offset));
+                headers.add("KAFKA.OFFSET", Long.toString(offset));
 
                 // 변경된 header로 request를 갱신
                 ServerHttpRequest request2 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
