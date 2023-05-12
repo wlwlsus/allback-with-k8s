@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -75,7 +76,6 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             int partition;
 
 
-
             // 대기표를 가지고 있지 않다면 -> 최초 요청 -> kafka에 넣기
             if (!request.getHeaders().containsKey("KAFKA.UUID")) {
                 uuid = UUID.randomUUID().toString();
@@ -95,7 +95,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                     throw new RuntimeException(e);
                 }
                 HttpHeaders headers = new HttpHeaders();
-                headers.addAll(exchange.getRequest().getHeaders());
+
                 headers.add("KAFKA.UUID", uuid);
                 headers.add("KAFKA.PARTITION", Integer.toString(partition));
 //                headers.add("KAFKA.OFFSET", Long.toString(offset));
@@ -175,28 +175,28 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // 대기열이 없다면 -> 요청 처리하기
             else {
-                while (priorityQueue.size() > 0 && offset <= endOffset && offset + 1 == priorityQueue.peek()) {
+                long newOffset = offset;
+                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
                     System.out.println(offset + 1 + " record delete");
-                    offset++;
+                    newOffset++;
                     priorityQueue.poll();
                 }
 
-                HttpHeaders headers3 = new HttpHeaders();
-                headers3.addAll(exchange.getRequest().getHeaders());
-                if (headers3.containsKey("KAFKA.OFFSET"))
-                    headers3.replace("KAFKA.OFFSET", Collections.singletonList(Long.toString(offset)));
-                else
+                if (newOffset != offset) {
+                    HttpHeaders headers3 = new HttpHeaders();
                     headers3.add("KAFKA.OFFSET", Long.toString(offset));
 
-                // 변경된 header로 request를 갱신
-                ServerHttpRequest request3 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers3)).build();
-                exchange = exchange.mutate().request(request3).build();
+                    // 변경된 header로 request를 갱신
+                    ServerHttpRequest request3 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers3)).build();
+                    exchange = exchange.mutate().request(request3).build();
+                }
+
 
                 // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
                 //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
                 //  파티션 번호!
 
-                System.out.println("offset in header :::: " + exchange.getRequest().getHeaders().get("KAFKA.OFFSET"));
+
                 return chain.filter(exchange);
             }
         };
