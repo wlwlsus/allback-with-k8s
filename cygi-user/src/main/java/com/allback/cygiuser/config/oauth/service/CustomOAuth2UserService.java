@@ -1,6 +1,6 @@
 package com.allback.cygiuser.config.oauth.service;
 
-import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.config.oauth.entity.UserPrincipal;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfo;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfoFactory;

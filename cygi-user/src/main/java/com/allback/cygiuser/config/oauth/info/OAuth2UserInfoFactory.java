@@ -1,6 +1,6 @@
 package com.allback.cygiuser.config.oauth.info;
 
-import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.config.oauth.info.impl.KakaoOAuth2UserInfo;
 
 import java.util.Map;
