@@ -49,6 +49,7 @@ pipeline{
                     withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
                         sh "docker push wlwlsus/back-discovery:${env.BUILD_NUMBER}"
+                        sh "docker push wlwlsus/back-discovery:latest"
                         sh "docker image prune -a -f || true"
                     }
                 }
