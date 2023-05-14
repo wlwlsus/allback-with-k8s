@@ -1,5 +1,6 @@
 package com.allback.cygiconcert.controller;
 
+import com.allback.cygiconcert.service.ConcertService;
 import com.allback.cygiconcert.service.ConcertServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping("/server-payment")
 @RequiredArgsConstructor
 public class PaymentServerController {
-  private final ConcertServiceImpl concertService;
+  private final ConcertService concertService;
 
   @Operation(summary = "금일 종료된 공연 조회")
   @GetMapping("/endedConcert")

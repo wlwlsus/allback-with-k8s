@@ -1,6 +1,7 @@
 package com.allback.cygiconcert.service;
 
 import com.allback.cygiconcert.client.PaymentServerClient;
+import com.allback.cygiconcert.client.UserServerClient;
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,27 +37,39 @@ public class ConcertServiceImpl implements ConcertService {
     private final StageRepository stageRepository;
     private final ConcertMapper concertMapper;
     private final PaymentServerClient paymentServerClient;
+    private final UserServerClient userServerClient;
     private final S3Upload s3Upload;
 
     @Override
-    public void registConcert(ConcertReqDto concertReqDto, MultipartFile image) throws Exception {
+    public long registerConcert(ConcertReqDto concertReqDto, MultipartFile image) throws Exception {
         //주최자 id 있는지 확인
-        log.info("[registConcert] : 주최자id 조회 성공, userId : {}", concertReqDto.getStageId());
+        long userId = concertReqDto.getUserId();
+        log.info("[registerConcert] : 주최자id 조회 시도, userId : {}", userId);
+        ResponseEntity<Void> responseEntity = userServerClient.checkUser(userId);
+
+        // userServer에서 400 에러가 발생한 경우
+        if (responseEntity.getStatusCode().is4xxClientError()) {
+            throw new BaseException(ErrorMessage.USER_NOT_FOUND);
+        }
+        log.info("[registerConcert] : 주최자id 조회 성공, userId : {}", userId);
+
 
         //공연장 id 있는지 확인
         Stage stage = stageRepository.findById(concertReqDto.getStageId())
             .orElseThrow(() -> new BaseException(ErrorMessage.STAGE_NOT_FOUND));
-        log.info("[registConcert] : 공연장id 조회 성공, stageId : {}", concertReqDto.getStageId());
+        log.info("[registerConcert] : 공연장id 조회 성공, stageId : {}", stage.getStageId());
 
         //이미지 링크 생성
         String imgLink = getImgLink(image);
-        log.info("[registConcert] : 이미지 링크생성, imgLink : {}", imgLink);
+        log.info("[registerConcert] : 이미지 링크생성, imgLink : {}", imgLink);
 
         //공연 등록
+        System.out.println(concertMapper.toEntity(concertReqDto).toString());
         concertReqDto.setImage(imgLink);
-        concertRepository.save(concertMapper.toEntity(concertReqDto));
+        Concert savedConcert = concertRepository.save(concertMapper.toEntity(concertReqDto));
 
-        log.info("[registConcert] : 공연장 등록 성공");
+        log.info("[registerConcert] : 공연장 등록 성공");
+        return savedConcert.getConcertId();
     }
 
     @Override
@@ -121,12 +135,18 @@ public class ConcertServiceImpl implements ConcertService {
         return concert.getTitle();
     }
 
-    private String getImgLink(MultipartFile image) throws Exception {
+    @Override
+    public String getImgLink(MultipartFile image) throws Exception {
         //파일이름 설정
         String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
         //aws s3 저장
         String imgLink = s3Upload.uploadFileV1(fileName, image);
 
         return imgLink;
+    }
+
+    @Override
+    public void deleteConcert(long concertId) {
+        concertRepository.deleteById(concertId);
     }
 }

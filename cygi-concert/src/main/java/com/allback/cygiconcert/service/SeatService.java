@@ -14,4 +14,6 @@ public interface SeatService {
     void deleteReservationById(long reservationId);
 
     SeatRestCntResDto getRestSeatCnt(long concertId);
+
+    void registerSeat(int price, int col, int row, String location) throws Exception;
 }
