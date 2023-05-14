@@ -1,8 +1,8 @@
 package com.allback.cygiconcert.service;
 
 import com.allback.cygiconcert.client.PaymentServerClient;
+import com.allback.cygiconcert.client.UserServerClient;
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
-import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
 import com.allback.cygiconcert.entity.Concert;
 import com.allback.cygiconcert.entity.Stage;
@@ -10,107 +10,135 @@ import com.allback.cygiconcert.mapper.ConcertMapper;
 import com.allback.cygiconcert.repository.ConcertRepository;
 import com.allback.cygiconcert.repository.StageRepository;
 import com.allback.cygiconcert.util.S3Upload;
-import com.allback.cygiconcert.util.exception.BaseException;
-import com.allback.cygiconcert.util.exception.ErrorMessage;
+import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class ConcertServiceImplTest {
 
-    private ConcertService concertService;
+    private static final Logger logger = Logger.getLogger(ConcertServiceImplTest.class.getName());
 
-    @Mock
+    private ConcertService concertService;
+    private SeatService seatService;
+
+    @Autowired
     private ConcertRepository concertRepository;
 
-    @Mock
+    @Autowired
     private StageRepository stageRepository;
 
-    @Mock
+    @Autowired
     private ConcertMapper concertMapper;
 
     @Mock
     private PaymentServerClient paymentServerClient;
 
+//    @Mock
+    @Autowired
+    private UserServerClient userServerClient;
+
     @Mock
     private S3Upload s3Upload;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        concertService = new ConcertServiceImpl(concertRepository, stageRepository, concertMapper,
-                paymentServerClient, s3Upload);
+    private Stage stage;
 
-        // Stage 객체를 생성하고 DB에 저장하는 로직 추가
+    @BeforeEach
+    public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+
+        concertService = spy(new ConcertServiceImpl(concertRepository, stageRepository, concertMapper,
+                paymentServerClient, userServerClient, s3Upload));
+
+        seatService = new SeatServiceImpl(concertRepository, stageRepository, paymentServerClient);
+
+
+        // Stage 객체를 생성하고 DB에 저장
+        int price = 10000;
+        int col = 10;
+        int row = 10;
+        String location = "멀티캠퍼스";
+
         Stage stage = Stage.builder()
-                .stageId(1L)
+                .price(price)
+                .row(row)
+                .col(col)
+                .location(location)
                 .build();
 
-        when(stageRepository.save(any(Stage.class))).thenReturn(stage);
+        this.stage = stageRepository.save(stage);
+        logger.info("stage 저장 완료 : " + stage.getStageId());
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        // 생성한 seat을 DB에서 삭제
+        stageRepository.deleteById(this.stage.getStageId());
     }
 
     @DisplayName("콘서트 등록 테스트")
     @Test
-    public void registConcert_ValidData_Success() throws Exception {
+    public void registerConcert_ValidData_Success() throws Exception {
         // Given
-        ConcertReqDto concertReqDto = new ConcertReqDto();
-        concertReqDto.setStageId(1L);
+        // Mock 객체 초기화
+        MockitoAnnotations.openMocks(this);
 
-        MultipartFile image = mock(MultipartFile.class);
-        when(image.getOriginalFilename()).thenReturn("test.jpg");
+        // 테스트할 ConcertReqDto 객체 생성
+        ConcertReqDto concertReqDto = ConcertReqDto.builder()
+                .userId(1L)
+                .stageId(this.stage.getStageId())
+                .title("테스트 제목")
+                .endDate(LocalDateTime.now())
+                .startDate(LocalDateTime.now())
+                .content("테스트 내용")
+                .build();
+        logger.info("stage Id :: " + concertReqDto.getStageId());
 
-        Stage stage = new Stage();
-        stage.setStageId(1L);
-        when(stageRepository.findById(1L)).thenReturn(Optional.of(stage));
+        // 이미지 링크에 대한 Mock 응답 설정
+        String imgLink = "http://example.com/image.jpg";
+        doReturn(imgLink).when(concertService).getImgLink(any(MultipartFile.class));
 
-        String imgLink = "https://example.com/test.jpg";
-        when(s3Upload.uploadFileV1(anyString(), any())).thenReturn(imgLink);
-
-        Concert concert = new Concert();
-        when(concertMapper.toEntity(concertReqDto)).thenReturn(concert);
+        logger.info("image link ::: " + concertService.getImgLink(mock(MultipartFile.class)));
 
         // When
-        concertService.registConcert(concertReqDto, image);
+        long concertId = concertService.registerConcert(concertReqDto, mock(MultipartFile.class));
 
         // Then
-        verify(stageRepository).findById(1L);
-        verify(s3Upload).uploadFileV1(anyString(), any());
-        verify(concertRepository).save(concert);
+        ConcertResDto concertResDto = concertService.getConcert(concertId);
+        Assertions.assertThat(concertResDto.getTitle()).isEqualTo("테스트 제목");
+
+        concertService.deleteConcert(concertId);
+
+//        // 주최자 id 확인
+//        verify(userServerClient).checkUser(userId);
+//
+//        // 공연장 id 확인
+//        verify(stageRepository).findById(stageId);
+//
+//        // 이미지 링크 생성 확인
+//        verify(concertService).getImgLink(any(MultipartFile.class));
+//
+//        // 공연 등록 확인
+//        verify(concertRepository).save(any(Concert.class));
     }
 
-    @Test
-    void getConcertPage() {
-    }
-
-    @Test
-    void getConcert() {
-    }
-
-    @Test
-    void getEndedConcert() {
-    }
-
-    @Test
-    void getUserId() {
-    }
-
-    @Test
-    void getConcertTitle() {
-    }
 }

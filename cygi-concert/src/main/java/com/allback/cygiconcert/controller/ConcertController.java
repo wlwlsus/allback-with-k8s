@@ -4,7 +4,6 @@ import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
 import com.allback.cygiconcert.service.ConcertService;
-import com.allback.cygiconcert.service.ConcertServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +35,7 @@ public class ConcertController {
         @RequestPart(name = "concert") ConcertReqDto concertReqDto,
         @RequestPart MultipartFile image)
         throws Exception {
-        concertService.registConcert(concertReqDto, image);
+        concertService.registerConcert(concertReqDto, image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
