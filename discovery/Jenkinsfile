@@ -63,7 +63,6 @@ pipeline{
                         sh "git clone https://github.com/wlwlsus/allback-helm-chart.git --branch eureka eureka-helm-chart"
                         sh "ls -al"
                         dir('eureka-helm-chart/eureka') {
-                            sh "sed -i 's/eureka-deployment:.*\$/my-app:${currentBuild.number}/g' templates/deployment.yaml"
                             sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-discovery|' values.yaml"
                             sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
                             sh "git config user.email 'cadqe13@gmail.com'"
