@@ -21,13 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -143,5 +140,13 @@ public class UserServiceImpl implements UserService {
 		redisTemplate.opsForValue().set(logout.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
 
 		return Response.ok("로그아웃 되었습니다.");
+	}
+
+	@Override
+	public Users getUser(long userId) {
+		Users user = userRepository.findById(userId)
+				.orElseThrow(() -> new BaseException(ErrorMessage.NOT_EXIST_USER));
+
+		return user;
 	}
 }

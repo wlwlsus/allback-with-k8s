@@ -1,7 +1,7 @@
 package com.allback.cygiuser.config.oauth.handler;
 
 import com.allback.cygiuser.config.jwt.JwtTokenProvider;
-import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfo;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfoFactory;
 import com.allback.cygiuser.config.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
@@ -30,7 +30,6 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

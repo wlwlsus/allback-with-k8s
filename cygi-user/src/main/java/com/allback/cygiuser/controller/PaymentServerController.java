@@ -1,6 +1,7 @@
 package com.allback.cygiuser.controller;
 
 import com.allback.cygiuser.dto.request.AmountRequest;
+import com.allback.cygiuser.service.UserService;
 import com.allback.cygiuser.service.UserServiceImpl;
 import com.allback.cygiuser.util.Response;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/server-payment")
 @RequiredArgsConstructor
 public class PaymentServerController {
-  private final UserServiceImpl userService;
+
+  private final UserService userService;
 
   @PutMapping("/amount")
   public ResponseEntity<?> amount(@RequestBody AmountRequest request) {

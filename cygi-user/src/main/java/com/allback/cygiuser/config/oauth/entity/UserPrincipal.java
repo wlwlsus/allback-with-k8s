@@ -1,6 +1,7 @@
 package com.allback.cygiuser.config.oauth.entity;
 
 import com.allback.cygiuser.entity.Users;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.enums.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -35,15 +35,15 @@ public class WebSecurityConfig {
 				.cors()
 				.configurationSource(corsConfigurationSource());
 
-    httpSecurity
-        .httpBasic().disable()
-        .csrf().disable()
-        .formLogin().disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeHttpRequests()
-        .requestMatchers("/**").permitAll();
+		httpSecurity
+			.httpBasic().disable()
+			.csrf().disable()
+			.formLogin().disable()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.authorizeHttpRequests()
+			.requestMatchers("/**").permitAll();
 
 		httpSecurity
 				.oauth2Login()
