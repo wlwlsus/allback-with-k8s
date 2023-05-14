@@ -71,7 +71,6 @@ pipeline{
                         //     sh "git push origin eureka"
                         // }
                     }
-                    }
                 }
             }
         }
