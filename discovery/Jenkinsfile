@@ -49,15 +49,17 @@ pipeline{
                     withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
                         sh "docker push wlwlsus/back-discovery:${env.BUILD_NUMBER}"
+                        sh "docker image prune -a -f || true"
                     }
                 }
             }
         }
 
-        stage('Update GitHub Eureka Branch') {
+        stage('Update k8s Manifest') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDS}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                        sh "rm -rf eureka-helm-chart"
                         sh "git clone https://github.com/wlwlsus/allback-helm-chart.git --branch eureka eureka-helm-chart"
                         sh "ls -al"
                         dir('eureka-helm-chart/eureka') {
