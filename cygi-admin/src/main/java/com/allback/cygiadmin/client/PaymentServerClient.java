@@ -18,5 +18,5 @@ public interface PaymentServerClient {
     @GetMapping("/reservations")
     ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
     @GetMapping("/balances")
-    ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam("page") int page, @RequestParam("size") int size);
+    ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
 }

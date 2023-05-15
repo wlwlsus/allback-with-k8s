@@ -14,5 +14,5 @@ public interface DashBoardService {
 
     ReservationListResAllDto getReservations(int page, int size, String authorization);
 
-    Page<BalanceResDto> getBalances(int page, int size);
+    Page<BalanceResDto> getBalances(int page, int size, String authorization);
 }
