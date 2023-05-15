@@ -28,4 +28,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findReservationByUserId(long userId);
 
+    boolean existsByConcertIdAndSeat(long concertId, String seat);
+
 }

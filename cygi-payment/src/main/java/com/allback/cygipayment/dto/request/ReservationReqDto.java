@@ -8,9 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * author : cadqe13@gmail.com
- * date : 2023-04-25
- * description :
+ * author : cadqe13@gmail.com date : 2023-04-25 description :
  */
 
 
@@ -22,14 +20,19 @@ import lombok.ToString;
 @ToString
 public class ReservationReqDto {
 
+<<<<<<< HEAD
+    private long concertId;
+    private long stageId;
+=======
 	private long concertId;
 	private long stageId;
+>>>>>>> ff8c5f068021393590e5e042a33ed8acba26ef2b
 
-	private long userId;
+    private long userId;
 
-	private String status;
+    private String status;
 
-	private int price;
+    private int price;
 
-	private String seat;
+    private String seat;
 }

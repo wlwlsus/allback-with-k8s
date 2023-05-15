@@ -2,8 +2,6 @@ package com.allback.cygipayment.controller;
 
 import com.allback.cygipayment.dto.response.BalanceStateResDto;
 import com.allback.cygipayment.dto.response.ReservationListResAllDto;
-import com.allback.cygipayment.dto.response.ReservationListResDto;
-import com.allback.cygipayment.dto.response.ReservationResDto;
 import com.allback.cygipayment.service.BalanceServiceImpl;
 import com.allback.cygipayment.service.ReservationService;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Tag(name = "server-admin", description = "관리자 서버와 통신하는 API")
 @RestController
