@@ -1,5 +1,6 @@
 package com.allback.cygipayment.entity;
 
+import com.allback.cygipayment.util.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @Table(name = "balance")
-public class Balance {
+public class Balance extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "balance_id", nullable = false, length = 20, columnDefinition = "BIGINT UNSIGNED")

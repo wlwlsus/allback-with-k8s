@@ -39,3 +39,4 @@ public class BalanceState extends BaseTimeEntity {
     private long proceed;
 
 }
+

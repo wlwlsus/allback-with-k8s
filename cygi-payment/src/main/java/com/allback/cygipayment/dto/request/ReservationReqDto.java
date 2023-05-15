@@ -23,6 +23,7 @@ import lombok.ToString;
 public class ReservationReqDto {
 
 	private long concertId;
+	private long stageId;
 
 	private long userId;
 
