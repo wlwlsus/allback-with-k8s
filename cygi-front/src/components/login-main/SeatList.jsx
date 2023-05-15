@@ -384,7 +384,7 @@ export default function SeatList() {
   return (
     <>
       {!isLoading && data && !isreserve && (
-        <div className={style.container}>
+        <div className={onModal ? style.disbled : style.container}>
           <div className={style.header}>
             <div className={style.title}>{location.state.title}</div>
             <div className={style.information}>
@@ -406,6 +406,7 @@ export default function SeatList() {
                   onClick={() => {
                     onCheck();
                   }}
+                  disabled={onModal}
                 >
                   예매하기
                 </button>
@@ -415,6 +416,7 @@ export default function SeatList() {
                   onClick={() => {
                     navigate("/home");
                   }}
+                  disabled={onModal}
                 >
                   메인으로
                 </button>
@@ -429,7 +431,7 @@ export default function SeatList() {
         </div>
       )}
       {!isLoading && data && isreserve && (
-        <div className={style.total}>
+        <div className={onModal ? style.disbled : style.total}>
           <div className={style.left_div}>
             <div>
               <img
@@ -444,6 +446,7 @@ export default function SeatList() {
                 onClick={() => {
                   onPayCheck();
                 }}
+                disabled={onModal}
               >
                 결제하기
               </button>
@@ -453,6 +456,7 @@ export default function SeatList() {
                   onDelete();
                   navigate("/../../../");
                 }}
+                disabled={onModal}
               >
                 예매취소
               </button>

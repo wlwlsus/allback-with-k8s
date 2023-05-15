@@ -1,3 +1,7 @@
+.disbled {
+  opacity: 0.3;
+}
+
 .container {
   position: relative;
 }

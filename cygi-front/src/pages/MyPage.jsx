@@ -75,19 +75,6 @@ export default function MyPage() {
     if (reservationId > 0) onRefund();
   }, [reservationId]);
 
-  // 뒤로가기 이벤트 감지
-  // useEffect(() => {
-  //   const listenBackEvent = () => {
-  //     navigate("/");
-  //   };
-  //   const historyEvent = history.listen(({ action }) => {
-  //     if (action === "POP") {
-  //       listenBackEvent();
-  //     }
-  //   });
-  //   return historyEvent;
-  // }, []);
-
   return (
     <div className={style.container}>
       <SubHeader />
@@ -99,7 +86,12 @@ export default function MyPage() {
           <div className={style.profile_name}>
             <span>{nickName}</span>님
           </div>
-          <div className={style.profile_point}>{point}P</div>
+          <div className={style.profile_point}>
+            {point.toLocaleString("ko-KR", {
+              currency: "KRW",
+            })}
+            P
+          </div>
           <div className={style.profile_signup_title}>가입일</div>
           <div className={style.profile_signup_date}>{createTime}</div>
           <div>

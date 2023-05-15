@@ -114,7 +114,7 @@ export default function ConcertDetail() {
   return (
     <>
       {!isLoading && data && (
-        <div className={style.container}>
+        <div className={onModal ? style.disbled : style.container}>
           <div className={style.concert_background}>
             <img src={PosterBackground} alt="" />
           </div>
@@ -166,6 +166,7 @@ export default function ConcertDetail() {
                   onClick={() => {
                     onCheck();
                   }}
+                  disabled={onModal}
                 >
                   예매하기
                 </button>

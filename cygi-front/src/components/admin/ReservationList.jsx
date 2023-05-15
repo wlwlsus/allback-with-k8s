@@ -9,11 +9,15 @@ export default function ReservationList() {
     $_admin.get(`/dashboard/reservation?page=${1}&size=10`)
   );
 
+  const onPrev = () => {};
+
   return (
     <div className={style.container}>
       <div className={style.reservation}>
         <div className={style.title}>
           <span>전체 예매 내역</span>
+          <button>이전</button>
+          <button>다음</button>
         </div>
         <div className={style.reservation_header}>
           <div className={style.reserve_date}>예매 일자</div>
@@ -25,7 +29,7 @@ export default function ReservationList() {
         {reservation &&
           reservation.data.reservationResAllDtoPage.map((content) => {
             let date =
-              content.modifiedDate.slice(0, 4) +
+              content.modifiedDate.slice(2, 4) +
               "." +
               content.modifiedDate.slice(5, 7) +
               "." +
@@ -43,7 +47,9 @@ export default function ReservationList() {
                 <div className={style.reserve_date}>{date}</div>
                 <div className={style.concert_name}>{content.title}</div>
                 <div className={style.reservationist}>{content.userId}</div>
-                <div className={style.seat_num}>{content.seat}</div>
+                <div className={style.seat_num}>
+                  {content.seat[0]}-{content.seat.slice(1)}
+                </div>
                 <div className={style.status}>{content.status}</div>
               </div>
             );
