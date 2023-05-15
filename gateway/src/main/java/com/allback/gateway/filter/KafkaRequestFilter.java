@@ -9,6 +9,7 @@ import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -32,14 +33,16 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaRequestFilter.class);
 
-    public KafkaRequestFilter() {
+    private KafkaService kafkaService;
+
+    @Autowired
+    public KafkaRequestFilter(KafkaService kafkaService) {
         super(Config.class);
+        this.kafkaService = kafkaService;
     }
 
     @Data
-    public static class Config {
-        private KafkaService kafkaService;
-    }
+    public static class Config {}
 
     /**
      * Client에게 보낼 대기표 Response 형식
@@ -58,7 +61,6 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
 
-            KafkaService kafkaService = config.kafkaService;
             ServerHttpRequest request = exchange.getRequest();
 
             // 대기열을 거치지 않는 요청은 header에 'KAFKA.PASS'라는 key가 존재한다.
@@ -78,11 +80,11 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 uuid = System.currentTimeMillis();
 
 //                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, uuid);
+                logger.info("카프카에 데이터 넣기!");
                 CompletableFuture<SendResult<String, String>> send = kafkaService.send(Long.toString(uuid));
 
                 try {
-                    SendResult<String, String> sendResult = send.get(); // kafka에 데이터 넣기
-
+                    SendResult<String, String> sendResult = send.get();
                     partition = sendResult.getRecordMetadata().partition(); // 나의 대기표가 어느 partition에 들어갔는지
                     offset = sendResult.getRecordMetadata().offset();   // 나의 대기표가 몇 번째 순서로 들어갔는지
 
@@ -146,8 +148,8 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // committedOffset >= offset이어야 됨
             while (kafkaService.getCancelSize() > 0 && offset > kafkaService.getCancelPeek()) {
                 Long peek = kafkaService.jump();
-                committedOffset = Math.max(committedOffset, peek);
-//                committedOffset++;
+//                committedOffset = Math.max(committedOffset, peek);
+                committedOffset++;
             }
 
             // 2단계 : 대기열이 존재하는지 판단하기
@@ -199,10 +201,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
                 exchange = exchange.mutate().request(request).build();
 
-                // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
-                //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
-                //  파티션 번호!
-
+                // TODO : 메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함?
                 logger.info("offset in header :::: " + exchange.getRequest().getHeaders().get("KAFKA.OFFSET"));
                 return chain.filter(exchange);
             }

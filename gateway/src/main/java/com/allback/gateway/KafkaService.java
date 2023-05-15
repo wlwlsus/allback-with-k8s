@@ -19,7 +19,6 @@ import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
-@Service
 public class KafkaService {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaService.class);
@@ -41,23 +40,34 @@ public class KafkaService {
 
     // kafka consumer가 제일 마지막에 소비한 레코드의 offset 값 반환
     public long getCommittedOffset() {
+        Properties properties = new Properties();
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "3.34.8.99:9092");
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, topic);
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, "myClientId");  // TODO : 파티션 번호로 지정하기
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        KafkaConsumer<Object, Object> newKafkaConsumer = new KafkaConsumer<>(properties);
+
+
         TopicPartition topicPartition = new TopicPartition(topic, partition);
-        kafkaConsumer.assign(Collections.singletonList(topicPartition));
-        return kafkaConsumer.position(topicPartition);
+        newKafkaConsumer.assign(Collections.singletonList(topicPartition));
+        return newKafkaConsumer.position(topicPartition);
     }
 
     // kafka producer가 제일 마지막에 발행한 레코드의 offset 값 반환
     public long getEndOffset() {
         TopicPartition topicPartition = new TopicPartition(topic, partition);
-        kafkaConsumer.assign(Collections.singletonList(topicPartition));
+//        kafkaConsumer.assign(Collections.singletonList(topicPartition));
         kafkaConsumer.seekToEnd(Collections.singletonList(topicPartition));
         return kafkaConsumer.position(topicPartition);
     }
 
     // 대기표 추가 (kafka 메시지 발행)
     // TODO : partition은 gateway 서버가 실행될 때 외부매개변수로 직접 넣어줘야할 듯
-    public CompletableFuture<SendResult<String, String>> send(String string) {
-        return kafkaTemplate.send(topic, partition, null, string);
+    public CompletableFuture<SendResult<String, String>> send(String data) {
+        return kafkaTemplate.send(topic, partition, null, data);
     }
 
     // 대기표 취소
@@ -94,12 +104,13 @@ public class KafkaService {
 
     // kafka 맨 앞에 있는 대기표가 5초 이상 해결되지 않으면 삭제하기
     public void schedulerProcess() {
-        long committedOffset = getCommittedOffset(1);
+        long committedOffset = getCommittedOffset();
         long recordTimeStamp = getRecordTimeStamp(committedOffset);
         long currentTimestamp = System.currentTimeMillis();
 
         if (currentTimestamp - recordTimeStamp >= 5000) {
             // 해당 offset의 레코드 건너뛰기
+            cancel(committedOffset);
         }
     }
 }
