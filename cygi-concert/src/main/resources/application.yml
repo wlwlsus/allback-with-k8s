@@ -26,8 +26,9 @@ spring:
     consumer:
       bootstrap-servers: 3.34.8.99:9092
       group-id: concert-req
-      topic: concert-req
-      partition: 1
+#      topic: concert-req
+      topic: payment-req
+      partition: 0
       max-poll-interval-ms: 600000
     listener:
       type: SINGLE

@@ -47,7 +47,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         properties.setProperty(MAX_POLL_RECORDS_CONFIG, "1");   // consumer는 한 번에 1개만 poll 할 수 있다.
         properties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(CLIENT_ID_CONFIG, "myClientId");  // TODO : 파티션 번호로 지정하기
+        properties.setProperty(CLIENT_ID_CONFIG, "myClientId2");  // TODO : 파티션 번호로 지정하기
         properties.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         return new KafkaConsumer<>(properties);
@@ -95,6 +95,8 @@ public class KafkaInterceptor implements HandlerInterceptor {
         consumer.commitSync(currentOffsets);
 
         System.out.println("committedOffset :::: " + committedOffset);
+
+        consumer.close();
     }
 
 }
