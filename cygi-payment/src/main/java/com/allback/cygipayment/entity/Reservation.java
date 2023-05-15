@@ -20,6 +20,8 @@ public class Reservation extends BaseTimeEntity {
 
   @Column(name = "concert_id", nullable = false, length = 20)
   private long concertId;
+  @Column(name = "stage_id", nullable = false, length = 20)
+  private long stageId;
 
   @Column(name = "user_id", nullable = false, length = 20)
   private long userId;
