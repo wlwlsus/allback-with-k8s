@@ -64,6 +64,9 @@ dependencies {
 
     //sleuth
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.8.RELEASE'
+
+    implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+
 }
 
 dependencyManagement {

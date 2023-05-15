@@ -1,7 +1,6 @@
 package com.allback.cygipayment.service;
 
 import com.allback.cygipayment.dto.response.BalanceStateResDto;
-import com.allback.cygipayment.entity.Balance;
 import com.allback.cygipayment.entity.BalanceState;
 import com.allback.cygipayment.mapper.BalanceStateMapper;
 import com.allback.cygipayment.repository.BalanceStateRepository;
