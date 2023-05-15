@@ -73,7 +73,7 @@ pipeline{
 //                             sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
 //                             sh "git push origin main"
                         }
-                    }`
+                    }
                 }
             }
         }
