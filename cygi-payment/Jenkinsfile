@@ -1,0 +1,67 @@
+pipeline{
+    //def WORKSPACE = "/var/jenkins_home/workspace/back-payment/cygi-payment/"
+    agent any
+    
+    stages{
+//         stage('Build Start'){
+//             steps{
+//                 mattermostSend color: "#2A42EE",
+//                     message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                     endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                     channel: "all_back_jenkins"
+//             }
+//         }
+
+        stage('Clone Repo'){
+            steps{
+                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-back-payment'
+            }
+        }
+
+        stage('Gradle Build'){
+            steps{
+                dir('cygi-payment/'){
+                    sh 'ls'
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
+        stage('Build Docker'){
+            steps{
+                script{
+                    sh "docker build -t back-payment:${env.BUILD_NUMBER} cygi-payment/"
+                }
+            }
+        }
+
+        stage('Deploy Docker'){
+            steps{
+                script{
+                    sh "docker stop back-payment || true && docker rm back-payment || true"
+                    sh "docker run --name back-payment -d --network connect-default back-payment:${env.BUILD_NUMBER}"
+                    sh "docker image prune -a -f || true"
+                }
+            }
+        }
+    }
+
+//     post {
+//         success {
+//             mattermostSend color: "good",
+//                 message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                 endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                 channel: "all_back_jenkins"
+//         }
+//         failure {
+//             mattermostSend color: "danger",
+//                 message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                 endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                 channel: "all_back_jenkins"
+//         }
+//     }
+}
+
