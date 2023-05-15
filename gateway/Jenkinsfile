@@ -63,15 +63,14 @@ pipeline{
                         sh "git clone https://github.com/wlwlsus/allback-helm-chart.git allback-helm-chart"
                         sh "ls -al"
                         dir('allback-helm-chart/gateway') {
-                            sh "ls -al"
-//                             sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-gateway|' values.yaml"
-//                             sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
-//                             sh "git config user.email 'cadqe13@gmail.com'"
-//                             sh "git config user.name 'cadqe13'"
-//                             sh "git add ."
-//                             sh "git diff-index --quiet HEAD || git commit -m 'Update back-gateway image to ${env.BUILD_NUMBER}'"
-//                             sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
-//                             sh "git push origin main"
+                            sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-gateway|' values.yaml"
+                            sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
+                            sh "git config user.email 'cadqe13@gmail.com'"
+                            sh "git config user.name 'cadqe13'"
+                            sh "git add ."
+                            sh "git diff-index --quiet HEAD || git commit -m 'Update back-gateway image to ${env.BUILD_NUMBER}'"
+                            sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
+                            sh "git push origin main"
                         }
                     }
                 }
