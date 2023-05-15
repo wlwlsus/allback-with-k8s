@@ -7,19 +7,10 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.time.Duration;
 import java.util.*;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
@@ -37,6 +28,9 @@ public class KafkaInterceptor implements HandlerInterceptor {
     @Value("${spring.kafka.consumer.topic}")
     private String topic;
 
+    @Value("${spring.kafka.consumer.partition}")
+    private int partition;
+
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
@@ -53,6 +47,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         properties.setProperty(MAX_POLL_RECORDS_CONFIG, "1");   // consumer는 한 번에 1개만 poll 할 수 있다.
         properties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(CLIENT_ID_CONFIG, "myClientId");  // TODO : 파티션 번호로 지정하기
         properties.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         return new KafkaConsumer<>(properties);
@@ -62,19 +57,19 @@ public class KafkaInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
         // 대기열 시스템이 필요없는 애들은 넘기기
-        if (request.getHeader("KAFKA.UUID") == null || response.getStatus() >= 300) {
+        if (request.getHeader("KAFKA.UUID") == null) {
             return ;
         }
 
         // 10초 대기 (일부러 성능 떨어뜨리기)
-        Thread.sleep(5000);
+        Thread.sleep(3000);
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
 
         // consume할 topic과 particion
-        TopicPartition partition = new TopicPartition(topic, 3);
-        consumer.assign(Collections.singletonList(partition));
+        TopicPartition topicPartition = new TopicPartition(topic, partition);
+        consumer.assign(Collections.singletonList(topicPartition));
 
         // 레코드 읽어오기
 //        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
@@ -93,14 +88,13 @@ public class KafkaInterceptor implements HandlerInterceptor {
 
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
-//        System.out.println("committedOffset :::: " + consumer.position(partition));
-        System.out.println("committedOffset :::: " + committedOffset);
-
 //        currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
-        currentOffsets.put(partition, new OffsetAndMetadata(committedOffset));
+        currentOffsets.put(topicPartition, new OffsetAndMetadata(committedOffset));
 
         // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
+
+        System.out.println("committedOffset :::: " + committedOffset);
     }
 
 }

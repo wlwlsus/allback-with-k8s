@@ -30,6 +30,7 @@ spring:
       bootstrap-servers: 3.34.8.99:9092
       group-id: concert-req
       topic: concert-req
+      partition: 1
       max-poll-interval-ms: 600000
     listener:
       type: SINGLE
