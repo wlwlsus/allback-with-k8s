@@ -1,6 +1,6 @@
 package com.allback.cygiuser.config.oauth.service;
 
-import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.config.oauth.entity.UserPrincipal;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfo;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfoFactory;
@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
     OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-    Users savedUser = userRepository.findUserByUuid(userInfo.getId());
+    Users savedUser = userRepository.findUsersByUuid(userInfo.getId());
 
     if (savedUser != null) {
       updateUser(savedUser, userInfo);

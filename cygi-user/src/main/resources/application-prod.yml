@@ -28,17 +28,26 @@ spring:
       ddl-auto: update
     generate-ddl: false
     show-sql: true
+
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: k8a806.p.ssafy.io
+      port: 3300
+
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
 
   application:
     name: user-service
 
+
   # MySQL DB Connection Info
   datasource:
-    url: jdbc:mysql://localhost:3306/ssafy806_user
+    url: jdbc:mysql://k8a806.p.ssafy.io:3306/ssafy806_user
     username: ssafy806
     password: ssafy806
 

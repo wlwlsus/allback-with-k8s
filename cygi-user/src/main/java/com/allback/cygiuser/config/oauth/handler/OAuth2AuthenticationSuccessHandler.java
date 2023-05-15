@@ -1,13 +1,15 @@
 package com.allback.cygiuser.config.oauth.handler;
 
 import com.allback.cygiuser.config.jwt.JwtTokenProvider;
-import com.allback.cygiuser.config.oauth.entity.ProviderType;
+import com.allback.cygiuser.enums.ProviderType;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfo;
 import com.allback.cygiuser.config.oauth.info.OAuth2UserInfoFactory;
 import com.allback.cygiuser.config.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.allback.cygiuser.config.oauth.util.CookieUtil;
 import com.allback.cygiuser.dto.response.UserTestResDto;
+import com.allback.cygiuser.entity.Users;
 import com.allback.cygiuser.enums.RoleType;
+import com.allback.cygiuser.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +49,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
   private final JwtTokenProvider jwtTokenProvider;
 
   private final RedisTemplate<String, String> redisTemplate;
+
+  private final UserRepository userRepository;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -77,8 +83,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     Collection<? extends GrantedAuthority> authorities = ((OidcUser) authentication.getPrincipal()).getAuthorities();
 
     RoleType roleType = hasAuthority(authorities, RoleType.ROLE_ADMIN.name()) ? RoleType.ROLE_ADMIN : RoleType.ROLE_USER;
+    Users localUser = userRepository.findUsersByUuid(userInfo.getId());
 
-    UserTestResDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(userInfo.getId(), roleType.name());
+
+    // 현재 시간을 LocalDateTime 객체로 가져옵니다.
+    LocalDateTime now = localUser.getCreatedDate();
+
+    // LocalDateTime 객체를 문자열 형식으로 변환합니다.
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String formattedTime = now.format(formatter);
+
+    UserTestResDto.TokenInfo tokenInfo = jwtTokenProvider.generateToken(localUser.getUuid(), localUser.getUserId(),
+        userInfo.getName(), userInfo.getEmail(), formattedTime, roleType.name());
 
     redisTemplate.opsForValue()
         .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
