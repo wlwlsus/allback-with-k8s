@@ -59,17 +59,16 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (!isLoading)
-      setPoint(
-        pointData.data.toLocaleString("ko-KR", {
-          currency: "KRW",
-        })
-      );
+    if (!isLoading) setPoint(pointData.data);
   }, [isLoading]);
 
+  useEffect(() => {
+    console.log(onModal);
+  }, [onModal]);
+
   return (
-    <>
-      {!isLoading && auth !== "ROLE_USER" && (
+    <div className={onModal ? style.disbled : null}>
+      {!isLoading && auth === "ROLE_USER" && (
         <div
           className={onModal ? style.header_admin_disbled : style.header_admin}
         >
@@ -100,7 +99,9 @@ export default function Header() {
         </div>
       )}
       {!isLoading && auth === "ROLE_USER" && (
-        <div className={style.header_user}>
+        <div
+          className={onModal ? style.header_user_disabled : style.header_user}
+        >
           <div>
             <div
               onClick={() => {
@@ -122,13 +123,18 @@ export default function Header() {
             >
               마이페이지
             </div>
-            <div className={style.user_point}>{point}P</div>
+            <div className={style.user_point}>
+              {point.toLocaleString("ko-KR", {
+                currency: "KRW",
+              })}
+              P
+            </div>
             <div className={style.user_logout} onClick={() => onLogout2()}>
               로그아웃
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

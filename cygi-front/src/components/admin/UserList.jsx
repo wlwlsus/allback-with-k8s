@@ -24,7 +24,7 @@ export default function UserList() {
         {user &&
           user.data.content.map((content) => {
             let date =
-              content.createDate.slice(0, 4) +
+              content.createDate.slice(2, 4) +
               "." +
               content.createDate.slice(5, 7) +
               "." +

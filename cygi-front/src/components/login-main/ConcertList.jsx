@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import style from "./ConcertList.module.css";
 import { $ } from "util/axios";
 import ListLoading from "gif/list_loading.gif";
-import { reservation } from "util/store";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { reservation, isModalOpen } from "util/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export default function ConcertList() {
   const navigate = useNavigate();
@@ -20,6 +20,11 @@ export default function ConcertList() {
   const endRef = useRef(null);
 
   const reservationInfo = useRecoilValue(reservation);
+  const [modalOpen, setmodalOpen] = useRecoilState(isModalOpen);
+
+  useEffect(() => {
+    setmodalOpen(false);
+  }, []);
 
   useEffect(() => {
     //옵저버 생성

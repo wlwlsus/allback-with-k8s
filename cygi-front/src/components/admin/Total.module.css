@@ -17,15 +17,26 @@
 .calculation {
   width: 1550px;
   height: 450px;
+  overflow: hidden;
 }
 
 .calculation_header {
   background-color: #d3d1d1;
   display: grid;
-  grid-template-columns: 15% 10% 16% 10% 10% 13% 13% 13%;
+  grid-template-columns: 25% 25% 25% 25%;
   text-align: center;
   align-items: center;
   font-size: 1.2em;
+}
+
+.calculation_body {
+  background-color: #e9e7e7;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  text-align: center;
+  align-items: center;
+  font-size: 1.2em;
+  padding: 10px;
 }
 
 .bottom_div {
@@ -61,7 +72,7 @@
 
 .reservation {
   width: 900px;
-  height: 500px;
+  height: 520px;
   overflow: hidden;
 }
 
