@@ -25,6 +25,9 @@ public class KafkaConfig {
     @Value("${kafka.topic}")
     private String topic;
 
+    @Value("${kafka.group-id}")
+    private String groupId;
+
     @Value("${kafka.partition}")
     private int partition;
 
@@ -54,7 +57,7 @@ public class KafkaConfig {
     public KafkaConsumer<String, String> kafkaConsumer() {
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, topic);
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, "myClientId");  // TODO : 파티션 번호로 지정하기

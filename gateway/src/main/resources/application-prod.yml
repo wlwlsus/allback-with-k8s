@@ -77,12 +77,10 @@ spring:
           predicates:
             - Path=/concert-service/**
           filters:
-            - name: KafkaRequestFilter
-              args:
-                topicName: concert-req
             - RemoveRequestHeader=Cookie
             - RewritePath=/concert-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+            - KafkaRequestFilter
 
         - id: admin-service
           uri: lb://ADMIN-SERVICE
