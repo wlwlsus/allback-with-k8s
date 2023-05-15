@@ -72,8 +72,8 @@ export default function ReserveComplete() {
                 </div>
               </div>
               <div className={style.pay}>
-                <div className={style.title}>결제 금액</div>
-                <div className={style.content}>{location.state.price}원</div>
+                <div className={style.title}>결제 포인트</div>
+                <div className={style.content}>{location.state.price}P</div>
               </div>
               <div className={style.date}>
                 <div className={style.title}>공연일</div>

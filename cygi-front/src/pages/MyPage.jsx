@@ -99,7 +99,7 @@ export default function MyPage() {
           <div className={style.profile_name}>
             <span>{nickName}</span>님
           </div>
-          <div className={style.profile_point}>{point}원</div>
+          <div className={style.profile_point}>{point}P</div>
           <div className={style.profile_signup_title}>가입일</div>
           <div className={style.profile_signup_date}>{createTime}</div>
           <div>
@@ -151,7 +151,7 @@ export default function MyPage() {
                     <div className={style.seat_num}>
                       {content.seat[0]}-{content.seat.slice(1)}
                     </div>
-                    <div className={style.pay}>{content.price}원</div>
+                    <div className={style.pay}>{content.price}P</div>
                     <div className={style.status}>{content.status}</div>
                     <div></div>
                     {content.status === "예약완료" ? (

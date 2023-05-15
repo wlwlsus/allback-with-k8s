@@ -13,6 +13,10 @@
   box-shadow: 0px 1px 1px 1px #43434180;
 }
 
+.header_admin_disbaled {
+  pointer-events: none;
+}
+
 .header_left_admin {
   display: flex;
   align-items: center;

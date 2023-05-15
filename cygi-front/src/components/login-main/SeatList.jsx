@@ -4,7 +4,13 @@ import style from "./SeatList.module.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { history } from "./history";
 import { $ } from "util/axios";
-import { userNick, reservation, userId, userPoint } from "util/store";
+import {
+  userNick,
+  reservation,
+  userId,
+  userPoint,
+  isModalOpen,
+} from "util/store";
 import { useRecoilValue, useRecoilState } from "recoil";
 import Loading from "components/common/Loading";
 
@@ -21,6 +27,7 @@ export default function SeatList() {
   const id = useRecoilValue(userId);
   const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
   const [point, setPoint] = useRecoilState(userPoint);
+  const [onModal, setOnModal] = useRecoilState(isModalOpen);
 
   const [check, setCheck] = useState(false);
   const [data, setData] = useState();
@@ -57,6 +64,7 @@ export default function SeatList() {
       })
       .catch((err) => {
         setModalOpen(true);
+        setOnModal(true);
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
@@ -76,6 +84,8 @@ export default function SeatList() {
       }
     )
       .then(() => {
+        setModalOpen(false);
+        setOnModal(false);
         navigate("../../../complete", {
           state: {
             title: location.state.title,
@@ -143,6 +153,7 @@ export default function SeatList() {
       })
       .catch((err) => {
         setModalOpen(true);
+        setOnModal(true);
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
@@ -166,6 +177,7 @@ export default function SeatList() {
     )
       .then(() => {
         setModalOpen(false);
+        setOnModal(false);
       })
       .catch((err) => {
         setCommittedOffset(err.response.data.committedOffset);
@@ -193,6 +205,7 @@ export default function SeatList() {
       })
       .catch((err) => {
         setModalOpen(true);
+        setOnModal(true);
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
@@ -213,6 +226,7 @@ export default function SeatList() {
     })
       .then((res) => {
         setModalOpen(false);
+        setOnModal(false);
         setIsreserve(true);
         setReservationInfo({
           title: location.state.title,
@@ -447,7 +461,7 @@ export default function SeatList() {
           <div className={style.right_div}>
             <div className={style.pay_type}>잔여 포인트</div>
             <div className={style.btn_type}>
-              <div>{point}원</div>
+              <div>{point}P</div>
             </div>
             <div className={style.contents}>
               <div className={style.name2}>
@@ -475,8 +489,8 @@ export default function SeatList() {
               </div>
             </div>
             <div className={style.pay}>
-              <div className={style.title2}>총 결제 금액</div>
-              <div className={style.content2}>{location.state.price}원</div>
+              <div className={style.title2}>총 결제 포인트</div>
+              <div className={style.content2}>{location.state.price}P</div>
             </div>
           </div>
         </div>

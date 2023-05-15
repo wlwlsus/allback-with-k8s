@@ -5,7 +5,8 @@ import PosterBackground from "img/poster.png";
 import Loading from "components/common/Loading";
 import { $ } from "util/axios";
 import { kafka } from "util/store";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { isModalOpen } from "util/store";
 
 export default function ConcertDetail() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function ConcertDetail() {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState();
   const setKafka = useSetRecoilState(kafka);
+  const [onModal, setOnModal] = useRecoilState(isModalOpen);
 
   // 대기열창 모달 & 순서 계산용 변수
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +43,6 @@ export default function ConcertDetail() {
   const onCheck = () => {
     $.get(`/concert-service/api/v1/seat/rest/${location.state.concertId}`)
       .then((res) => {
-        setModalOpen(false);
         if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
           alert("마감되었습니다. 다른 공연을 예매해주세요.");
           navigate("/home");
@@ -51,10 +52,11 @@ export default function ConcertDetail() {
       })
       .catch((err) => {
         setModalOpen(true);
+        setOnModal(true);
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
-        console.log(modalOpen);
+        console.log("대기중");
 
         setTimeout(() => {
           onCheck2(err);
@@ -73,6 +75,7 @@ export default function ConcertDetail() {
       .then((res) => {
         setCheck(true);
         setModalOpen(false);
+        setOnModal(false);
         if (res.data.rest === 0 || nowTime >= new Date(data.data.endDate)) {
           alert("마감되었습니다. 다른 공연을 예매해주세요.");
           navigate("/home");
@@ -129,8 +132,8 @@ export default function ConcertDetail() {
                   <span>{data.data.title}</span>
                 </div>
                 <div className={style.name}>
-                  <div className={style.title}>가격</div>
-                  <div className={style.content}>{data.data.price}원</div>
+                  <div className={style.title}>포인트</div>
+                  <div className={style.content}>{data.data.price}P</div>
                 </div>
                 <div className={style.seat}>
                   <div className={style.title}>공연장</div>
