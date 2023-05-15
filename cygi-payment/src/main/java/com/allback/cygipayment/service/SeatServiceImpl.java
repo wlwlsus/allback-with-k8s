@@ -24,7 +24,9 @@ public class SeatServiceImpl implements SeatService {
     public Long insertReservation(ReservationReqDto reservationReqDto) {
         Reservation reservation = reservationMapper.toEntity(reservationReqDto);
 //        이미 존재하는 자리에 삽입을 하려 하면 -100을 반환 >> 실제 유저는 이 항목에서 True를 받을 수 없음
-        if(reservationRepository.existsByConcertIdAndSeat(reservation.getConcertId(), reservation.getSeat()))
+        boolean isExist = reservationRepository.existsByConcertIdAndSeat(reservation.getConcertId(), reservation.getSeat());
+        log.info("[insertReservation] : 해당 자리가 존재하면 True | value : {}", isExist);
+        if(isExist)
             return -100L;
         else {
             Reservation savedReservation = reservationRepository.save(reservation);
