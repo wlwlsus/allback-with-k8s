@@ -67,7 +67,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         }
 
         // 10초 대기 (일부러 성능 떨어뜨리기)
-        Thread.sleep(500);
+        //Thread.sleep(500);
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
