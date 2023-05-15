@@ -20,13 +20,9 @@ import lombok.ToString;
 @ToString
 public class ReservationReqDto {
 
-<<<<<<< HEAD
     private long concertId;
+
     private long stageId;
-=======
-	private long concertId;
-	private long stageId;
->>>>>>> ff8c5f068021393590e5e042a33ed8acba26ef2b
 
     private long userId;
 
