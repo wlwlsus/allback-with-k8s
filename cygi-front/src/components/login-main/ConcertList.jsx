@@ -70,7 +70,6 @@ export default function ConcertList() {
 
   return (
     <div className={style.total}>
-      <div className={style.header}>공연 목록</div>
       <div className={style.descript}>
         원하시는 공연을 선택하고 좌석을 예매해보세요. 모든 좌석이 매진되기 전에
         서두르세요! <br />

@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import style from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import logo from "img/logo.png";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   userId,
   userAuth,
   userNick,
   userPoint,
   createdTime,
+  isModalOpen,
 } from "../../util/store";
 import { $ } from "util/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ export default function Header() {
   const [auth, setAuth] = useRecoilState(userAuth);
   const [nickName, setNickName] = useRecoilState(userNick);
   const [point, setPoint] = useRecoilState(userPoint);
+  const onModal = useRecoilValue(isModalOpen);
 
   const {
     isLoading,
@@ -57,13 +59,20 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (!isLoading) setPoint(pointData.data);
+    if (!isLoading)
+      setPoint(
+        pointData.data.toLocaleString("ko-KR", {
+          currency: "KRW",
+        })
+      );
   }, [isLoading]);
 
   return (
     <>
       {!isLoading && auth !== "ROLE_USER" && (
-        <div className={style.header_admin}>
+        <div
+          className={onModal ? style.header_admin_disbled : style.header_admin}
+        >
           <div>
             <div
               onClick={() => {
@@ -113,7 +122,7 @@ export default function Header() {
             >
               마이페이지
             </div>
-            <div className={style.user_point}>{point}원</div>
+            <div className={style.user_point}>{point}P</div>
             <div className={style.user_logout} onClick={() => onLogout2()}>
               로그아웃
             </div>
