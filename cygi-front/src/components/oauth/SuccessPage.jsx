@@ -15,7 +15,6 @@ function SuccessPage() {
   const [point, setPoint] = useRecoilState(userPoint);
 
   useEffect(() => {
-    console.log(id, reservationInfo.price);
     // URL 파라미터에서 pg_token 값을 추출합니다.
     const searchParams = new URLSearchParams(location.search);
     const pg_token = searchParams.get("pg_token");
@@ -50,7 +49,6 @@ function SuccessPage() {
       })
       .catch((error) => {
         alert("문제가 발생하였습니다.");
-        console.log(error);
         window.location.href = "http://allback.site/mypage";
       });
   }, [location.search]);

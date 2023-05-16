@@ -30,8 +30,6 @@ export default function Redirect() {
     sessionStorage.setItem("accessToken", JSON.stringify(accessToken));
     sessionStorage.setItem("refreshToken", JSON.stringify(refreshToken));
 
-    console.log("회원 정보");
-    console.log(result);
     setId(result.userId);
     setAuth(result.auth);
     setNickName(result.nickname);

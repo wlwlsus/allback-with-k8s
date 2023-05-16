@@ -8,11 +8,10 @@ import {
   userAuth,
   userNick,
   userPoint,
-  createdTime,
   isModalOpen,
 } from "../../util/store";
 import { $ } from "util/axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -22,32 +21,9 @@ export default function Header() {
   const [point, setPoint] = useRecoilState(userPoint);
   const onModal = useRecoilValue(isModalOpen);
 
-  const {
-    isLoading,
-    data: pointData,
-    refetch,
-  } = useQuery(["getPoint"], () =>
+  const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
     $.get(`/user-service/api/v1/user/point/${id}`)
   );
-
-  // API_POST 함수
-  // const res_put = () => {
-  //   return $.put("/user/logout", {
-  //     accessToken: sessionStorage.getItem("accessToken"),
-  //     refreshToken: sessionStorage.getItem("refreshToken"),
-  //   });
-  // };
-
-  // 로그아웃 함수
-  // const { mutate: onLogout } = useMutation(res_put, {
-  //   onSuccess: () => {
-  //     sessionStorage.clear();
-  //     setId("");
-  //     setAuth("");
-  //     setNickName("");
-  //     navigate("/");
-  //   },
-  // });
 
   // 로그아웃 함수(back 통신 X)
   const onLogout2 = () => {
@@ -62,13 +38,9 @@ export default function Header() {
     if (!isLoading) setPoint(pointData.data);
   }, [isLoading]);
 
-  useEffect(() => {
-    console.log(onModal);
-  }, [onModal]);
-
   return (
     <div className={onModal ? style.disbled : null}>
-      {!isLoading && auth === "ROLE_USER" && (
+      {!isLoading && auth !== "ROLE_USER" && (
         <div
           className={onModal ? style.header_admin_disbled : style.header_admin}
         >
