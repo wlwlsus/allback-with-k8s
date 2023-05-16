@@ -62,7 +62,7 @@ pipeline{
                         sh "rm -rf allback-helm-chart"
                         sh "git clone https://github.com/wlwlsus/allback-helm-chart.git allback-helm-chart"
                         sh "ls -al"
-                        dir('allback-helm-chart/discovery') {
+                        dir('allback-helm-chart/eureka') {
                             sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-discovery|' values.yaml"
                             sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
                             sh "git config user.email 'cadqe13@gmail.com'"
