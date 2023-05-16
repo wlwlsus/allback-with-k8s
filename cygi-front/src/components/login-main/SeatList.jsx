@@ -132,7 +132,6 @@ export default function SeatList() {
       },
     }).then((res) => {
       setData(res);
-      console.log(res);
       setIsLoading(false);
     });
   };

@@ -10,6 +10,36 @@
   font-size: 1.7em;
 }
 
+.btn {
+  width: 80px;
+  height: 30px;
+  margin-left: 1%;
+  background-color: #a98bfa;
+  border-radius: 5px;
+  border: none;
+  font-size: 1.1em;
+  transition: all 0.3s;
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7e50fc;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn_disabled {
+  width: 80px;
+  height: 30px;
+  margin-left: 1%;
+  background-color: #e2d7fd;
+  border-radius: 5px;
+  border: none;
+  font-size: 1.1em;
+  color: #ffffff;
+}
+
 .title {
   margin-bottom: 20px;
 }

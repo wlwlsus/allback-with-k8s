@@ -35,7 +35,6 @@ export default function ConcertDetail() {
       },
     }).then((res) => {
       setIsLoading(false);
-      console.log(res.data);
       setData(res);
     });
   };
@@ -56,7 +55,6 @@ export default function ConcertDetail() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
-        console.log("대기중");
 
         setTimeout(() => {
           onCheck2(err);

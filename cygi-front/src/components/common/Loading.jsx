@@ -36,7 +36,6 @@ export default function Loading({
         className={style.btn}
         onClick={() => {
           setModalOpen(false);
-          console.log("모달 종료");
           $.get(`/concert-service`, {
             "KAFKA.UUID": onkafka.uuid,
             "KAFKA.PARTITION": onkafka.partition,
