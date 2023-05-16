@@ -23,7 +23,7 @@
 }
 
 .profile {
-  margin-top: 20%;
+  margin-top: 15%;
   margin-left: 18%;
   text-align: center;
   margin-right: 10%;
@@ -72,6 +72,36 @@
   margin-bottom: 20px;
   font-size: 2em;
   font-weight: bold;
+}
+
+.btn {
+  width: 80px;
+  height: 30px;
+  margin-left: 1%;
+  background-color: #a98bfa;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.7em;
+  transition: all 0.3s;
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #7e50fc;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn_disabled {
+  width: 80px;
+  height: 30px;
+  margin-left: 1%;
+  background-color: #e2d7fd;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.7em;
+  color: #ffffff;
 }
 
 .reserve_list {
