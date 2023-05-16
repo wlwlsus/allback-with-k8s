@@ -59,10 +59,10 @@ pipeline{
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDS}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                        sh "rm -rf eureka-helm-chart"
-                        sh "git clone https://github.com/wlwlsus/allback-helm-chart.git --branch eureka eureka-helm-chart"
+                        sh "rm -rf allback-helm-chart"
+                        sh "git clone https://github.com/wlwlsus/allback-helm-chart.git eureka-helm-chart"
                         sh "ls -al"
-                        dir('eureka-helm-chart/eureka') {
+                        dir('allback-helm-chart/eureka') {
                             sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-discovery|' values.yaml"
                             sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
                             sh "git config user.email 'cadqe13@gmail.com'"
