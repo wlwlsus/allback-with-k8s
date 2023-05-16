@@ -1,6 +1,3 @@
-from hmac import new
-from turtledemo.forest import randomfd
-
 from locust import HttpUser, task, between, TaskSet, constant, SequentialTaskSet
 import logging
 import time, random, math
@@ -10,16 +7,14 @@ authorization = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwiYXV0aCI
 
 # 티켓팅봇 : 공연정보조회 - 남은좌석조회 - 좌석상태변경 - 예약
 class UserBehavior(SequentialTaskSet):
-
-    def recursive(self):
-        print(f'USER {self.userCode} | recursive')
-        self.check_seat()
-        self.change_seat_state()
-        self.commit_reservation()
-        self.user.stop()
+    # def recursive(self):
+    #     print(f'USER {self.userCode} | recursive')
+    #     self.check_seat()
+    #     self.change_seat_state()
+    #     self.commit_reservation()
+    #     self.user.stop()
     global concertId
     concertId = 10
-
 
     @task
     def get_concert_info(self):
@@ -40,25 +35,21 @@ class UserBehavior(SequentialTaskSet):
     @task
     def check_seat(self):
         print(f"USER {self.userCode} | TASK 02")
-    # if self.res is not None and self.res.status_code == 200:
-        # 3단계 : 남은 좌석 조회 => 남은 좌석의 수를 rest라고 하는 수로 확인
+        # 2단계 : 남은 좌석 조회 => 남은 좌석의 수를 rest라고 하는 수로 확인
         self.res = queueGetRequest(self, '남은 좌석 조회', f'/seat/rest/{concertId}')
+        # 남은 좌석의 수
+        self.rest = self.res.json()['rest']
+        self.all = self.res.json()['all']
+        print(f'USER {self.userCode} | 전체 좌석 {self.all}개 中 남은 좌석 {self.rest}개')
         # 남은 좌석이 없으면 종료
-        if self.res.json()['rest'] <= 0:
+        if self.rest <= 0:
             print(f"USER {self.userCode} | 남은 좌석이 없음 >> 종료")
             self.user.stop()
 
-        # 고를 좌석을 정함
-        self.row = random.randrange(0, 10)
-        self.col = random.randrange(0, 20)
-        self.seatEng = f'{chr(self.row + 65)}{self.col + 1}';
-        print(f"USER {self.userCode} | JSON 보기")
-        print(self.res.json())
-        print(f"USER {self.userCode} | 선택 좌석 : {self.seatEng}")
     # else:
-        # 공연 정보 조회 실패시 정지
-        # print(f"USER {self.userCode} | 공연 정보 없음 >>> 중지")
-        # self.user.stop()
+    # 공연 정보 조회 실패시 정지
+    # print(f"USER {self.userCode} | 공연 정보 없음 >>> 중지")
+    # self.user.stop()
 
     # @task
     # def get_seat_info(self):
@@ -100,7 +91,31 @@ class UserBehavior(SequentialTaskSet):
     @task
     def change_seat_state(self):
         print(f"USER {self.userCode} | TASK 03")
-        # 4단계 = 좌석 점유
+
+        # 해당 프로세스가 필요한곳....
+        # --> 최초 자리 선택 | -100 리턴시 자리선택
+        # DB를 서치하여 이미 존재하지 않는 좌석에 대해서만 예매 시도 -> 이 때
+        # seatInfo_response = queueGetRequest(self, '좌석 정보 조회', f'/seat/{concertId}')
+        # seatList = seatInfo_response.json()['seatList']
+        # if self.all <= len(seatList):
+        #     print(f'user {self.userCode} | 남은 좌석이 없음 >> 종료')
+        #     self.user.stop()
+        # while True:
+        #     # 고를 좌석을 정함
+        #     self.row = random.randrange(0, 10)
+        #     self.col = random.randrange(0, 20)
+        #     self.seatEng = f'{chr(self.row + 65)}{self.col + 1}';
+        #     if self.seatEng not in seatList:
+        #         break
+        #     else:
+        #         print(f'USER {self.userCode} | 좌석 {self.seatEng}이 데이터 베이스에 존재함')
+        # print(f"USER {self.userCode} | 선택 좌석 : {self.seatEng}")
+
+        # 좌석 선택
+        if pick_seat(self) is False:
+            self.user.stop()
+
+        # 3단계 = 좌석 점유
         # 좌석 정보를 payload에 입력
         payload = {
             'concertId': concertId,
@@ -115,16 +130,28 @@ class UserBehavior(SequentialTaskSet):
         # post 요청 전송
         self.res = self.client.post('/seat', headers=postHeader, json=payload)
         print(f"USER {self.userCode} | post 요청 전송 완료")
-
         print(f'USER {self.userCode} | 최초요청 : status=', self.res.status_code)
-
         print(f'USER {self.userCode} | response text: {self.res.text}')
+
         # 만약 -100이 반환되었다면 >>> 이미 있는 자리에 들어가려함 >> 재요청
-        if self.res.text == '-100':
-            print(f'USER {self.userCode} | 중복된 좌석 선택: {self.seatEng}')
-            self.recursive()
-            self.user.stop()
-        elif self.res.status_code != 307 and self.res.status_code != 201:
+        while self.res.text == '-100':
+            print(f'USER {self.userCode} | -100 리턴됨 프로세스를 종료')
+            if pick_seat(self) is False:
+                self.user.stop()
+                break
+            payload = {
+                'concertId': concertId,
+                'seat': self.seatEng
+            }
+            self.res = self.client.post('/seat', headers=postHeader, json=payload)
+
+        # if self.res.text == '-100':
+        #     print(f'USER {self.userCode} | -100 리턴됨 프로세스를 종료')
+        #     # self.user.stop()
+        # elif \
+
+        # 예상외의 일이 발생하면 중지
+        if self.res.status_code != 307 and self.res.status_code != 201:
             print(f'USER {self.userCode} | 코드 이상 >>>> {self.res.status_code} : 중지')
             self.user.stop()
 
@@ -149,6 +176,7 @@ class UserBehavior(SequentialTaskSet):
                 new_response = self.client.post('/seat', headers=new_headers, json=payload)
 
                 # 요청 완료 시, 반복문 탈출
+                # 성공
                 if 200 <= new_response.status_code < 300:
                     print(f'USER {self.userCode} | 탈출!', new_response.status_code, offset, f'선택 좌석: {self.seatEng}')
                     # TODO : 그 사이에 해당 좌석을 누군가 예약하기 시작했을 경우 좌석을 다시 선택하게끔 해야 함
@@ -156,11 +184,24 @@ class UserBehavior(SequentialTaskSet):
                     print(self.res.text)
                     break
                 # bad request => 좌석이 이미 점유됨
-                elif new_response.status_code == 400:
-                    print(f'USER {self.userCode} | status=', self.res.status_code, '객석 점유 됨')
-                    self.recursive()
+                elif new_response.text == '-100':
+                    print(f'USER {self.userCode} | 대기열 status=', self.res.status_code, '객석 점유 됨')
+                    # 좌석 재선택
+                    if pick_seat(self) is False:
+                        self.user.stop()
+                        break
+                    # 페이로드 수정
+                    payload = {
+                        'concertId': concertId,
+                        'seat': self.seatEng
+                    }
+                    # 타이머 재설정
+                    self.timer = int(new_response.json().get('offset')) - int(
+                        new_response.json().get('committedOffset'))
+                    # print(f'USER {self.userCode} | 프로세스를 종료')
                     # self.user.stop()
                 else:
+                    # 재요청
                     self.timer = int(new_response.json().get('offset')) - int(
                         new_response.json().get('committedOffset'))
                     # if self.timer > 10:
@@ -169,18 +210,17 @@ class UserBehavior(SequentialTaskSet):
                     #     self.timer = 1
                     print(f"USER {self.userCode} | 재요청 시간 : {self.timer}")
 
-        # 최초 요청시 자리가 점유 되면 되돌아감
-        # elif self.res.status_code == 400:
-        #     print('status=', self.res.status_code, '객석 점유 됨')
-        #     self.check_seat()
         else:
             print(f'USER {self.userCode} | status=', self.res.status_code, '최초요청 성공')
 
     @task
     def commit_reservation(self):
         if self.res.text == '-100':
+            # pick_seat(self)
+            print(f'USER {self.userCode} | 점유상태에 의해 해당 결제를 실행 할 수 없음 >> 중지')
             self.user.stop()
-        # 5단계 : 예약 (대기열 필요 없음)
+            return
+        # 4단계 : 예약 (대기열 필요 없음)
         # 예약중 >>>> 예약완료
         print(f"USER {self.userCode} | TASK 04")
         # 예약 번호
@@ -262,9 +302,32 @@ def queueGetRequest(self, name, url):
         return response
 
 
+def pick_seat(self):
+    # 해당 프로세스가 필요한곳....
+    # --> 최초 자리 선택 | `-100` 리턴시 자리선택
+    # DB를 서치하여 이미 존재하지 않는 좌석에 대해서만 예매 시도 -> 이 때
+    seatInfo_response = queueGetRequest(self, '좌석 정보 조회', f'/seat/{concertId}')
+    seatList = seatInfo_response.json()['seatList']
+    if self.all <= len(seatList):
+        print(f'user {self.userCode} | 남은 좌석이 없음 >> 종료')
+        # self.user.stop()
+        return False
+    while True:
+        # 고를 좌석을 정함
+        self.row = random.randrange(0, 10)
+        self.col = random.randrange(0, 20)
+        self.seatEng = f'{chr(self.row + 65)}{self.col + 1}';
+        if self.seatEng not in seatList:
+            break
+        else:
+            print(f'USER {self.userCode} | 좌석 {self.seatEng}이 데이터 베이스에 존재함')
+    print(f"USER {self.userCode} | 선택 좌석 : {self.seatEng}")
+    return True
+
+
 class LocustUser(HttpUser):
     host = "http://allback.site:8080/concert-service/api/v1"
     # host = "http://localhost:8080/concert-service/api/v1"
     tasks = [UserBehavior]
-    wait_time = between(3, 3)  # 1~4초 사이 간격으로 랜덤하게 작업을 수행한다.
+    wait_time = between(1, 1)
     # wait_time = constant(10)    # 5초마다 작업을 수행한다.
