@@ -1,6 +1,10 @@
 pipeline{
-    //def WORKSPACE = "/var/jenkins_home/workspace/back-payment/cygi-payment/"
     agent any
+
+    environment {
+        DOCKER_HUB_CREDS = 'docker-hub-credentials'
+        GITHUB_CREDS = 'github-credentials'
+    }
     
     stages{
 //         stage('Build Start'){
@@ -15,8 +19,8 @@ pipeline{
         stage('Clone Repo'){
             steps{
                 git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
-                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
-                    branch: 'deploy-back-payment'
+                    credentialsId: 'swj', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-k8s-payment'
             }
         }
 
@@ -34,16 +38,41 @@ pipeline{
             steps{
                 script{
                     sh "docker build -t back-payment:${env.BUILD_NUMBER} cygi-payment/"
+                    sh "docker tag back-payment:${env.BUILD_NUMBER} wlwlsus/back-payment:${env.BUILD_NUMBER}"
                 }
             }
         }
 
-        stage('Deploy Docker'){
-            steps{
-                script{
-                    sh "docker stop back-payment || true && docker rm back-payment || true"
-                    sh "docker run --name back-payment -d --network connect-default back-payment:${env.BUILD_NUMBER}"
-                    sh "docker image prune -a -f || true"
+        stage('Push Docker to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker push wlwlsus/back-payment:${env.BUILD_NUMBER}"
+                        sh "docker image prune -a -f || true"
+                    }
+                }
+            }
+        }
+
+        stage('Update k8s Manifest') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDS}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                        sh "rm -rf allback-helm-chart"
+                        sh "git clone https://github.com/wlwlsus/allback-helm-chart.git allback-helm-chart"
+                        sh "ls -al"
+                        dir('allback-helm-chart/payment') {
+                            sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-payment|' values.yaml"
+                            sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
+                            sh "git config user.email 'cadqe13@gmail.com'"
+                            sh "git config user.name 'cadqe13'"
+                            sh "git add ."
+                            sh "git diff-index --quiet HEAD || git commit -m 'Update back-payment image to ${env.BUILD_NUMBER}'"
+                            sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
+                            sh "git push origin main"
+                        }
+                    }
                 }
             }
         }
