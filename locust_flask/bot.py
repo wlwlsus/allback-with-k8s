@@ -16,7 +16,7 @@ class UserBehavior(SequentialTaskSet):
         self.check_seat()
         self.change_seat_state()
         self.commit_reservation()
-
+        self.user.stop()
     global concertId
     concertId = 10
 
@@ -45,12 +45,15 @@ class UserBehavior(SequentialTaskSet):
         self.res = queueGetRequest(self, '남은 좌석 조회', f'/seat/rest/{concertId}')
         # 남은 좌석이 없으면 종료
         if self.res.json()['rest'] <= 0:
+            print(f"USER {self.userCode} | 남은 좌석이 없음 >> 종료")
             self.user.stop()
 
         # 고를 좌석을 정함
         self.row = random.randrange(0, 10)
         self.col = random.randrange(0, 20)
         self.seatEng = f'{chr(self.row + 65)}{self.col + 1}';
+        print(f"USER {self.userCode} | JSON 보기")
+        print(self.res.json())
         print(f"USER {self.userCode} | 선택 좌석 : {self.seatEng}")
     # else:
         # 공연 정보 조회 실패시 정지
@@ -147,20 +150,20 @@ class UserBehavior(SequentialTaskSet):
 
                 # 요청 완료 시, 반복문 탈출
                 if 200 <= new_response.status_code < 300:
-                    print('탈출!', new_response.status_code, offset)
+                    print(f'USER {self.userCode} | 탈출!', new_response.status_code, offset, f'선택 좌석: {self.seatEng}')
                     # TODO : 그 사이에 해당 좌석을 누군가 예약하기 시작했을 경우 좌석을 다시 선택하게끔 해야 함
                     self.res = new_response
                     print(self.res.text)
                     break
-                # bad request => 좌성이 이미 점유됨
+                # bad request => 좌석이 이미 점유됨
                 elif new_response.status_code == 400:
                     print(f'USER {self.userCode} | status=', self.res.status_code, '객석 점유 됨')
                     self.recursive()
-                    self.user.stop()
+                    # self.user.stop()
                 else:
                     self.timer = int(new_response.json().get('offset')) - int(
                         new_response.json().get('committedOffset'))
-                    # if self.timer > 2:
+                    # if self.timer > 10:
                     #     self.timer = 10
                     # else:
                     #     self.timer = 1
@@ -175,6 +178,8 @@ class UserBehavior(SequentialTaskSet):
 
     @task
     def commit_reservation(self):
+        if self.res.text == '-100':
+            self.user.stop()
         # 5단계 : 예약 (대기열 필요 없음)
         # 예약중 >>>> 예약완료
         print(f"USER {self.userCode} | TASK 04")
@@ -246,7 +251,7 @@ def queueGetRequest(self, name, url):
                 print(new_response.json())
                 self.timer = int(new_response.json().get('offset')) - int(
                     new_response.json().get('committedOffset'))
-                # if self.timer > 2:
+                # if self.timer > 10:
                 #     self.timer = 10
                 # else:
                 #     self.timer = 1
@@ -261,5 +266,5 @@ class LocustUser(HttpUser):
     host = "http://allback.site:8080/concert-service/api/v1"
     # host = "http://localhost:8080/concert-service/api/v1"
     tasks = [UserBehavior]
-    wait_time = between(10, 10)  # 1~4초 사이 간격으로 랜덤하게 작업을 수행한다.
+    wait_time = between(3, 3)  # 1~4초 사이 간격으로 랜덤하게 작업을 수행한다.
     # wait_time = constant(10)    # 5초마다 작업을 수행한다.
