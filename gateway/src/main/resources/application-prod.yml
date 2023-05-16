@@ -94,6 +94,15 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/admin-service/(?<segment>.*), /$\{segment}
 
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/admin-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
 jwt:
   secret: UDVaY0VRREoyaEl2d2JlWXFFN2haOWF3ekRxbFBzTnpscEFFaE5mdDBSZw==
 
