@@ -70,7 +70,7 @@ pipeline{
                             sh "git add ."
                             sh "git diff-index --quiet HEAD || git commit -m 'Update back-discovery image to ${env.BUILD_NUMBER}'"
                             sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
-                            sh "git push origin eureka"
+                            sh "git push origin main"
                         }
                     }
                 }
