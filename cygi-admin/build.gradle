@@ -43,6 +43,9 @@ dependencies {
 	// Feign Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2'
 
+	// eureka
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
 	//zipkin
 	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
 
