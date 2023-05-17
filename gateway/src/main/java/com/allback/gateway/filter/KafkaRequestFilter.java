@@ -148,15 +148,50 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                         .flatMap(Void -> Mono.error(new ResponseStatusException(HttpStatus.OK, message)));
             }
 
-            // 대기열이 있다면 -> 토큰 반환하고 끝내기
-            // 내 앞에 취소표가 있다면 queue에서 제거하기
-            while (priorityQueue.size() > 0 && offset > priorityQueue.peek()) {
-                Long poll = priorityQueue.poll();
-                System.out.println(offset + " 번째 오프셋 앞에 있는 " + poll + "번째 오프셋 삭제");
-                committedOffset = Math.max(committedOffset + 1, poll);
+            // committed offset과 offset 사이가 전부 취소표라면, 내 요청을 처리할 수 있다.
+            long i = committedOffset + 1;
+            for (; i < offset; i++) {
+                if (!priorityQueue.contains(i)) {
+                    break;
+                }
+            }
+            // 대기열이 없다면 -> 요청 처리하기
+            if (i == offset) {
+                // 내 바로 뒤에 취소표 있으면 같이 제거하기
+                long newOffset = offset;
+                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
+                    newOffset++;
+                    System.out.println(offset + "번째 offset 바로 뒤에 있는 " + newOffset + " offset 건너뛰기 jump!");
+                    priorityQueue.poll();
+                }
+
+                if (newOffset != offset) {
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("KAFKA.OFFSET", Long.toString(offset));
+
+                    // 변경된 header로 request를 갱신
+                    request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
+                    exchange = exchange.mutate().request(request).build();
+                }
+
+
+                // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
+                //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
+                //  파티션 번호!
+
+
+                return chain.filter(exchange);
             }
 
-            if (committedOffset + 1 < offset) {
+
+            // 내 앞에 취소표가 있다면 queue에서 제거하기
+//            while (priorityQueue.size() > 0 && offset > priorityQueue.peek()) {
+//                Long poll = priorityQueue.poll();
+//                System.out.println(offset + " 번째 오프셋 앞에 있는 " + poll + "번째 오프셋 삭제");
+//                committedOffset = Math.max(committedOffset + 1, poll);
+//            }
+            // 대기열이 있다면 -> 토큰 반환하고 끝내기
+            else {
                 // 클라이언트에게 보낼 응답 생성
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
@@ -181,34 +216,6 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 // 응답을 클라이언트에게 전송하고 filter 체인 종료
                 return response.writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(responseBytes)));
-            }
-
-            // 대기열이 없다면 -> 요청 처리하기
-            else {
-                // 내 바로 뒤에 취소표 있으면 제거하기
-                long newOffset = offset;
-                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
-                    newOffset++;
-                    System.out.println(offset + "번째 offset 바로 뒤에 있는 " + newOffset + " offset 건너뛰기 jump!");
-                    priorityQueue.poll();
-                }
-
-                if (newOffset != offset) {
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.add("KAFKA.OFFSET", Long.toString(offset));
-
-                    // 변경된 header로 request를 갱신
-                    request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
-                    exchange = exchange.mutate().request(request).build();
-                }
-
-
-                // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
-                //  메시지 uuid 값을 같이 넘겨줘서, 같은 메시지가 commit 되어야함
-                //  파티션 번호!
-
-
-                return chain.filter(exchange);
             }
         };
     }
