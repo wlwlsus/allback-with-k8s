@@ -133,7 +133,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 priorityQueue.add(offset);
 
-                System.out.println(offset + " 요청 취소가 들어왔음");
+                System.out.println(offset + " 요청 취소가 들어왔음 cancel request!!!!!!!!");
                 
                 // 응답 만들기
                 ServerHttpResponse response = exchange.getResponse();
