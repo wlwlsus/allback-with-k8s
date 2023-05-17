@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import style from "./ReservationList.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $_admin } from "util/axios";
+import { $ } from "util/axios";
 
 export default function ReservationList() {
   const [page, setPage] = useState(1);
@@ -12,7 +12,7 @@ export default function ReservationList() {
     data: reservation,
     refetch,
   } = useQuery(["reservation"], () =>
-    $_admin.get(`/dashboard/reservation?page=${page}&size=10`)
+    $.get(`/admin-service/api/v1/dashboard/reservation?page=${page}&size=10`)
   );
 
   const onPrev = () => {
