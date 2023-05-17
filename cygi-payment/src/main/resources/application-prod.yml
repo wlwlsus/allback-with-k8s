@@ -11,7 +11,7 @@ spring:
     generate-ddl: false
     show-sql: true
   zipkin:
-    base-url: http://k8a806.p.ssafy.io:9411
+    base-url: http://zipkin.allback.site:9411
     enabled: true
   sleuth:
     sampler:
