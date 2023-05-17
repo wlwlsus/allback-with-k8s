@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./Loading.module.css";
 import Spinner from "gif/loading.gif";
-import { kafka } from "util/store";
-import { useRecoilValue } from "recoil";
+import { kafka, stopRecur } from "util/store";
+import { useRecoilState } from "recoil";
 import { $ } from "util/axios";
 
 export default function Loading({
@@ -12,7 +12,7 @@ export default function Loading({
   committedOffset,
   endOffset,
 }) {
-  const onkafka = useRecoilValue(kafka);
+  const [onkafka, setOnKafka] = useRecoilState(kafka);
 
   return (
     <div className={style.container}>
@@ -42,9 +42,10 @@ export default function Loading({
               "KAFKA.OFFSET": onkafka.offset,
               "KAFKA.QUIT": "quit",
             },
+          }).then(() => {
+            // window.location.href = "http://allback.site/";
+            window.location.href = "http://localhost:3000/";
           });
-          window.location.href = "http://allback.site/";
-          // window.location.href = "http://localhost:3000/";
         }}
       >
         요청중지

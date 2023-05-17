@@ -4,7 +4,7 @@ import style from "./ConcertDetail.module.css";
 import PosterBackground from "img/poster.png";
 import Loading from "components/common/Loading";
 import { $ } from "util/axios";
-import { kafka } from "util/store";
+import { kafka, stopRecur } from "util/store";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { isModalOpen } from "util/store";
 
@@ -90,6 +90,8 @@ export default function ConcertDetail() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
+        console.log("재요청중");
+        console.log(kafka.quit);
 
         setTimeout(() => {
           onCheck2(err);

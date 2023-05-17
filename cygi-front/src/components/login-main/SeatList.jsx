@@ -108,9 +108,11 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        setTimeout(() => {
-          onReserve2(err);
-        }, [1000]);
+        if (kafka.quit === "") {
+          setTimeout(() => {
+            onReserve2(err);
+          }, [1000]);
+        }
       });
   };
 
@@ -194,9 +196,11 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        setTimeout(() => {
-          onDelete2(err);
-        }, [1000]);
+        if (kafka.quit === "") {
+          setTimeout(() => {
+            onDelete2(err);
+          }, [1000]);
+        }
       });
   };
 
@@ -256,9 +260,11 @@ export default function SeatList() {
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
 
-        setTimeout(() => {
-          onSelect2(err);
-        }, [1000]);
+        if (kafka.quit === "") {
+          setTimeout(() => {
+            onSelect2(err);
+          }, [1000]);
+        }
       });
   };
 
