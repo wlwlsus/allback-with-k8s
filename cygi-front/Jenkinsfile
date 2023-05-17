@@ -1,0 +1,59 @@
+pipeline{
+    //def WORKSPACE = "/var/jenkins_home/workspace/front/cygi-front/"
+    agent any
+    
+    stages{
+        // stage('Build Start'){
+        //     steps{
+        //         mattermostSend color: "#2A42EE", 
+        //             message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+        //             endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+        //             channel: "all_back_jenkins"
+        //     }
+        // }
+
+        stage('Clone Repo'){
+            steps{
+                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                    credentialsId: 'wnsdk', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-front'
+            }
+        }
+
+        stage('Deploy Docker'){
+            steps{
+                script{
+                    sh "ls"
+                    // sh "docker stop nginx || true && docker rm nginx || true"
+                    // sh "docker stop client || true && docker rm client || true"
+                    sh "docker-compose -f docker-compose.yml pull"
+                    sh "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1"
+                    sh "docker-compose -f docker-compose.yml up --build -d"
+                }
+            }
+        }
+
+        stage('Finish'){
+            steps{
+                script{
+                    sh "docker rmi -f \$(docker images -f \"dangling=true\" -q) || true"
+                }
+            }
+        }
+    }
+
+    // post {
+    //     success {
+    //         mattermostSend color: "good", 
+    //             message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+    //             endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+    //             channel: "all_back_jenkins"
+    //     }
+    //     failure {
+    //         mattermostSend color: "danger", 
+    //             message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+    //             endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+    //             channel: "all_back_jenkins"
+    //     }
+    // }
+}
