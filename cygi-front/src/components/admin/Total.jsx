@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 import style from "./Total.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $ } from "util/axios";
+import { $_admin } from "util/axios";
 
 export default function Total() {
   // 정산 내역 조회
   const { data: balance } = useQuery(["balance"], () =>
-    $.get(`/admin-service/api/v1/dashboard/balance?page=1&size=10`)
+    $_admin.get(`/dashboard/balance?page=1&size=10`)
   );
 
   // 사용자 목록 조회
   const { data: user } = useQuery(["user"], () =>
-    $.get(`/admin-service/api/v1/dashboard/user?page=1`)
+    $_admin.get(`/dashboard/user?page=1`)
   );
 
   // 전체 예매내역 조회
   const { data: reservation } = useQuery(["reservation"], () =>
-    $.get(`/admin-service/api/v1/dashboard/reservation?page=1&size=10`)
+    $_admin.get(`/dashboard/reservation?page=1&size=10`)
   );
 
   return (
