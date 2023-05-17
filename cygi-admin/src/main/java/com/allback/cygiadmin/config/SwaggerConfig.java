@@ -12,11 +12,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@OpenAPIDefinition(
+    servers = {
+        @Server(url = "/admin-service/api/v1")
+    }
+)
 public class SwaggerConfig {
 
     @Bean
+    public GroupedOpenApi paymentServiceApi() {
+        return GroupedOpenApi.builder()
+            .group("admin-service")
+            .pathsToMatch("/**")
+            .build();
+    }
+
+    @Bean
     public OpenAPI openAPI() {
-        io.swagger.v3.oas.models.info.Info info = new Info()
+        Info info = new Info()
             .version("v1.0.0")
             .title("🌟 CYGI Admin Service API 명세서 🌟")
             .description("CYGI Admin Service API 명세서");
