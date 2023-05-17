@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+//@SpringBootTest
 class ConcertServiceImplTest {
 
     private static final Logger logger = Logger.getLogger(ConcertServiceImplTest.class.getName());
