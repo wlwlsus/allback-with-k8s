@@ -43,8 +43,8 @@ export default function Loading({
               "KAFKA.QUIT": "quit",
             },
           }).then(() => {
-            // window.location.href = "http://allback.site/";
-            window.location.href = "http://localhost:3000/";
+            window.location.href = "http://allback.site/";
+            // window.location.href = "http://localhost:3000/";
           });
         }}
       >
