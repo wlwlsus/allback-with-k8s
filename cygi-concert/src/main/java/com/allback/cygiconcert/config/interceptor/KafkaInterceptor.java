@@ -99,7 +99,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         System.out.println("committedOffset :::: " + offset);
 
 //        currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
-        currentOffsets.put(topicPartition, new OffsetAndMetadata(offset));
+        currentOffsets.put(topicPartition, new OffsetAndMetadata(offset + 1));
 
         // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
