@@ -10,8 +10,9 @@ import {
   userId,
   userPoint,
   isModalOpen,
+  kafka,
 } from "util/store";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import Loading from "components/common/Loading";
 
 export default function SeatList() {
@@ -28,6 +29,7 @@ export default function SeatList() {
   const [reservationInfo, setReservationInfo] = useRecoilState(reservation);
   const [point, setPoint] = useRecoilState(userPoint);
   const [onModal, setOnModal] = useRecoilState(isModalOpen);
+  const setKafka = useSetRecoilState(kafka);
 
   const [check, setCheck] = useState(false);
   const [data, setData] = useState();
@@ -68,6 +70,11 @@ export default function SeatList() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
+        setKafka({
+          uuid: err.response.data.uuid,
+          partition: err.response.data.partition,
+          offset: err.response.data.offset,
+        });
 
         setTimeout(() => {
           onReserve2(err);
@@ -156,6 +163,11 @@ export default function SeatList() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
+        setKafka({
+          uuid: err.response.data.uuid,
+          partition: err.response.data.partition,
+          offset: err.response.data.offset,
+        });
 
         setTimeout(() => {
           onDelete2(err);
@@ -208,6 +220,11 @@ export default function SeatList() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
+        setKafka({
+          uuid: err.response.data.uuid,
+          partition: err.response.data.partition,
+          offset: err.response.data.offset,
+        });
 
         setTimeout(() => {
           onSelect2(err);

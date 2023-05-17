@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./Loading.module.css";
 import Spinner from "gif/loading.gif";
@@ -12,7 +12,6 @@ export default function Loading({
   committedOffset,
   endOffset,
 }) {
-  const navigate = useNavigate();
   const onkafka = useRecoilValue(kafka);
 
   return (
@@ -37,10 +36,12 @@ export default function Loading({
         onClick={() => {
           setModalOpen(false);
           $.get(`/concert-service`, {
-            "KAFKA.UUID": onkafka.uuid,
-            "KAFKA.PARTITION": onkafka.partition,
-            "KAFKA.OFFSET": onkafka.offset,
-            "KAFKA.QUIT": "quit",
+            headers: {
+              "KAFKA.UUID": onkafka.uuid,
+              "KAFKA.PARTITION": onkafka.partition,
+              "KAFKA.OFFSET": onkafka.offset,
+              "KAFKA.QUIT": "quit",
+            },
           });
           window.location.href = "http://allback.site/";
           // window.location.href = "http://localhost:3000/";

@@ -55,6 +55,11 @@ export default function ConcertDetail() {
         setOffset(err.response.data.offset);
         setCommittedOffset(err.response.data.committedOffset);
         setEndOffset(err.response.data.endOffset);
+        setKafka({
+          uuid: err.response.data.uuid,
+          partition: err.response.data.partition,
+          offset: err.response.data.offset,
+        });
 
         setTimeout(() => {
           onCheck2(err);
