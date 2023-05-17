@@ -156,32 +156,35 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             System.out.println();
 
             for (; i < offset; i++) {
+                boolean idx = true;
                 for (long j : priorityQueue) {
                     if (j == i) {
-                        continue;
+                        System.out.println("일치");
+                        idx = false;
+                        break;
                     }
                 }
-                break;
+                if (idx) break;
             }
 
             // 대기열이 없다면 -> 요청 처리하기
             if (i == offset) {
                 // 내 바로 뒤에 취소표 있으면 같이 제거하기
-                long newOffset = offset;
-                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
-                    newOffset++;
-                    System.out.println(offset + "번째 offset 바로 뒤에 있는 " + newOffset + " offset 건너뛰기 jump!");
-                    priorityQueue.poll();
-                }
-
-                if (newOffset != offset) {
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.add("KAFKA.OFFSET", Long.toString(newOffset));
-
-                    // 변경된 header로 request를 갱신
-                    request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
-                    exchange = exchange.mutate().request(request).build();
-                }
+//                long newOffset = offset;
+//                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
+//                    newOffset++;
+//                    System.out.println(offset + "번째 offset 바로 뒤에 있는 " + newOffset + " offset 건너뛰기 jump!");
+//                    priorityQueue.poll();
+//                }
+//
+//                if (newOffset != offset) {
+//                    HttpHeaders headers = new HttpHeaders();
+//                    headers.add("KAFKA.OFFSET", Long.toString(newOffset));
+//
+//                    // 변경된 header로 request를 갱신
+//                    request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
+//                    exchange = exchange.mutate().request(request).build();
+//                }
 
 
                 // TODO : 각 Spring 서버를 Kafka의 Consumer로 설정해놓고, 요청 하나 처리할 때마다 메시지 commit 해야됨
