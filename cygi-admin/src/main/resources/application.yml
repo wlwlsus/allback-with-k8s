@@ -5,12 +5,12 @@ server:
 
 payment:
   server:
-    url: http://localhost:8001/payment-service
+    url: http://localhost:8001
     prefix: /api/v1/server-admin
 
 user:
   server:
-    url: http://localhost:8000/user-service
+    url: http://localhost:8000
     prefix: /api/v1/server-admin
 
 #admin:
