@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "user-service", url = "${user.server.url}",path = "${user.server.prefix}")
-@Component
 public interface UserServerClient {
     @GetMapping("/users")
     ResponseEntity<Page<UserResDto>> getUsers(@RequestParam("page") int page);
-//    ResponseEntity<Page<UserResDto>> getUsers(@RequestParam("page") int page, @RequestHeader("Authorization") String authorization);
 }
-
-//localhost:8000/api/v1/server-admin/users?page=0

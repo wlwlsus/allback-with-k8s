@@ -26,22 +26,22 @@ public class DashBoardController {
     @Operation(summary = "전체 회원목록 조회")
     @GetMapping("/user")
     @ResponseBody
-    public ResponseEntity<Page<UserResDto>> getUsers(@RequestParam int page, @Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<Page<UserResDto>> getUsers(@RequestParam int page) {
 //        System.out.println("회원 목록 조회 controller");
-        Page<UserResDto> userPage = dashBoardService.getUsers(page, authorization);
+        Page<UserResDto> userPage = dashBoardService.getUsers(page);
         return new ResponseEntity<>(userPage, HttpStatus.OK);
     }
     @Operation(summary = "전체 예매내역 조회")
     @GetMapping("/reservation")
-    public ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam int page, @RequestParam int size, @Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam int page, @RequestParam int size) {
 //        System.out.println("예매 내역 조회 Controller");
-        ReservationListResAllDto reservationResDtoPage = dashBoardService.getReservations(page, size, authorization);
+        ReservationListResAllDto reservationResDtoPage = dashBoardService.getReservations(page, size);
         return new ResponseEntity<>(reservationResDtoPage, HttpStatus.OK);
     }
     @Operation(summary = "정산 내역 조회")
     @GetMapping("/balance")
-    public ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam int page, @RequestParam int size, @Schema(hidden = true) @RequestHeader("Authorization") String authorization) {
-        Page<BalanceResDto> balanceList = dashBoardService.getBalances(page-1, size, authorization);
+    public ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam int page, @RequestParam int size) {
+        Page<BalanceResDto> balanceList = dashBoardService.getBalances(page-1, size);
         return new ResponseEntity<>(balanceList, HttpStatus.OK);
     }
 }

@@ -10,9 +10,9 @@ import java.util.List;
 public interface DashBoardService {
 
 
-    Page<UserResDto> getUsers(int page, String authorization);
+    Page<UserResDto> getUsers(int page);
 
-    ReservationListResAllDto getReservations(int page, int size, String authorization);
+    ReservationListResAllDto getReservations(int page, int size);
 
-    Page<BalanceResDto> getBalances(int page, int size, String authorization);
+    Page<BalanceResDto> getBalances(int page, int size);
 }

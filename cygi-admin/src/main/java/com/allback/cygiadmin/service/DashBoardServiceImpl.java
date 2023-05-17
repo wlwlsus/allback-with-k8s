@@ -25,7 +25,7 @@ public class DashBoardServiceImpl implements DashBoardService {
 //    private final String authorization = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY4NTYzNDQ4OX0.NJMI5o7XlD2LCQ7FFbkQDiDnk2FghZ05lBtO_WNCeoo";
 
 	@Override
-	public Page<UserResDto> getUsers(int page, String authorization) {
+	public Page<UserResDto> getUsers(int page) {
 		System.out.println("dashboard impl get users");
 		Page<UserResDto> r = userServerClient.getUsers(page).getBody();
 //		Page<UserResDto> r = userServerClient.getUsers(page, authorization).getBody();
@@ -35,17 +35,13 @@ public class DashBoardServiceImpl implements DashBoardService {
 	}
 
 	@Override
-	public ReservationListResAllDto getReservations(int page, int size, String authorization) {
-//        System.out.println("dashboard impl get reservations");
-//        System.out.println(paymentServerClient.getReservations());
+	public ReservationListResAllDto getReservations(int page, int size) {
 		return paymentServerClient.getReservations(page, size).getBody();
-//        return paymentServerClient.getReservations(page, size, authorization).getBody();
 	}
 
 	@Override
-	public Page<BalanceResDto> getBalances(int page, int size, String authorization) {
+	public Page<BalanceResDto> getBalances(int page, int size) {
 		log.info("[getBalances] : 정산내역조회");
 		return paymentServerClient.getBalances(page, size).getBody();
-//        return paymentServerClient.getBalances(page, size,authorization).getBody();
 	}
 }

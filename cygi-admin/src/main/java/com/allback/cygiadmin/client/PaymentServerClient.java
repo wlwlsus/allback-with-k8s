@@ -11,14 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-//@Headers("Content-Type: application/json")
 @FeignClient(name = "payment-service", url = "${payment.server.url}",path = "${payment.server.prefix}")
-@Component
 public interface PaymentServerClient {
     @GetMapping("/reservations")
     ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam("page") int page, @RequestParam("size") int size);
-//    ResponseEntity<ReservationListResAllDto> getReservations(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
     @GetMapping("/balances")
     ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam("page") int page, @RequestParam("size") int size);
-//    ResponseEntity<Page<BalanceResDto>> getBalances(@RequestParam("page") int page, @RequestParam("size") int size, @RequestHeader("Authorization") String authorization);
 }
