@@ -150,6 +150,11 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // committed offset과 offset 사이가 전부 취소표라면, 내 요청을 처리할 수 있다.
             long i = committedOffset + 1;
+            for (long j : priorityQueue) {
+                System.out.print(j + " ");
+            }
+            System.out.println();
+
             for (; i < offset; i++) {
                 for (long j : priorityQueue) {
                     if (j == i) {
@@ -171,7 +176,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 if (newOffset != offset) {
                     HttpHeaders headers = new HttpHeaders();
-                    headers.add("KAFKA.OFFSET", Long.toString(offset));
+                    headers.add("KAFKA.OFFSET", Long.toString(newOffset));
 
                     // 변경된 header로 request를 갱신
                     request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
