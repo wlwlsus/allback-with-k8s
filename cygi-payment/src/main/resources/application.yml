@@ -22,8 +22,14 @@ spring:
     username: ssafy806
     password: ssafy806
 
-payment:
+user:
   server:
+    url: http://localhost:8000/user-service
+    prefix: /api/v1/server-payment
+
+concert:
+  server:
+    url: http://localhost:8002/concert-service
     prefix: /api/v1/server-payment
 
 # Kakao Pay Setting
@@ -31,14 +37,14 @@ kakao:
   host: https://kapi.kakao.com
   app-key: e6444dbd88ac593b0ef5afd9b6d63bd1
 
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 springdoc:
   swagger-ui:

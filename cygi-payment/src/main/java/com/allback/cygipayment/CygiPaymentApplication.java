@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableJpaAuditing
 @EnableFeignClients
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableBatchProcessing
 @EnableScheduling
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })

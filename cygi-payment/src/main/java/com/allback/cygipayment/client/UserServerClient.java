@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * description :
  */
 
-@FeignClient(name = "user-service", path = "${payment.server.prefix}")
+@FeignClient(name = "user-service", url = "${user.server.url}",path = "${user.server.prefix}")
 public interface UserServerClient {
   @PutMapping("/amount")
   void amount(@RequestBody AmountReqDto request);
