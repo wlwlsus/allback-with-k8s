@@ -15,10 +15,14 @@
 ---
 ## ✨ 서비스 소개
 
-- 프로젝트 진행 기간
-2023.04.10(월) ~ 2023.05.19(금) (6주간 진행)
+- 프로젝트 진행 기간  
+2023.04.10(월) ~ 2023.05.19(금) (6주간 진행)  
 - 소개 영상 : [유튜브 링크](TODO)
 - 사이트 링크 : http://allback.site
+
+티켓팅 사이트 `Can You Get It`
+티켓팅의 특징은 특정한 시각에 수많은 요청이 한꺼번에 몰린다는 점
+이러한 상황에서도 서버가 터지지 않는 안정적인 아키텍처를 고민해보았습니다.
 
 <br>
 
@@ -42,51 +46,47 @@
 접은 내용
 </details>
 
+
 <details>
 <summary>Spring Batch를 이용한 정산 시스템</summary>
-
-접은 내용
+<img src="/document/gif/정산.gif" title="정산" width="30%" height="30%"/> <br>
+매일 일정한 시각마다 자동으로 공연 주최자들에게 돈을 정산
 </details>
+
 
 <details>
 <summary>ELK Stack + kafka를 이용한 로그 수집</summary>
-
 접은 내용
 </details>
 
 <details>
-<summary>gateway 및 kafka를 이용한 대기열 시스템</summary>
-
+<summary>kafka를 이용한 대기열 시스템</summary>
+<img src="/document/gif/정산.gif" title="정산" width="30%" height="30%"/> <br>
 접은 내용
 </details>
 
 <details>
 <summary>locust를 이용한 티켓팅 봇 및 성능테스트</summary>
-
 접은 내용
 </details>
 
 <details>
 <summary>jenkins - 헬름차트 - argo CICD</summary>
-
 접은 내용
 </details>
 
 <details>
-<summary>K8s를 이용한 도커 컨테이너 관리</summary>
-
+<summary>k8s를 이용한 도커 컨테이너 관리</summary>
 접은 내용
 </details>
 
 <details>
 <summary>오토 스케일링</summary>
-
 접은 내용
 </details>
 
 <details>
 <summary>롤링업데이트를 통한 무중단배포</summary>
-
 접은 내용
 </details>
 
