@@ -6,7 +6,7 @@ import { history } from "../components/login-main/history";
 import Poster from "img/poster.png";
 import { reservation, userId, userPoint } from "util/store";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { $_user } from "util/axios";
+import { $ } from "util/axios";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ReserveComplete() {
@@ -17,7 +17,7 @@ export default function ReserveComplete() {
   const [point, setPoint] = useRecoilState(userPoint);
 
   const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
-    $_user.get(`/user/point?id=${id}`)
+    $.get(`/user-service/api/v1/user/point?id=${id}`)
   );
 
   useEffect(() => {
@@ -72,8 +72,8 @@ export default function ReserveComplete() {
                 </div>
               </div>
               <div className={style.pay}>
-                <div className={style.title}>결제 금액</div>
-                <div className={style.content}>{location.state.price}원</div>
+                <div className={style.title}>결제 포인트</div>
+                <div className={style.content}>{location.state.price}P</div>
               </div>
               <div className={style.date}>
                 <div className={style.title}>공연일</div>

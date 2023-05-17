@@ -1,29 +1,30 @@
 import axios from "axios";
 
-export const $_user = axios.create({
-  baseURL: "http://allback.site:8081/user-service/api/v1",
+export const $ = axios.create({
+  baseURL: "http://allback.site:8080/",
+  // baseURL: "http://localhost:8080/",
   headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const $_payment = axios.create({
-  baseURL: "http://allback.site:8081/payment-service/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const $_concert = axios.create({
-  baseURL: "http://allback.site:8081/concert-service/api/v1",
-  headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=UTF-8",
   },
 });
 
 export const $_admin = axios.create({
-  baseURL: "http://allback.site:8081/api/v1",
+  baseURL: "http://k8a806.p.ssafy.io:8090/api/v1",
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=UTF-8",
   },
+});
+
+$.interceptors.request.use((config) => {
+  config.headers["Authorization"] = `Bearer ${JSON.parse(
+    sessionStorage.getItem("accessToken")
+  )}`;
+  return config;
+});
+
+$_admin.interceptors.request.use((config) => {
+  config.headers["Authorization"] = `Bearer ${JSON.parse(
+    sessionStorage.getItem("accessToken")
+  )}`;
+  return config;
 });

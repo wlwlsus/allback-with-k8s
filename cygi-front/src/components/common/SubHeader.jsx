@@ -2,68 +2,48 @@ import React, { useEffect } from "react";
 import style from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import logo from "img/logo.png";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   userId,
-  userRole,
+  userAuth,
   userNick,
   userPoint,
-  createdTime,
+  isModalOpen,
 } from "../../util/store";
-import { $_user } from "util/axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { $ } from "util/axios";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Header() {
   const navigate = useNavigate();
   const [id, setId] = useRecoilState(userId);
-  const [role, setRole] = useRecoilState(userRole);
+  const [auth, setAuth] = useRecoilState(userAuth);
   const [nickName, setNickName] = useRecoilState(userNick);
   const [point, setPoint] = useRecoilState(userPoint);
-  const [createTime, setCreateTime] = useRecoilState(createdTime);
+  const onModal = useRecoilValue(isModalOpen);
 
-  const {
-    isLoading,
-    data: pointData,
-    refetch,
-  } = useQuery(["getPoint"], () => $_user.get(`/user/point?id=${id}`));
+  const { isLoading, data: pointData } = useQuery(["getPoint"], () =>
+    $.get(`/user-service/api/v1/user/point/${id}`)
+  );
 
-  const onLogout = () => {
+  // 로그아웃 함수(back 통신 X)
+  const onLogout2 = () => {
     sessionStorage.clear();
     setId("");
-    setRole("");
+    setAuth("");
     setNickName("");
-    setCreateTime("");
-    setPoint(0);
-    navigate("../../");
+    navigate("/");
   };
-
-  // API_POST 함수
-  // const res_put = () => {
-  //   return $_user.put("/user/lgout", {
-  //     accessToken: sessionStorage.getItem("accessToken"),
-  //     refreshToken: sessionStorage.getItem("refreshToken"),
-  //   });
-  // };
-
-  // 로그아웃 함수
-  // const { mutate: onLogout } = useMutation(res_put, {
-  //   onSuccess: () => {
-  //     sessionStorage.clear();
-  //     setId("");
-  //     setRole("");
-  //     setNickName("");
-  //     navigate("/");
-  //   },
-  // });
 
   useEffect(() => {
     if (!isLoading) setPoint(pointData.data);
   }, [isLoading]);
 
   return (
-    <>
-      {!isLoading && userId === "kjskjs356@naver.com" && (
-        <div className={style.header_admin}>
+    <div className={onModal ? style.disbled : null}>
+      {!isLoading && auth !== "ROLE_USER" && (
+        <div
+          className={onModal ? style.header_admin_disbled : style.header_admin}
+        >
           <div>
             <div
               onClick={() => {
@@ -77,50 +57,23 @@ export default function Header() {
           </div>
           <div className={style.header_right_admin}>
             <div
-              className={style.nologin}
-              onClick={() => {
-                navigate("../login");
-              }}
-            >
-              비로그인 메인페이지 {id}
-            </div>
-            <div
-              className={style.login}
-              onClick={() => {
-                navigate("../home");
-              }}
-            >
-              로그인 메인페이지
-            </div>
-            <div
-              className={style.mypage}
-              onClick={() => {
-                navigate("../mypage");
-              }}
-            >
-              유저 마이페이지
-            </div>
-            <div
               className={style.admin}
               onClick={() => {
-                navigate("../admin/total");
+                navigate("admin/total");
               }}
             >
               관리자페이지
             </div>
-            <div
-              className={style.loading}
-              onClick={() => {
-                navigate("../loading");
-              }}
-            >
-              로딩스피너 확인용
+            <div className={style.user_logout} onClick={() => onLogout2()}>
+              로그아웃
             </div>
           </div>
         </div>
       )}
-      {!isLoading && userId !== "kjskjs356@naver.com" && (
-        <div className={style.header_user}>
+      {!isLoading && auth === "ROLE_USER" && (
+        <div
+          className={onModal ? style.header_user_disabled : style.header_user}
+        >
           <div>
             <div
               onClick={() => {
@@ -139,17 +92,21 @@ export default function Header() {
               onClick={() => {
                 navigate("../mypage");
               }}
-              k
             >
               마이페이지
             </div>
-            <div className={style.user_point}>{point}원</div>
-            <div className={style.user_logout} onClick={() => onLogout()}>
+            <div className={style.user_point}>
+              {point.toLocaleString("ko-KR", {
+                currency: "KRW",
+              })}
+              P
+            </div>
+            <div className={style.user_logout} onClick={() => onLogout2()}>
               로그아웃
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

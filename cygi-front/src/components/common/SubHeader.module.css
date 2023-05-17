@@ -1,3 +1,7 @@
+.disbled {
+  opacity: 0.3;
+}
+
 /* admin 헤더 css */
 .header_admin {
   max-width: 1920px;
@@ -11,6 +15,21 @@
   background-color: rbga(255, 255, 255, 0);
   padding: 0 20px;
   box-shadow: 0px 1px 1px 1px #43434180;
+}
+
+.header_admin_disbaled {
+  max-width: 1920px;
+  height: 65px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+  position: relative;
+  background-color: rbga(255, 255, 255, 0);
+  padding: 0 20px;
+  box-shadow: 0px 1px 1px 1px #43434180;
+  pointer-events: none;
 }
 
 .header_left_admin {
@@ -30,7 +49,7 @@
 }
 
 .header_right_admin {
-  width: 70%;
+  width: 40%;
   display: flex;
   justify-content: space-evenly;
 }
@@ -70,6 +89,21 @@
   box-shadow: 0px 1px 1px 1px #43434180;
 }
 
+.header_user_disabled {
+  max-width: 1920px;
+  height: 65px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+  position: relative;
+  background-color: rbga(255, 255, 255, 0);
+  padding: 0 20px;
+  box-shadow: 0px 1px 1px 1px #43434180;
+  pointer-events: none;
+}
+
 .header_left_user {
   display: flex;
   align-items: center;
@@ -77,7 +111,7 @@
 }
 
 .header_right_user {
-  width: 30%;
+  width: 50%;
   display: flex;
   justify-content: space-evenly;
   font-size: 1.3em;

@@ -1,3 +1,7 @@
+.disbled {
+  opacity: 0.3;
+}
+
 .container {
   width: 100%;
 }
@@ -14,14 +18,15 @@
 }
 
 .title {
-  font-size: 2em;
+  width: 400px;
+  font-size: 1.3em;
   font-weight: bold;
 }
 
 .information {
   display: grid;
   width: 1000px;
-  grid-template-columns: 10% 30% 13% 30% 15% 15%;
+  grid-template-columns: 10% 30% 13% 25% 15% 15%;
 }
 
 .name {
@@ -107,6 +112,7 @@
 .seat_row {
   display: flex;
   justify-content: center;
+  margin-bottom: 4px;
 }
 
 .seat_row_name {

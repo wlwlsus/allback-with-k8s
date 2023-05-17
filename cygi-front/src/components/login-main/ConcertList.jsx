@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import style from "./ConcertList.module.css";
-import { $_concert } from "util/axios";
+import { $ } from "util/axios";
 import ListLoading from "gif/list_loading.gif";
-import { reservation } from "util/store";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { reservation, isModalOpen } from "util/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export default function ConcertList() {
   const navigate = useNavigate();
@@ -17,13 +17,19 @@ export default function ConcertList() {
 
   const obsRef = useRef(null); //observer Element
   const preventRef = useRef(true); //옵저버 중복 실행 방지
+  const endRef = useRef(null);
 
   const reservationInfo = useRecoilValue(reservation);
+  const [modalOpen, setmodalOpen] = useRecoilState(isModalOpen);
+
+  useEffect(() => {
+    setmodalOpen(false);
+  }, []);
 
   useEffect(() => {
     //옵저버 생성
     const observer = new IntersectionObserver(obsHandler, { threshold: 0.5 });
-    if (obsRef.current) observer.observe(obsRef.current);
+    if (obsRef.current) observer.observe(endRef.current);
     return () => {
       observer.disconnect();
     };
@@ -42,10 +48,16 @@ export default function ConcertList() {
 
   const getConcert = useCallback(async () => {
     setLoad(true);
-    await $_concert(`concert?page=${page}`).then((res) => {
+    await $.get(`/concert-service/api/v1/concert?page=${page}`, {
+      headers: {
+        "KAFKA.PASS": "pass",
+      },
+    }).then((res) => {
       setConcertList((prev) => [...prev, res.data]);
-      preventRef.current = true;
-      setLoad(false);
+      setTimeout(() => {
+        preventRef.current = true;
+        setLoad(false);
+      }, [500]);
     });
   }, [page]);
 
@@ -63,7 +75,6 @@ export default function ConcertList() {
 
   return (
     <div className={style.total}>
-      <div className={style.header}>공연 목록</div>
       <div className={style.descript}>
         원하시는 공연을 선택하고 좌석을 예매해보세요. 모든 좌석이 매진되기 전에
         서두르세요! <br />
@@ -72,8 +83,8 @@ export default function ConcertList() {
       </div>
       <div className={style.container}>
         {concertList &&
-          concertList.map((contents) => {
-            return contents.map((content) => {
+          concertList.map((contents, idx1) => {
+            return contents.map((content, idx2) => {
               let date =
                 content.endDate.slice(2, 4) +
                 "/" +
@@ -124,12 +135,18 @@ export default function ConcertList() {
             });
           })}
       </div>
+      <div
+        ref={endRef}
+        className={!load ? style.blank : style.observer_hidden}
+      ></div>
       {load && (
-        <div>
-          <img className={style.loading} src={ListLoading} alt="" />
+        <div className={style.loading}>
+          <img className={style.loading_img} src={ListLoading} alt="" />
         </div>
       )}
-      <div ref={obsRef}>&nbsp;</div>
+      <div ref={obsRef} className={load ? style.observer_hidden : null}>
+        &nbsp;
+      </div>
     </div>
   );
 }
