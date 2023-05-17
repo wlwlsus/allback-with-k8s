@@ -56,6 +56,11 @@ payment:
     url: http://localhost:8001
     prefix: /api/v1/server-concert
 
+user:
+  server:
+    url: http://localhost:8000
+    prefix: /api/v1/server-concert
+
 ## Eureka Client
 #eureka:
 #  instance:

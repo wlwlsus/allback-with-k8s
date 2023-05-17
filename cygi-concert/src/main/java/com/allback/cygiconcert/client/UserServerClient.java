@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * description :
  */
 
-@FeignClient(name = "user-service", path = "${concert.server.prefix}")
+@FeignClient(name = "user-service", url = "${user.server.url}", path = "${user.server.prefix}")
 public interface UserServerClient {
 
   @GetMapping("/{userId}")

@@ -52,6 +52,12 @@ payment:
     url: http://payment-service.payment-ns.svc.cluster.local
     prefix: /api/v1/server-concert
 
+user:
+  server:
+    url: http://user-service.user-ns.svc.cluster.local
+    prefix: /api/v1/server-concert
+
+
 ## Eureka Client
 #eureka:
 #  instance:
