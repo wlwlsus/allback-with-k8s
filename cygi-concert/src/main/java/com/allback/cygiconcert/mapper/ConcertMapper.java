@@ -12,6 +12,8 @@ import org.mapstruct.Mapping;
 public interface ConcertMapper {
 
     ConcertResDto toDto(Concert concert);
+
+    @Mapping(source = "stageId", target = "stage.stageId")
     Concert toEntity(ConcertReqDto concertReqDto);
     List<ConcertPageResDto> toDtoList(List<Concert> concertList);
 

@@ -2,11 +2,7 @@ package com.allback.cygiconcert.entity;
 
 import com.allback.cygiconcert.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "concert")
+@ToString
 public class Concert extends BaseTimeEntity {
 
     @Id
@@ -31,7 +28,6 @@ public class Concert extends BaseTimeEntity {
 
     @Column(name = "content", nullable = false, length = 1000)
     private String content; // 공연 설명
-
 
     @Column(name = "image", nullable = false, length = 1000)
     private String image;   // 공연 이미지 URL

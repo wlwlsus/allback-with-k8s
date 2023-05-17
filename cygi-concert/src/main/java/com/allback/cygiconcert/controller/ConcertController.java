@@ -3,7 +3,7 @@ package com.allback.cygiconcert.controller;
 import com.allback.cygiconcert.dto.request.ConcertReqDto;
 import com.allback.cygiconcert.dto.response.ConcertPageResDto;
 import com.allback.cygiconcert.dto.response.ConcertResDto;
-import com.allback.cygiconcert.service.ConcertServiceImpl;
+import com.allback.cygiconcert.service.ConcertService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ConcertController {
 
-    private final ConcertServiceImpl concertService;
+    private final ConcertService concertService;
 
     @Operation(summary = "공연 등록")
     @PostMapping("")
@@ -35,7 +35,7 @@ public class ConcertController {
         @RequestPart(name = "concert") ConcertReqDto concertReqDto,
         @RequestPart MultipartFile image)
         throws Exception {
-        concertService.registConcert(concertReqDto, image);
+        concertService.registerConcert(concertReqDto, image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

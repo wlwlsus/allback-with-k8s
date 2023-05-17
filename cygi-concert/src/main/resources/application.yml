@@ -7,6 +7,9 @@ spring:
   application:
     name: concert-service
   jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
     hibernate:
       ddl-auto: update
     generate-ddl: false
@@ -24,6 +27,7 @@ spring:
       bootstrap-servers: 3.34.8.99:9092
       group-id: concert-req
       topic: concert-req
+      partition: 3
       max-poll-interval-ms: 600000
     listener:
       type: SINGLE
