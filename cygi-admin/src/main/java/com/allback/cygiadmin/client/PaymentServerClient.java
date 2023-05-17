@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 //@Headers("Content-Type: application/json")
-@FeignClient(name = "payment-server", path = "${admin.server.prefix}")
+@FeignClient(name = "payment-service", url = "${payment.server.url}",path = "${payment.server.prefix}")
 @Component
 public interface PaymentServerClient {
     @GetMapping("/reservations")

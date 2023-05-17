@@ -3,27 +3,37 @@ server:
   servlet:
     context-path: /api/v1
 
-admin:
+payment:
   server:
+    url: http://localhost:8001/payment-service
     prefix: /api/v1/server-admin
-#    user: http://allback.site:8080/user-service
-#    payment: http://allback.site:8080/payment-service
-#    user: http://localhost:8080/user-service
-#    payment: http://localhost:8080/payment-service
+
+user:
+  server:
+    url: http://localhost:8000/user-service
+    prefix: /api/v1/server-admin
+
+#admin:
+#  server:
+#    prefix: /api/v1/server-admin
+##    user: http://allback.site:8080/user-service
+##    payment: http://allback.site:8080/payment-service
+##    user: http://localhost:8080/user-service
+##    payment: http://localhost:8080/payment-service
 
 
 spring:
   application:
     name: admin-service
 
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 springdoc:
   swagger-ui:

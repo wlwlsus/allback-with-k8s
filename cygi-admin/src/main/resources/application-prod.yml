@@ -3,11 +3,15 @@ server:
   servlet:
     context-path: /api/v1
 
-admin:
+payment:
   server:
+    url: http://payment-service.payment-ns.svc.cluster.local
     prefix: /api/v1/server-admin
-#    user: http://allback.site:8080/user-service
-#    payment: http://allback.site:8080/payment-service
+
+user:
+  server:
+    url: http://user-service.user-ns.svc.cluster.local
+    prefix: /api/v1/server-admin
 
 spring:
   application:
@@ -20,15 +24,15 @@ spring:
       probability: 1.0
 
 ## Eureka Client
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka-service.eureka-ns.svc.cluster.local:8761/eureka/
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eureka-service.eureka-ns.svc.cluster.local:8761/eureka/
 
 springdoc:
   swagger-ui:
