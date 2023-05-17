@@ -37,6 +37,9 @@ public class KafkaInterceptor implements HandlerInterceptor {
     @Value("${spring.kafka.consumer.topic}")
     private String topic;
 
+    @Value("${spring.kafka.consumer.partition}")
+    private int partition;
+
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
@@ -73,8 +76,8 @@ public class KafkaInterceptor implements HandlerInterceptor {
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
 
         // consume할 topic과 particion
-        TopicPartition partition = new TopicPartition(topic, 3);
-        consumer.assign(Collections.singletonList(partition));
+        TopicPartition topicPartition = new TopicPartition(topic, partition);
+        consumer.assign(Collections.singletonList(topicPartition));
 
         // 레코드 읽어오기
 //        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
@@ -97,7 +100,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         System.out.println("committedOffset :::: " + committedOffset);
 
 //        currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
-        currentOffsets.put(partition, new OffsetAndMetadata(committedOffset));
+        currentOffsets.put(topicPartition, new OffsetAndMetadata(committedOffset));
 
         // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
