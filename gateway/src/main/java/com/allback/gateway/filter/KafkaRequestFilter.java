@@ -151,10 +151,14 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // committed offset과 offset 사이가 전부 취소표라면, 내 요청을 처리할 수 있다.
             long i = committedOffset + 1;
             for (; i < offset; i++) {
-                if (!priorityQueue.contains(i)) {
-                    break;
+                for (long j : priorityQueue) {
+                    if (j == i) {
+                        continue;
+                    }
                 }
+                break;
             }
+
             // 대기열이 없다면 -> 요청 처리하기
             if (i == offset) {
                 // 내 바로 뒤에 취소표 있으면 같이 제거하기
