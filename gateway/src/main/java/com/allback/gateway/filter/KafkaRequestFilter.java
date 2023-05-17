@@ -156,7 +156,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 committedOffset++;
             }
 
-            if (committedOffset < offset) {
+            if (committedOffset + 1 < offset) {
                 // 클라이언트에게 보낼 응답 생성
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
@@ -186,7 +186,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // 대기열이 없다면 -> 요청 처리하기
             else {
                 long newOffset = offset;
-                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
+                while (priorityQueue.size() > 0 && newOffset < endOffset && newOffset + 1 == priorityQueue.peek()) {
                     System.out.println(offset + 1 + " record delete");
                     newOffset++;
                     priorityQueue.poll();
@@ -222,7 +222,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         TopicPartition topicPartition = new TopicPartition(topic, partition);
         KafkaConsumer<String, String> consumer = createConsumer("concert-req");
         consumer.assign(Collections.singletonList(topicPartition));
-        return consumer.position(topicPartition);
+        return consumer.position(topicPartition) - 1;
     }
 
     private long getEndOffset(int partition) {
