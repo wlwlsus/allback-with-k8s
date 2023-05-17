@@ -3,8 +3,8 @@ import style from "./NoLoginMain.module.css";
 import Kakao from "img/kakao_login_medium_narrow.png";
 
 export default function NoLoginMain() {
-  // const redirectUri = "http://allback.site/oauth/redirect";
-  const redirectUri = "http://localhost:3000/oauth/redirect";
+  const redirectUri = "http://allback.site/oauth/redirect";
+  // const redirectUri = "http://localhost:3000/oauth/redirect";
 
   const goSocialLogin = (socialType) => {
     const url = `http://allback.site:8000/api/v1/oauth2/authorization/${socialType}?redirect_uri=${redirectUri}`;
