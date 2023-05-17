@@ -104,8 +104,8 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
                 headers.add("KAFKA.OFFSET", Long.toString(offset));
 
                 // 변경된 header로 request를 갱신
-                ServerHttpRequest request2 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
-                exchange = exchange.mutate().request(request2).build();
+                request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
+                exchange = exchange.mutate().request(request).build();
 
             }
 
@@ -149,11 +149,11 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             }
 
             // 대기열이 있다면 -> 토큰 반환하고 끝내기
-            // committedOffset >= offset이어야 됨
+            // 내 앞에 취소표가 있다면 queue에서 제거하기
             while (priorityQueue.size() > 0 && offset > priorityQueue.peek()) {
                 Long poll = priorityQueue.poll();
-                System.out.println(offset + "번째 오프셋, " + poll + " 를 건너뜀");
-                committedOffset++;
+                System.out.println(offset + " 번째 오프셋 앞에 있는 " + poll + "번째 오프셋 삭제");
+                committedOffset = Math.max(committedOffset + 1, poll);
             }
 
             if (committedOffset + 1 < offset) {
@@ -185,20 +185,21 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             // 대기열이 없다면 -> 요청 처리하기
             else {
+                // 내 바로 뒤에 취소표 있으면 제거하기
                 long newOffset = offset;
-                while (priorityQueue.size() > 0 && newOffset < endOffset && newOffset + 1 == priorityQueue.peek()) {
-                    System.out.println(offset + 1 + " record delete");
+                while (priorityQueue.size() > 0 && newOffset <= endOffset && newOffset + 1 == priorityQueue.peek()) {
                     newOffset++;
+                    System.out.println(offset + "번째 offset 바로 뒤에 있는 " + newOffset + " offset 건너뛰기 jump!");
                     priorityQueue.poll();
                 }
 
                 if (newOffset != offset) {
-                    HttpHeaders headers3 = new HttpHeaders();
-                    headers3.add("KAFKA.OFFSET", Long.toString(offset));
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("KAFKA.OFFSET", Long.toString(offset));
 
                     // 변경된 header로 request를 갱신
-                    ServerHttpRequest request3 = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers3)).build();
-                    exchange = exchange.mutate().request(request3).build();
+                    request = exchange.getRequest().mutate().headers(httpHeaders -> httpHeaders.addAll(headers)).build();
+                    exchange = exchange.mutate().request(request).build();
                 }
 
 
@@ -230,7 +231,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
         KafkaConsumer<String, String> consumer = createConsumer("concert-req");
         consumer.assign(Collections.singletonList(topicPartition));
         consumer.seekToEnd(Collections.singletonList(topicPartition));
-        return consumer.position(topicPartition);
+        return consumer.position(topicPartition) - 1;
     }
 
     @Data
