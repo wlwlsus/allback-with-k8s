@@ -24,12 +24,12 @@ spring:
 
 user:
   server:
-    url: http://localhost:8000/user-service
+    url: http://localhost:8000
     prefix: /api/v1/server-payment
 
 concert:
   server:
-    url: http://localhost:8002/concert-service
+    url: http://localhost:8002
     prefix: /api/v1/server-payment
 
 # Kakao Pay Setting
