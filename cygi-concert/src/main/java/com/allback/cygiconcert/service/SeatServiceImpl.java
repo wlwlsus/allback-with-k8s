@@ -102,4 +102,15 @@ public class SeatServiceImpl implements SeatService {
         log.info("[getRestSeatCnt] : 전체좌석, 남은좌석 조회 성공, all : {}, rest : {}", all, rest);
         return seatRestCntResDto;
     }
+
+    @Override
+    public void registerSeat(int price, int col, int row, String location) throws Exception {
+        Stage stage = Stage.builder()
+                .col(col)
+                .row(row)
+                .price(price)
+                .location(location)
+                .build();
+        stageRepository.save(stage);
+    }
 }

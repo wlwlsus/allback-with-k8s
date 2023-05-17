@@ -3,6 +3,7 @@ package com.allback.cygiconcert.controller;
 import com.allback.cygiconcert.dto.request.SeatStatusChangeReqDto;
 import com.allback.cygiconcert.dto.response.SeatRestCntResDto;
 import com.allback.cygiconcert.dto.response.SeatInfoResDto;
+import com.allback.cygiconcert.service.SeatService;
 import com.allback.cygiconcert.service.SeatServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SeatController {
 
-    private final SeatServiceImpl seatService;
+    private final SeatService seatService;
 
 
     @Operation(summary = "좌석 상태 변경")
