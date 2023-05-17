@@ -97,3 +97,4 @@ jwt:
 
 kafka:
   bootstrap-servers: 3.34.8.99:9092
+  partition: 3

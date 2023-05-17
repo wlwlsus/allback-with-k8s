@@ -42,6 +42,9 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    @Value("${kafka.partition}")
+    private int partition;
+
     public KafkaRequestFilter(KafkaTemplate<String, String> kafkaTemplate) {
         super(Config.class);
         this.kafkaTemplate = kafkaTemplate;
@@ -73,7 +76,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
             String uuid = null;
             long offset;
-            int partition;
+//            int partition;
 
 
             // 대기표를 가지고 있지 않다면 -> 최초 요청 -> kafka에 넣기
@@ -82,7 +85,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 // TODO : 변경해야 됨
 //                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, uuid);
-                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, 3, null, uuid);
+                CompletableFuture<SendResult<String, String>> send = kafkaTemplate.send(config.topicName, partition, null, uuid);
 
                 try {
                     SendResult<String, String> sendResult = send.get();
@@ -120,6 +123,10 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             logger.info("[committedOffset] " + committedOffset);
             logger.info("[endOffset] " + endOffset);
             logger.info("[offset] " + offset);
+
+            if (offset == 0) {
+                priorityQueue.clear();
+            }
 
             // 대기 취소라면
             if (request.getHeaders().containsKey("KAFKA.QUIT")) {
