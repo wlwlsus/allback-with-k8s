@@ -1,0 +1,58 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /api/v1
+spring:
+  application:
+    name: payment-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: true
+  zipkin:
+    base-url: http://k8a806.p.ssafy.io:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      name: ${job.name:NONE}
+  datasource:
+    url: jdbc:mysql://k8a806.p.ssafy.io:3307/ssafy806_payment
+    username: ssafy806
+    password: ssafy806
+
+
+concert:
+  server:
+    url: http://concert-service.concert-ns.svc.cluster.local
+    prefix: /api/v1/server-payment
+
+user:
+  server:
+    url: http://user-service.user-ns.svc.cluster.local
+    prefix: /api/v1/server-payment
+
+# Kakao Pay Setting
+kakao:
+  host: https://kapi.kakao.com
+  app-key: e6444dbd88ac593b0ef5afd9b6d63bd1
+
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://eureka-service.eureka-ns.svc.cluster.local:8761/eureka/
+
+springdoc:
+  swagger-ui:
+    config-url: /payment-service/api/v1/v3/api-docs/swagger-config
+    url: /payment-service/api/v1/v3/api-docs
