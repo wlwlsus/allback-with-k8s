@@ -65,7 +65,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
         // 대기열 시스템이 필요없는 애들은 넘기기
-        if (request.getHeader("KAFKA.UUID") == null) {
+        if (request.getHeader("KAFKA.PASS") != null) {
             return ;
         }
         partition = Integer.parseInt(request.getHeader("KAFKA.PARTITION"));
