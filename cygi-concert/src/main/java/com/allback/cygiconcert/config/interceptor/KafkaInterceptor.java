@@ -68,6 +68,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
         if (request.getHeader("KAFKA.UUID") == null) {
             return ;
         }
+        partition = Integer.parseInt(request.getHeader("KAFKA.PARTITION"));
 
         // 10초 대기 (일부러 성능 떨어뜨리기)
         //Thread.sleep(500);
@@ -83,24 +84,22 @@ public class KafkaInterceptor implements HandlerInterceptor {
 //        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
 
         Enumeration<String> headers = request.getHeaders("KAFKA.OFFSET");
-        long lastValue = -1;
+        long offset = -1;
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             if (value != null) {
-                lastValue = Long.parseLong(value);
+                offset = Long.parseLong(value);
             }
         }
 
-        long offset = lastValue;
-        long committedOffset = offset + 1;
 
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
 //        System.out.println("committedOffset :::: " + consumer.position(partition));
-        System.out.println("committedOffset :::: " + committedOffset);
+        System.out.println("committedOffset :::: " + offset);
 
 //        currentOffsets.put(partition, new OffsetAndMetadata(consumer.position(partition)));
-        currentOffsets.put(topicPartition, new OffsetAndMetadata(committedOffset));
+        currentOffsets.put(topicPartition, new OffsetAndMetadata(offset));
 
         // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
