@@ -126,6 +126,24 @@
 접은 내용
 </details>
 
+<details>
+<summary>Observer를 이용한 무한 스크롤 구현</summary>
+
+접은 내용
+</details>
+
+<details>
+<summary>카카오페이 연동을 통한 포인트 충전 시스템</summary>
+
+접은 내용
+</details>
+
+<details>
+<summary>Recoil을 활용한 로그인 정보 유자</summary>
+
+접은 내용
+</details>
+
 <br>
 
 ---
