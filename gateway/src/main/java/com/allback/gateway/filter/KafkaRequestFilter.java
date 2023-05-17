@@ -133,7 +133,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
 
                 priorityQueue.add(offset);
 
-                System.out.println(offset + " 요청 취소가 들어왔음");
+                System.out.println(offset + " 요청 취소가 들어왔음 cancel request!!!!!!!!");
                 
                 // 응답 만들기
                 ServerHttpResponse response = exchange.getResponse();
@@ -152,7 +152,7 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             // committedOffset >= offset이어야 됨
             while (priorityQueue.size() > 0 && offset > priorityQueue.peek()) {
                 Long poll = priorityQueue.poll();
-                System.out.println(offset + "번째 오프셋, " + poll + " 를 건너뜀");
+                System.out.println(offset + "번째 오프셋, " + poll + " 를 건너뜀 pass!!!!!!");
                 committedOffset++;
             }
 
