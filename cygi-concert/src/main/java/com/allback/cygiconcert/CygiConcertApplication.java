@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableFeignClients
 @EnableJpaAuditing
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @SpringBootApplication
 public class CygiConcertApplication {
 

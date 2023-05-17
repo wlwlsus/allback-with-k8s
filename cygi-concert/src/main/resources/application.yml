@@ -47,19 +47,20 @@ logging:
         cygiconcert: info
   config: classpath:logback.xml
 
-concert:
+payment:
   server:
+    url: http://localhost:8001
     prefix: /api/v1/server-concert
 
 ## Eureka Client
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 springdoc:
   swagger-ui:
