@@ -7,12 +7,6 @@ authorization = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwiYXV0aCI
 
 # 티켓팅봇 : 공연정보조회 - 남은좌석조회 - 좌석상태변경 - 예약
 class UserBehavior(SequentialTaskSet):
-    # def recursive(self):
-    #     print(f'USER {self.userCode} | recursive')
-    #     self.check_seat()
-    #     self.change_seat_state()
-    #     self.commit_reservation()
-    #     self.user.stop()
     global concertId
     concertId = 10
 
@@ -46,70 +40,9 @@ class UserBehavior(SequentialTaskSet):
             print(f"USER {self.userCode} | 남은 좌석이 없음 >> 종료")
             self.user.stop()
 
-    # else:
-    # 공연 정보 조회 실패시 정지
-    # print(f"USER {self.userCode} | 공연 정보 없음 >>> 중지")
-    # self.user.stop()
-
-    # @task
-    # def get_seat_info(self):
-    #     print(f"USER {self.userCode} | TASK 03")
-    #     # 2단계 : 좌석 정보 조회 => 현재 예약중이거나 예약 완료된 좌석을 반환
-    #     # 남은 좌석은 알 수 없다
-    #     # if self.res is not None and self.res.status_code == 200:
-    #     self.res = queueGetRequest(self, '좌석 정보 조회', f'/seat/{concertId}')
-    #     restSeat = self.res.json()
-    #     seatList = restSeat['seatList']
-    #
-    #     # 남은 좌석이 없다면, 그 즉시 종료
-    #     if len(seatList) == 200:
-    #         print(f"USER {self.userCode} | 좌석이 없음 >>> 종료")
-    #         self.user.stop()
-    #
-    #     # 선택한 좌석이 비어 있는지 확인
-    #     seatAble = False
-    #     for seat in seatList:
-    #         # print(f"점유 된 좌석 정보 >>> {seat}")
-    #         # if self.row == int(seat.row) and self.col == int(seat.col):
-    #         if self.seatEng == seat:
-    #             seatAble = True
-    #             break
-    #     # 좌석이 차지 되었으면 2번 태스크로 돌아감
-    #     if seatAble:
-    #         print(f'USER {self.userCode} | {self.seatEng}이 이미 예매 됨')
-    #         self.check_seat()
-    #
-    #     print(f"USER {self.userCode} | 좌석 확정 : {self.seatEng}")
-    #     # 선택할 좌석
-    #     # random_num = random.randrange(0, len(seatList))
-    #     # self.mySeat = seatList[random_num]
-    #     # print('나의 좌석 :', self.mySeat)
-    #     # else:
-    #     # 공연 정보 조회 실패시 정지
-    #     # self.user.stop()
-
     @task
     def change_seat_state(self):
         print(f"USER {self.userCode} | TASK 03")
-
-        # 해당 프로세스가 필요한곳....
-        # --> 최초 자리 선택 | -100 리턴시 자리선택
-        # DB를 서치하여 이미 존재하지 않는 좌석에 대해서만 예매 시도 -> 이 때
-        # seatInfo_response = queueGetRequest(self, '좌석 정보 조회', f'/seat/{concertId}')
-        # seatList = seatInfo_response.json()['seatList']
-        # if self.all <= len(seatList):
-        #     print(f'user {self.userCode} | 남은 좌석이 없음 >> 종료')
-        #     self.user.stop()
-        # while True:
-        #     # 고를 좌석을 정함
-        #     self.row = random.randrange(0, 10)
-        #     self.col = random.randrange(0, 20)
-        #     self.seatEng = f'{chr(self.row + 65)}{self.col + 1}';
-        #     if self.seatEng not in seatList:
-        #         break
-        #     else:
-        #         print(f'USER {self.userCode} | 좌석 {self.seatEng}이 데이터 베이스에 존재함')
-        # print(f"USER {self.userCode} | 선택 좌석 : {self.seatEng}")
 
         # 좌석 선택
         if pick_seat(self) is False:
@@ -144,11 +77,6 @@ class UserBehavior(SequentialTaskSet):
                 'seat': self.seatEng
             }
             self.res = self.client.post('/seat', headers=postHeader, json=payload)
-
-        # if self.res.text == '-100':
-        #     print(f'USER {self.userCode} | -100 리턴됨 프로세스를 종료')
-        #     # self.user.stop()
-        # elif \
 
         # 예상외의 일이 발생하면 중지
         if self.res.status_code != 307 and self.res.status_code != 201:
@@ -204,10 +132,7 @@ class UserBehavior(SequentialTaskSet):
                     # 재요청
                     self.timer = int(new_response.json().get('offset')) - int(
                         new_response.json().get('committedOffset'))
-                    # if self.timer > 10:
-                    #     self.timer = 10
-                    # else:
-                    #     self.timer = 1
+                    self.timer = math.ceil(self.timer / 2)
                     print(f"USER {self.userCode} | 재요청 시간 : {self.timer}")
 
         else:
@@ -291,10 +216,7 @@ def queueGetRequest(self, name, url):
                 print(new_response.json())
                 self.timer = int(new_response.json().get('offset')) - int(
                     new_response.json().get('committedOffset'))
-                # if self.timer > 10:
-                #     self.timer = 10
-                # else:
-                #     self.timer = 1
+                self.timer = math.ceil(self.timer / 2)
                 print(f"USER {self.userCode} | 재요청 시간 : {self.timer}")
     else:
         print(f'USER {self.userCode} | status=', response.status_code, '최초요청 성공')
@@ -303,9 +225,7 @@ def queueGetRequest(self, name, url):
 
 
 def pick_seat(self):
-    # 해당 프로세스가 필요한곳....
     # --> 최초 자리 선택 | `-100` 리턴시 자리선택
-    # DB를 서치하여 이미 존재하지 않는 좌석에 대해서만 예매 시도 -> 이 때
     seatInfo_response = queueGetRequest(self, '좌석 정보 조회', f'/seat/{concertId}')
     seatList = seatInfo_response.json()['seatList']
     if self.all <= len(seatList):
