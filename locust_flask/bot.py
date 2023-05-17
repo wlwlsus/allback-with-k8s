@@ -130,6 +130,7 @@ class UserBehavior(SequentialTaskSet):
                     # self.user.stop()
                 else:
                     # 재요청
+                    print(new_response.json())
                     self.timer = int(new_response.json().get('offset')) - int(
                         new_response.json().get('committedOffset'))
                     self.timer = math.ceil(self.timer / 2)
@@ -247,6 +248,7 @@ def pick_seat(self):
 
 class LocustUser(HttpUser):
     host = "http://allback.site:8080/concert-service/api/v1"
+    # host = "http://api.allback.site/concert-service/api/v1"
     # host = "http://localhost:8080/concert-service/api/v1"
     tasks = [UserBehavior]
     wait_time = between(1, 1)
