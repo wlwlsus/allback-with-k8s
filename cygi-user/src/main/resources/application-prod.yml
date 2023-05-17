@@ -67,15 +67,15 @@ app:
     authorizedRedirectUris: http://allback.site/oauth/redirect
 
 ## Eureka Client
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: http://eureka-service.eureka-ns.svc.cluster.local:8761/eureka/
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    serviceUrl:
+#      defaultZone: http://eureka-service.eureka-ns.svc.cluster.local:8761/eureka/
 
 springdoc:
   swagger-ui:
