@@ -70,8 +70,8 @@ public class KafkaInterceptor implements HandlerInterceptor {
         }
         partition = Integer.parseInt(request.getHeader("KAFKA.PARTITION"));
 
-        // 10초 대기 (일부러 성능 떨어뜨리기)
-        //Thread.sleep(5000);
+        // 0.1초 대기 (일부러 성능 떨어뜨리기)
+        Thread.sleep(100);
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
