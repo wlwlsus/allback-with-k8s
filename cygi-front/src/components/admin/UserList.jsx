@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import style from "./UserList.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $_admin } from "util/axios";
+import { $ } from "util/axios";
 
 export default function UserList() {
   const [page, setPage] = useState(1);
@@ -11,7 +11,9 @@ export default function UserList() {
     isLoading,
     data: user,
     refetch,
-  } = useQuery(["user"], () => $_admin.get(`/dashboard/user?page=${page}`));
+  } = useQuery(["user"], () =>
+    $.get(`/admin-service/api/v1/dashboard/user?page=${page}`)
+  );
 
   const onPrev = () => {
     setPage((cur) => cur - 1);

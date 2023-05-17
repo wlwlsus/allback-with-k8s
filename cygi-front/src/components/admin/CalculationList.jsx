@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import style from "./CalculationList.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { $_admin } from "util/axios";
+import { $ } from "util/axios";
 
 export default function CalculationList() {
   const [page, setPage] = useState(1);
@@ -12,7 +12,7 @@ export default function CalculationList() {
     data: balance,
     refetch,
   } = useQuery(["balance"], () =>
-    $_admin.get(`/dashboard/balance?page=${page}&size=10`)
+    $.get(`/admin-service/api/v1/dashboard/balance?page=${page}&size=10`)
   );
 
   const onPrev = () => {
