@@ -18,7 +18,7 @@ function App() {
   // 뒤로가기 이벤트 감지
   useEffect(() => {
     const listenBackEvent = () => {
-      window.location.href = "http://allback.site/";
+      window.location.href = "https://allback.site/";
       // window.location.href = "http://localhost:3000/";
     };
     const historyEvent = history.listen(({ action }) => {

@@ -39,17 +39,17 @@ function SuccessPage() {
           alert("충전이 완료되었습니다!");
           $.get(`/user-service/api/v1/user/point/${id}`).then((res) => {
             setPoint(res.data);
-            window.location.href = "http://allback.site/mypage";
+            window.location.href = "https://allback.site/mypage";
           });
         } else {
           // 결제 승인 실패 처리
           alert("충전을 실패하였습니다.");
-          window.location.href = "http://allback.site/mypage";
+          window.location.href = "https://allback.site/mypage";
         }
       })
       .catch((error) => {
         alert("문제가 발생하였습니다.");
-        window.location.href = "http://allback.site/mypage";
+        window.location.href = "https://allback.site/mypage";
       });
   }, [location.search]);
 
