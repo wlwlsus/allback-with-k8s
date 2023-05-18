@@ -53,7 +53,9 @@ public class ReservationServiceImpl implements ReservationService {
 
   @Override
   public ReservationListResDto getReservationList(long userId, Pageable pageable) {
-    Page<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageable);
+    PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("modified_date").descending());
+
+    Page<Reservation> reservationPage = reservationRepository.findByUserId(userId, pageRequest);
     int totalPages = reservationPage.getTotalPages();
     List<ReservationResDto> reservationResDtoPage = getReservationResDtoList(reservationPage.getContent());
 
