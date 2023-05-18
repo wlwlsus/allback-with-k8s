@@ -2,7 +2,7 @@ from locust import HttpUser, task, between, TaskSet, constant, SequentialTaskSet
 import logging
 import time, random, math
 
-authorization = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY4NTYzNDQ4OX0.NJMI5o7XlD2LCQ7FFbkQDiDnk2FghZ05lBtO_WNCeoo'
+authorization = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzY2ODgyMTczIiwidXNlcklkIjoxLCJuaWNrbmFtZSI6IuyEseybkOykgCIsImVtYWlsIjoiMTU5NjMyX0BuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiY3JlYXRlZFRpbWUiOiIyMDIzLTA1LTA4IiwiZXhwIjoxNjg3MDAwODk0fQ.cGlsHu-o-ZGN46099YAqXzmXCNypGcT9JJi75MUS5mw'
 
 
 # 티켓팅봇 : 공연정보조회 - 남은좌석조회 - 좌석상태변경 - 예약
