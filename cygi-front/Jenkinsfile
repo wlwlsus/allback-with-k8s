@@ -28,7 +28,8 @@ pipeline{
                     // sh "docker stop client || true && docker rm client || true"
                     sh "docker-compose -f docker-compose.yml pull"
                     sh "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1"
-                    sh "docker-compose -f docker-compose.yml up --build -d"
+                    sh "docker-compose -f docker-compose.yml build --no-cache" // 캐시 사용하지 않고 빌드
+                    sh "docker-compose -f docker-compose.yml up -d"
                 }
             }
         }
