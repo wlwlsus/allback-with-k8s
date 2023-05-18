@@ -9,7 +9,7 @@ export const $ = axios.create({
 });
 
 export const $_admin = axios.create({
-  baseURL: "http://k8a806.p.ssafy.io:8090/api/v1",
+  baseURL: "https://k8a806.p.ssafy.io:8090/api/v1",
   headers: {
     "Content-Type": "application/json; charset=UTF-8",
   },

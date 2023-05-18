@@ -12,12 +12,25 @@ import Redirect from "components/oauth/Redirect";
 import SuccessPage from "components/oauth/SuccessPage";
 import { useEffect } from "react";
 import { history } from "components/login-main/history";
+import { useRecoilState } from "recoil";
+import { kafka } from "util/store";
+import { $ } from "util/axios";
 
 function App() {
   const navigate = useNavigate();
+  const [onkafka, setOnKafka] = useRecoilState(kafka);
+
   // 뒤로가기 이벤트 감지
   useEffect(() => {
     const listenBackEvent = () => {
+      $.get(`/concert-service`, {
+        headers: {
+          "KAFKA.UUID": onkafka.uuid,
+          "KAFKA.PARTITION": onkafka.partition,
+          "KAFKA.OFFSET": onkafka.offset,
+          "KAFKA.QUIT": "quit",
+        },
+      });
       window.location.href = "http://allback.site/";
       // window.location.href = "http://localhost:3000/";
     };
@@ -28,6 +41,7 @@ function App() {
     });
     return historyEvent;
   }, []);
+
   return (
     <>
       <Routes>

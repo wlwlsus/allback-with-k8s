@@ -14,6 +14,29 @@ export default function Loading({
 }) {
   const [onkafka, setOnKafka] = useRecoilState(kafka);
 
+  const handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+    $.get(`/concert-service`, {
+      headers: {
+        "KAFKA.UUID": onkafka.uuid,
+        "KAFKA.PARTITION": onkafka.partition,
+        "KAFKA.OFFSET": onkafka.offset,
+        "KAFKA.QUIT": "quit",
+      },
+    }).then(() => {
+      window.location.href = "http://allback.site/";
+      // window.location.href = "http://localhost:3000/";
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <div className={style.container}>
       <div className={style.title}>서비스 접속 대기 중입니다.</div>

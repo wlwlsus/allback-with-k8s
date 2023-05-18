@@ -61,7 +61,7 @@ export default function MyPage() {
     quantity: 1,
     total_amount: 100000,
     tax_free_amount: 0,
-    approval_url: "http://allback.site/success",
+    approval_url: "https//allback.site/success",
     cancel_url: "http://allback.site/home",
     fail_url: "http://allback.site/home",
   };
