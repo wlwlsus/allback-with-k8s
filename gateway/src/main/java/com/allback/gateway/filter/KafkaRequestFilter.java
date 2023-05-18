@@ -2,6 +2,9 @@ package com.allback.gateway.filter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.kafka.clients.consumer.*;
@@ -9,6 +12,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.BasicJsonParser;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -73,6 +78,36 @@ public class KafkaRequestFilter extends AbstractGatewayFilterFactory<KafkaReques
             if (request.getHeaders().containsKey("KAFKA.PASS")) {
                 return chain.filter(exchange);
             }
+
+            // 원준님이 아닌 사람들은 대기열 안 걸림
+            String authentication = request.getHeaders().get("Authorization").get(0);
+            System.out.println("jwt ::: " + authentication);
+
+            String payloadJWT = authentication.replaceFirst("Bearer ", "");
+
+            int firstDotIndex = payloadJWT.indexOf(".");
+            int secondDotIndex = payloadJWT.indexOf(".", firstDotIndex + 1);
+
+            payloadJWT = payloadJWT.substring(firstDotIndex + 1, secondDotIndex);
+
+            Base64.Decoder decoder = Base64.getUrlDecoder();
+
+            final String payload = new String(decoder.decode(payloadJWT));
+            JsonParser jsonParser = new BasicJsonParser();
+            Map<String, Object> jsonArray = jsonParser.parseMap(payload);
+
+            // 특정 값을 추출하여 반환
+            String email = jsonArray.get("email").toString();
+//            System.out.println(email + " nickname");
+            if (!email.equals("159632_@naver.com")) {
+                System.out.println("return!!!!!!!!!!!!!!");
+                return chain.filter(exchange);
+            }
+
+
+
+
+
 
             String uuid = null;
             long offset;
