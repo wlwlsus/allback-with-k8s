@@ -1,4 +1,8 @@
 server:
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: ssafy
+    key-store-type: PKCS12
   port: 8761
 
 
@@ -7,7 +11,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: https://localhost:8761/eureka/
   server:
     wait-time-in-ms-when-sync-empty: 0
     enable-self-preservation: true
