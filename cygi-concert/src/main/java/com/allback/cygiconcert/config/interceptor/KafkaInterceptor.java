@@ -7,6 +7,8 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.BasicJsonParser;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -21,6 +23,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.Duration;
 import java.util.*;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 
@@ -68,13 +74,39 @@ public class KafkaInterceptor implements HandlerInterceptor {
         if (request.getHeader("KAFKA.PASS") != null) {
             return ;
         }
+
+        // 원준님이 아닌 사람들은 대기열 안 걸림
+        String authentication = request.getHeader("Authorization");
+        System.out.println("jwt ::: " + authentication);
+
+        String payloadJWT = authentication.replaceFirst("Bearer ", "");
+
+        int firstDotIndex = payloadJWT.indexOf(".");
+        int secondDotIndex = payloadJWT.indexOf(".", firstDotIndex + 1);
+
+        payloadJWT = payloadJWT.substring(firstDotIndex + 1, secondDotIndex);
+
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        final String payload = new String(decoder.decode(payloadJWT));
+        JsonParser jsonParser = new BasicJsonParser();
+        Map<String, Object> jsonArray = jsonParser.parseMap(payload);
+
+        // 특정 값을 추출하여 반환
+        String email = jsonArray.get("email").toString();
+        if (!email.equals("159632_@naver.com")) {
+            System.out.println("return!!!!!!!!!!!!!!");
+            return ;
+        }
+
         partition = Integer.parseInt(request.getHeader("KAFKA.PARTITION"));
 
         // 10초 대기 (일부러 성능 떨어뜨리기)
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         // kafka consumer 생성
         KafkaConsumer<String, String> consumer = createConsumer(groupId);
+        System.out.println("111111111111111111111111");
 
         // consume할 topic과 particion
         TopicPartition topicPartition = new TopicPartition(topic, partition);
@@ -91,7 +123,7 @@ public class KafkaInterceptor implements HandlerInterceptor {
                 offset = Long.parseLong(value);
             }
         }
-
+        System.out.println("222222222222222222222");
 
         Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
 
@@ -103,6 +135,8 @@ public class KafkaInterceptor implements HandlerInterceptor {
 
         // 읽은 메시지 commit 하기 (Offset 증가)
         consumer.commitSync(currentOffsets);
+
+        System.out.println("3333333333333333");
     }
 
 }

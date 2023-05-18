@@ -87,6 +87,9 @@ dependencies {
 
 	//sleuth
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.8.RELEASE'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 dependencyManagement {
