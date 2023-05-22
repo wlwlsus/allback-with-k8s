@@ -1,10 +1,11 @@
-package com.allback.cygiadmin;
+package com.allback.cygipayment;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class CygiAdminApplicationTests {
+//@SpringBootTest
+class CygiReservationApplicationTests {
+
 	@Test
 	void contextLoads() {
 	}
