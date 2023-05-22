@@ -1,0 +1,77 @@
+server:
+  port: 8002
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: concert-service
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssafy806_concert
+    username: ssafy806
+    password: ssafy806
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  kafka:
+    consumer:
+      bootstrap-servers: 3.34.8.99:9092
+      group-id: concert-req
+      topic: concert-req
+      partition: 3
+      max-poll-interval-ms: 600000
+    listener:
+      type: SINGLE
+
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAW3NG45NH2Q4ICFCX
+      secretKey: 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
+    s3:
+      bucket: hosan-s3
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      allback:
+        cygiconcert: info
+  config: classpath:logback.xml
+
+payment:
+  server:
+    url: http://localhost:8001
+    prefix: /api/v1/server-concert
+
+user:
+  server:
+    url: http://localhost:8000
+    prefix: /api/v1/server-concert
+
+## Eureka Client
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+
+springdoc:
+  swagger-ui:
+    config-url: /concert-service/api/v1/v3/api-docs/swagger-config
+    url: /concert-service/api/v1/v3/api-docs

@@ -1,0 +1,95 @@
+pipeline{
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDS = 'docker-hub-credentials'
+        GITHUB_CREDS = 'github-credentials'
+    }
+
+    stages{
+//         stage('Build Start'){
+//             steps{
+//                 mattermostSend color: "#2A42EE",
+//                     message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                     endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                     channel: "all_back_jenkins"
+//             }
+//         }
+
+        stage('Clone Repo'){
+            steps{
+                git url: 'https://lab.ssafy.com/s08-final/S08P31A806.git',
+                    credentialsId: 'swj', // Jenkins에서 설정한 credential의 ID
+                    branch: 'deploy-k8s-admin'
+            }
+        }
+
+        stage('Gradle Build'){
+            steps{
+                dir('cygi-admin/'){
+                    sh 'ls'
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
+        stage('Build Docker'){
+            steps{
+                script{
+                    sh "docker build -t back-admin:${env.BUILD_NUMBER} cygi-admin/"
+                    sh "docker tag back-admin:${env.BUILD_NUMBER} wlwlsus/back-admin:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Push Docker to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker push wlwlsus/back-admin:${env.BUILD_NUMBER}"
+                        sh "docker image prune -a -f || true"
+                    }
+                }
+            }
+        }
+
+        stage('Update k8s Manifest') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDS}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                        sh "rm -rf allback-helm-chart"
+                        sh "git clone https://github.com/wlwlsus/allback-helm-chart.git allback-helm-chart"
+                        sh "ls -al"
+                        dir('allback-helm-chart/admin') {
+                            sh "sed -i 's|repository: .\\+|repository: wlwlsus/back-admin|' values.yaml"
+                            sh "sed -i 's|tag: .\\+|tag: ${env.BUILD_NUMBER}|' values.yaml"
+                            sh "git config user.email 'cadqe13@gmail.com'"
+                            sh "git config user.name 'cadqe13'"
+                            sh "git add ."
+                            sh "git diff-index --quiet HEAD || git commit -m 'Update back-admin image to ${env.BUILD_NUMBER}'"
+                            sh "git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/wlwlsus/allback-helm-chart.git"
+                            sh "git push origin main"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+//     post {
+//         success {
+//             mattermostSend color: "good",
+//                 message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                 endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                 channel: "all_back_jenkins"
+//         }
+//         failure {
+//             mattermostSend color: "danger",
+//                 message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)",
+//                 endpoint: "https://meeting.ssafy.com/hooks/fzxngahki3bitej3t1osyhxeor",
+//                 channel: "all_back_jenkins"
+//         }
+//     }
+}
