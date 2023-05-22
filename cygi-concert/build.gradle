@@ -1,0 +1,103 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'jacoco'
+}
+
+group = 'com.allback'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+jacoco {
+	toolVersion = '0.8.7'
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		html.enabled true
+	}
+}
+
+jacocoTestReport {
+	// 보고서 생성을 위한 설정
+	reports {
+		xml.enabled true
+		html.enabled true
+	}
+}
+
+tasks.withType(Test) {
+	jacoco.includeNoLocationClasses = true
+	jacoco.excludes = ['jdk.internal.*']
+	useJUnitPlatform()
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+}
+
+ext {
+	set('springCloudVersion', "2022.0.2")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.apache.kafka:kafka-streams'
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.projectlombok:lombok:1.18.26'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+
+	// MapStruct
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2'
+
+	// Filebeat
+	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
+
+	// eureka
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	//zipkin
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
+
+	//sleuth
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.8.RELEASE'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
