@@ -1,0 +1,22 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /api/v1
+
+admin:
+  server:
+    prefix: /api/v1/server-admin
+#    user: http://allback.site:8080/user-service
+#    payment: http://allback.site:8080/payment-service
+    user: http://localhost:8080/user-service
+    payment: http://localhost:8080/payment-service
+
+
+spring:
+  application:
+    name: admin-service
+
+#springdoc:
+#  swagger-ui:
+#    config-url: /admin-service/api/v1/v3/api-docs/swagger-config
+#    url: /admin-service/api/v1/v3/api-docs
