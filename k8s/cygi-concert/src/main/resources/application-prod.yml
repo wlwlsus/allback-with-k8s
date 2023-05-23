@@ -38,8 +38,8 @@ spring:
 cloud:
   aws:
     credentials:
-      accessKey: AKIAW3NG45NH2Q4ICFCX
-      secretKey: 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
+      accessKey: [AWS accessKey]
+      secretKey: [AWS secretKey]
     s3:
       bucket: hosan-s3
     region:
