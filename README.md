@@ -43,6 +43,21 @@
 
 ---
 
+# 👨‍💻 팀원 소개
+
+팀명 : `All Back`  
+저희 팀은 처음부터 백엔드 및 인프라 기술을 집중적으로 공부하고 구현하는 것을 목표로 구성된 팀으로, 5명 전원이 모두 백엔드 개발에 참여하였습니다. 이러한 취지를 담아 팀명을 `All Back`으로 정하였습니다.
+
+| 이름 | 역할 | github |
+| --- | --- | --- |
+| 성원준(팀장) | Payment 서버 개발, Gateway 및 Eureka 서버 개발, 쿠버네티스 적용 | https://github.com/wlwlsus   |
+| 김동연 | User 서버 개발 및 배포, 테스트 봇 개발, locust 성능 테스트 | https://github.com/EastFlovv |
+| 김정수 | 프론트 react 개발, Concert 서버 개발 | https://github.com/kjskjs356 |
+| 윤호산 | Concert 서버 개발, Spring Batch 정산 시스템 개발 | https://github.com/hosanyoon |
+| 최준아 | CI/CD, ELK Stack 로그 수집 시스템 구축, 대기열 시스템 개발, 코드 커버리지 | https://github.com/wnsdk     |
+
+---
+
 # ✨ 서비스 개요
 
 - 프로젝트 진행 기간 : 2023.04.10(월) ~ 2023.05.19(금) (6주간 진행)
@@ -527,15 +542,3 @@ task -> 산출물 있음
 
 ---
 
-# 👨‍💻 팀원 소개
-
-팀명 : `All Back`  
-저희 팀은 처음부터 백엔드 및 인프라 기술을 집중적으로 공부하고 구현하는 것을 목표로 구성된 팀으로, 5명 전원이 모두 백엔드 개발에 참여하였습니다. 이러한 취지를 담아 팀명을 `All Back`으로 정하였습니다.
-
-| 이름 | 역할 | github |
-| --- | --- | --- |
-| 성원준(팀장) | Payment 서버 개발, Gateway 및 Eureka 서버 개발, 쿠버네티스 적용 | https://github.com/wlwlsus   |
-| 김동연 | User 서버 개발 및 배포, 테스트 봇 개발, locust 성능 테스트 | https://github.com/EastFlovv |
-| 김정수 | 프론트 react 개발, Concert 서버 개발 | https://github.com/kjskjs356 |
-| 윤호산 | Concert 서버 개발, Spring Batch 정산 시스템 개발 | https://github.com/hosanyoon |
-| 최준아 | CI/CD, ELK Stack 로그 수집 시스템 구축, 대기열 시스템 개발, 코드 커버리지 | https://github.com/wnsdk     |
