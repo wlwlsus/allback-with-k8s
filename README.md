@@ -18,7 +18,7 @@
     - [locust를 이용한 티켓팅 봇 및 성능테스트](#locust를-이용한-티켓팅-봇-및-성능테스트)
     - [jacoco를 이용한 코드 커버리지 측정](#jacoco를-이용한-코드-커버리지-측정)
     - [ELK Stack + kafka를 이용한 로그 수집](#elk-stack--kafka를-이용한-로그-수집)
-    - [grapana와 prometheus를 이용한 자원 관리](#grapana와-prometheus를-이용한-자원-관리)
+    - [grafana와 prometheus를 이용한 자원 관리](#grafana와-prometheus를-이용한-자원-관리)
 
   - 정산 시스템
     - [Spring Batch를 이용한 정산 시스템](#spring-batch를-이용한-정산-시스템)
@@ -252,7 +252,7 @@ ELK는 다양한 용도로 사용될 수 있지만, 저희 프로젝트에서는
 
 <br><br><br>
 
-### grapana와 prometheus를 이용한 자원 관리
+### grafana와 prometheus를 이용한 자원 관리
 <img src="document/img/grapana.png" title="그라파나" width="80%"/>
 
 <br><br><br>
