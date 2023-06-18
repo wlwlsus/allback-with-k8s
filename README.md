@@ -50,11 +50,11 @@
 
 | 이름 | 역할 | github |
 | --- | --- | --- |
-| 성원준(팀장) | Payment 서버 개발, Gateway 및 Eureka 서버 개발, 쿠버네티스 적용 | https://github.com/wlwlsus   |
+| 성원준(팀장) | Payment 서버 개발, Gateway 및 Eureka 서버 개발, CI/CD, 쿠버네티스 적용 | https://github.com/wlwlsus   |
 | 김동연 | User 서버 개발 및 배포, 테스트 봇 개발, locust 성능 테스트 | https://github.com/EastFlovv |
 | 김정수 | 프론트 react 개발, Concert 서버 개발 | https://github.com/kjskjs356 |
 | 윤호산 | Concert 서버 개발, Spring Batch 정산 시스템 개발 | https://github.com/hosanyoon |
-| 최준아 | CI/CD, ELK Stack 로그 수집 시스템 구축, 대기열 시스템 개발, 코드 커버리지 | https://github.com/wnsdk     |
+| 최준아 | ELK Stack 로그 수집 시스템 구축, 대기열 시스템 개발, 코드 커버리지 | https://github.com/wnsdk     |
 
 ---
 
