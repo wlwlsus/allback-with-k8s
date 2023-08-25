@@ -214,7 +214,7 @@ locust를 통해 기능 테스트와 부하 테스트를 동시에 진행하였�
 
 
 위 티켓팅 봇을 이용하여 성능 테스트를 진행한 결과는 아래와 같습니다.
-<img src="document/img/locust_result_graph.png" title="locust result graph" width="80%"/> <br>
+<img src="document/img/부하테스트.png" title="locust result graph" width="80%"/> <br>
 
 [엑셀 파일](/document/locust_result_230517.csv)로도 결과를 확인할 수 있습니다.
 <img src="document/img/locust_result_table.png" title="locust result table" width="80%"/>
