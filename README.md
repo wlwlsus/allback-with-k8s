@@ -1,4 +1,7 @@
-# 🎟️ Can you get it - 터지지 않는 티켓팅 플랫폼
+# 아래 Repository가 더욱 최신화 되어 있습니다.
+https://github.com/wlwlsus/can-you-get-it
+
+# (구Repo)🎟️ Can you get it - 터지지 않는 티켓팅 플랫폼
 
 ![로고 이미지](/document/logo.png)
 
