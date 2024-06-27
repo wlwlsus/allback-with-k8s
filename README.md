@@ -1,7 +1,4 @@
-# 아래 Repository가 더욱 최신화 되어 있습니다.
-https://github.com/wlwlsus/can-you-get-it
-
-# (구Repo)🎟️ Can you get it - 터지지 않는 티켓팅 플랫폼
+# 🎟️ Can you get it - 터지지 않는 티켓팅 플랫폼
 
 ![로고 이미지](/document/logo.png)
 
@@ -23,6 +20,7 @@ https://github.com/wlwlsus/can-you-get-it
     - [ELK Stack + kafka를 이용한 로그 수집](#elk-stack--kafka를-이용한-로그-수집)
     - [grafana와 prometheus를 이용한 자원 관리](#grafana와-prometheus를-이용한-자원-관리)
 
+
   - 정산 시스템
     - [Spring Batch를 이용한 정산 시스템](#spring-batch를-이용한-정산-시스템)
 
@@ -34,7 +32,7 @@ https://github.com/wlwlsus/can-you-get-it
     - [Recoil을 활용한 로그인 정보 유지](#recoil을-활용한-로그인-정보-유지)
 
   - 기타
-    - [OAuth를 이용한 카카오 로그인](#oauth를-이용한-카카오-로그인)
+    - [OAuth + JWT + Redis를 이용한 카카오 로그인](#oauth를-이용한-카카오-로그인)
     - [카카오페이 연동을 통한 포인트 충전 시스템](#카카오페이-연동을-통한-포인트-충전-시스템)     
 
 - [기술 스택](#🔧-기술-스택)
@@ -53,8 +51,8 @@ https://github.com/wlwlsus/can-you-get-it
 
 | 이름 | 역할 | github |
 | --- | --- | --- |
-| 성원준(팀장) | Payment 서버 개발, Gateway 및 Eureka 서버 개발, CI/CD, 쿠버네티스 적용 | https://github.com/wlwlsus   |
-| 김동연 | User 서버 개발 및 배포, 테스트 봇 개발, locust 성능 테스트 | https://github.com/EastFlovv |
+| 성원준(팀장) | Payment 서버 개발, User 서버 개발, Gateway 및 Eureka 서버 개발, CI/CD, 쿠버네티스 적용 | https://github.com/wlwlsus   |
+| 김동연 | 관리자 서버 개발, 테스트 봇 개발, locust 성능 테스트 | https://github.com/EastFlovv |
 | 김정수 | 프론트 react 개발, Concert 서버 개발 | https://github.com/kjskjs356 |
 | 윤호산 | Concert 서버 개발, Spring Batch 정산 시스템 개발 | https://github.com/hosanyoon |
 | 최준아 | ELK Stack 로그 수집 시스템 구축, 대기열 시스템 개발, 코드 커버리지 | https://github.com/wnsdk     |
@@ -92,15 +90,19 @@ https://github.com/wlwlsus/can-you-get-it
 5. 카카오페이를 통한 포인트 충전
 <img src="document/gif/point_charge.gif" title="reserve" width="80%"/> <br>
 
-6. 대기열 시스템  
+6. 대기열 시스템
+
 - 대기열 통과  
-<img src="document/gif/queue_pass.gif" title="reserve" width="80%"/> <br> 
+<img src="document/gif/queue_pass.gif" title="reserve" width="80%"/> <br>
+
 - 대기열 취소  
 <img src="document/gif/queue_cancel.gif" title="reserve" width="80%"/> <br>
 
+<br>
+
 7. 관리자 페이지 조회
+
 <img src="document/gif/adminpage.gif" title="reserve" width="80%"/> <br>
-     <br>
 
 ---
 
@@ -119,8 +121,8 @@ MSA란 `MicroService Architecture`의 약자로, 기존의 Monolithic Architectu
 | 결제 | Payment Server | Payment DB |
 | 관리자 | Admin Server | |
 
-
-<img src="document/img/architecture/msa.png" title="MSA 아키텍처" width="100%"/>
+### MSA 설계도
+![msa 설계도 drawio](https://github.com/wlwlsus/can-you-get-it/assets/58021968/60e040e7-7186-4daa-acb5-3030727d6a4a)
 
 저희는 `MSA` 를 통해 다음과 같은 장점을 가질 수 있었습니다. 
 
@@ -182,13 +184,19 @@ MSA를 적용함으로써 서버들이 기능별로 분리됨에 따라 각 서�
 
 ### 도커 컨테이너 오케스트레이션
 
+### 아키텍처
+![쿠버네티스 흐름도](https://github.com/wlwlsus/can-you-get-it/assets/58021968/74f5f3b2-3a4e-4171-8a36-b8f6ff1b32df)
+
+### 배포 과정
 <img src="document/img/architecture/k8s_deploy.png" title="k8s 배포 아키텍처" width="80%"/>
 
 <br><br><br>
 
 ### 오토 스케일링
 
-접은 내용
+- Deployment에서 Pod의 CPU 초기 사용량 및 오토 스케일링 시점을 기재합니다.
+- 지정해둔 CPU 사용량을 초과하면 Pod 수를 증가시켜 부하를 분산 시킵니다.
+- Helm Chart에 Deployment.yaml, HPA.yaml에 필요한 설정 정보를 기재하였습니다.
 
 <br><br><br>
 
@@ -197,8 +205,11 @@ MSA를 적용함으로써 서버들이 기능별로 분리됨에 따라 각 서�
 
 <br><br><br>
 
-### 헬름차트를 이용한 쿠버네티스 리소스 관리
-접은 내용
+### 헬름 차트를 이용한 쿠버네티스 리소스 관리
+
+- Deployment, Service, HPA 등 필수 yaml 파일을 미리 작성해두고 Argo CD 를 통해 배포합니다.
+- values.yaml에 필수 내용을 작성하고 Resource yaml에서 오버라이딩하여 사용합니다.
+- 헬름 차트 저장소 : https://github.com/wlwlsus/allback-helm-chart
 
 <br><br><br>
 
@@ -544,4 +555,3 @@ task -> 산출물 있음
 ##
 
 ---
-
